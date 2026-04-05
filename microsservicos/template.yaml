@@ -17,7 +17,81 @@ Parameters:
 
 Resources:
   # ============================================================
-  # CATALOGO SERVICE
+  # API GATEWAY + LAMBDA AUTHORIZER
+  # ============================================================
+
+  TccApi:
+    Type: AWS::Serverless::Api
+    Properties:
+      StageName: Prod
+      Auth:
+        DefaultAuthorizer: JwtAuthorizer
+        Authorizers:
+          JwtAuthorizer:
+            FunctionArn: !GetAtt AuthorizerFunction.Arn
+            Identity:
+              Header: Authorization
+              ReauthorizeEvery: 300  # Cache TTL em segundos (5 min)
+
+  # Lambda Authorizer — valida JWT, API Gateway cacheia resultado
+  AuthorizerFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: src/presentation/handlers/authorizer.handler
+      CodeUri: catalogo-service
+      Description: Lambda Authorizer - valida JWT e retorna IAM policy
+      MemorySize: 256
+      Timeout: 5
+      Environment:
+        Variables:
+          JWT_SECRET: !Ref JwtSecret
+
+  # ============================================================
+  # AUTH ENDPOINTS (sem autorizacao — publicos)
+  # ============================================================
+
+  AuthRegistrarFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: src/presentation/handlers/auth.registrar_handler
+      CodeUri: catalogo-service
+      Description: Registrar novo usuario
+      Environment:
+        Variables:
+          USUARIOS_TABLE: !Ref UsuariosTable
+          JWT_SECRET: !Ref JwtSecret
+      Events:
+        Api:
+          Type: Api
+          Properties:
+            RestApiId: !Ref TccApi
+            Path: /api/v1/auth/registrar
+            Method: post
+            Auth:
+              Authorizer: NONE  # Publico
+
+  AuthLoginFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: src/presentation/handlers/auth.login_handler
+      CodeUri: catalogo-service
+      Description: Login - gera JWT
+      Environment:
+        Variables:
+          USUARIOS_TABLE: !Ref UsuariosTable
+          JWT_SECRET: !Ref JwtSecret
+      Events:
+        Api:
+          Type: Api
+          Properties:
+            RestApiId: !Ref TccApi
+            Path: /api/v1/auth/login
+            Method: post
+            Auth:
+              Authorizer: NONE  # Publico
+
+  # ============================================================
+  # CATALOGO SERVICE (protegido por Lambda Authorizer)
   # ============================================================
 
   CatalogoHealthFunction:
@@ -26,22 +100,61 @@ Resources:
       Handler: src/presentation/handlers/health.handler
       CodeUri: catalogo-service
       Description: Health check do Catalogo
+      Events:
+        Api:
+          Type: Api
+          Properties:
+            RestApiId: !Ref TccApi
+            Path: /catalogo/health
+            Method: get
+            Auth:
+              Authorizer: NONE  # Health check publico
+
+  CatalogoFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: src/presentation/handlers/catalogo.handler
+      CodeUri: catalogo-service
+      Description: CRUD de produtos e categorias
       Environment:
         Variables:
           PRODUTOS_TABLE: !Ref ProdutosTable
           CATEGORIAS_TABLE: !Ref CategoriasTable
-          USUARIOS_TABLE: !Ref UsuariosTable
           EVENTOS_TOPIC_ARN: !Ref EventosDominioTopic
-          JWT_SECRET: !Ref JwtSecret
       Events:
-        HealthApi:
+        Produtos:
           Type: Api
           Properties:
-            Path: /catalogo/health
-            Method: get
+            RestApiId: !Ref TccApi
+            Path: /api/v1/produtos
+            Method: ANY
+        ProdutoById:
+          Type: Api
+          Properties:
+            RestApiId: !Ref TccApi
+            Path: /api/v1/produtos/{id}
+            Method: ANY
+        ProdutoDesativar:
+          Type: Api
+          Properties:
+            RestApiId: !Ref TccApi
+            Path: /api/v1/produtos/{id}/desativar
+            Method: patch
+        Categorias:
+          Type: Api
+          Properties:
+            RestApiId: !Ref TccApi
+            Path: /api/v1/categorias
+            Method: ANY
+        CategoriaById:
+          Type: Api
+          Properties:
+            RestApiId: !Ref TccApi
+            Path: /api/v1/categorias/{id}
+            Method: ANY
 
   # ============================================================
-  # ESTOQUE SERVICE
+  # ESTOQUE SERVICE (protegido por Lambda Authorizer)
   # ============================================================
 
   EstoqueHealthFunction:
@@ -50,19 +163,65 @@ Resources:
       Handler: src/presentation/handlers/health.handler
       CodeUri: estoque-service
       Description: Health check do Estoque
+      Events:
+        Api:
+          Type: Api
+          Properties:
+            RestApiId: !Ref TccApi
+            Path: /estoque/health
+            Method: get
+            Auth:
+              Authorizer: NONE  # Health check publico
+
+  EstoqueFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: src/presentation/handlers/estoque.handler
+      CodeUri: estoque-service
+      Description: Consulta e movimentacoes de estoque
       Environment:
         Variables:
           ITENS_ESTOQUE_TABLE: !Ref ItensEstoqueTable
           MOVIMENTACOES_TABLE: !Ref MovimentacoesTable
-          JWT_SECRET: !Ref JwtSecret
       Events:
-        HealthApi:
+        Estoque:
           Type: Api
           Properties:
-            Path: /estoque/health
+            RestApiId: !Ref TccApi
+            Path: /api/v1/estoque
+            Method: get
+        EstoqueById:
+          Type: Api
+          Properties:
+            RestApiId: !Ref TccApi
+            Path: /api/v1/estoque/{id}
+            Method: get
+        EstoquePorProduto:
+          Type: Api
+          Properties:
+            RestApiId: !Ref TccApi
+            Path: /api/v1/estoque/produto/{produto_id}
+            Method: get
+        Entrada:
+          Type: Api
+          Properties:
+            RestApiId: !Ref TccApi
+            Path: /api/v1/estoque/{id}/entrada
+            Method: post
+        Saida:
+          Type: Api
+          Properties:
+            RestApiId: !Ref TccApi
+            Path: /api/v1/estoque/{id}/saida
+            Method: post
+        Movimentacoes:
+          Type: Api
+          Properties:
+            RestApiId: !Ref TccApi
+            Path: /api/v1/estoque/{id}/movimentacoes
             Method: get
 
-  # Consumer Lambda — consome eventos do Catalogo via SQS
+  # Consumer Lambda — consome eventos do Catalogo via SQS (sem auth)
   EstoqueEventConsumer:
     Type: AWS::Serverless::Function
     Properties:
@@ -158,7 +317,6 @@ Resources:
       QueueName: tcc-estoque-eventos
       VisibilityTimeout: 60
 
-  # SNS -> SQS subscription
   EstoqueEventosSubscription:
     Type: AWS::SNS::Subscription
     Properties:
@@ -166,7 +324,6 @@ Resources:
       Protocol: sqs
       Endpoint: !GetAtt EstoqueEventosQueue.Arn
 
-  # Allow SNS to send messages to SQS
   EstoqueQueuePolicy:
     Type: AWS::SQS::QueuePolicy
     Properties:
@@ -186,7 +343,7 @@ Resources:
 Outputs:
   ApiUrl:
     Description: URL do API Gateway
-    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod"
+    Value: !Sub "https://${TccApi}.execute-api.${AWS::Region}.amazonaws.com/Prod"
   EventosTopicArn:
     Description: ARN do topico SNS de eventos de dominio
     Value: !Ref EventosDominioTopic
