@@ -27,3 +27,4 @@ pythonpath = ["."]
 [tool.setuptools.packages.find]
 where = ["."]
 include = ["catalogo-service*", "estoque-service*"]
+
