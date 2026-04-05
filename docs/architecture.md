@@ -206,117 +206,157 @@ Use Cases dependem de interfaces (Repository). Alguem precisa decidir qual imple
 **Errado:** no FastAPI `Depends()` (acoplaria a composicao ao framework — violacao de Clean Architecture)
 **Correto:** em um **Composition Root** (container) por Bounded Context
 
-### Padrao: Container Manual
+### Padrao: dependency-injector (Composition Root)
 
-Cada BC tem um `container.py` que e o **unico arquivo que conhece implementacoes concretas**. Domain e Application nunca importam de Infrastructure diretamente.
+Cada BC tem um `container.py` usando a biblioteca `dependency-injector`. E o **unico arquivo que conhece implementacoes concretas**. Domain e Application nunca importam de Infrastructure diretamente.
 
 ```
 domain/         → Python puro (interfaces)
-application/    → Python puro (usa interfaces via construtor)
+application/    → Python puro (usa interfaces via construtor, decorado com @inject)
 infrastructure/ → Implementa interfaces
-container.py    → UNICO lugar que conecta interface → implementacao
-presentation/   → Usa container para obter use cases prontos
+container.py    → Unico lugar que conecta interface → implementacao (DeclarativeContainer)
+presentation/   → Wired ao container, recebe dependencias automaticamente
 ```
+
+### Conceitos da Lib
+
+| Conceito | O que faz | Quando usar |
+|----------|----------|-------------|
+| `DeclarativeContainer` | Declara todas as dependencias de um BC | Um por BC |
+| `providers.Factory` | Cria instancia nova a cada chamada | Use Cases, Repositories |
+| `providers.Singleton` | Cria uma vez, reutiliza | Engine de banco, Settings |
+| `providers.Configuration` | Carrega config de env/dict | DATABASE_URL, JWT_SECRET |
+| `@inject` + `Provide[]` | Injeta dependencia no parametro da funcao | Rotas, handlers |
+| `container.wire()` | Conecta o container aos modulos que usam `@inject` | No startup do app |
 
 ### Monolito — Container com SQLAlchemy
 
 ```python
 # src/catalogo/container.py
-class CatalogoContainer:
-    """Composition Root do BC Catalogo.
-    Unico lugar que sabe que ProdutoRepository = SQLAlchemy."""
+from dependency_injector import containers, providers
 
-    def __init__(self, session_factory):
-        self._session_factory = session_factory
+class CatalogoContainer(containers.DeclarativeContainer):
+    """Composition Root do BC Catalogo."""
 
-    def produto_repository(self) -> ProdutoRepository:
-        return SQLAlchemyProdutoRepository(self._session_factory())
+    # Dependencias externas (injetadas pelo container pai)
+    session_factory = providers.Dependency()
 
-    def categoria_repository(self) -> CategoriaRepository:
-        return SQLAlchemyCategoriaRepository(self._session_factory())
+    # Repositories — Factory cria instancia nova por chamada
+    produto_repository = providers.Factory(
+        SQLAlchemyProdutoRepository,
+        session_factory=session_factory,
+    )
 
-    def criar_produto_use_case(self) -> CriarProdutoUseCase:
-        return CriarProdutoUseCase(repo=self.produto_repository())
+    categoria_repository = providers.Factory(
+        SQLAlchemyCategoriaRepository,
+        session_factory=session_factory,
+    )
+
+    # Use Cases — Factory injeta repos automaticamente
+    criar_produto = providers.Factory(
+        CriarProdutoUseCase,
+        repo=produto_repository,
+    )
 ```
 
 ```python
 # src/catalogo/presentation/routes.py
-# A rota NAO sabe qual implementacao de repo esta usando
+from dependency_injector.wiring import inject, Provide
+
 @router.post("/api/v1/produtos")
-def criar_produto(body: CriarProdutoRequest):
-    use_case = container.criar_produto_use_case()
+@inject
+def criar_produto(
+    body: CriarProdutoRequest,
+    use_case: CriarProdutoUseCase = Provide[CatalogoContainer.criar_produto],
+):
     return use_case.execute(body.to_dto())
+```
+
+```python
+# src/presentation/app.py — wiring no startup
+catalogo_container = CatalogoContainer(session_factory=SessionLocal)
+catalogo_container.wire(modules=[
+    "src.catalogo.presentation.routes",
+])
 ```
 
 ### Microsservicos — Container com DynamoDB
 
 ```python
 # catalogo-service/src/container.py
-class CatalogoContainer:
-    """Mesmo contrato, implementacao diferente."""
+class CatalogoContainer(containers.DeclarativeContainer):
+    """Mesmo padrao, implementacao DynamoDB."""
 
-    def produto_repository(self) -> ProdutoRepository:
-        return DynamoDBProdutoRepository(os.environ["PRODUTOS_TABLE"])
+    config = providers.Configuration()
 
-    def criar_produto_use_case(self) -> CriarProdutoUseCase:
-        return CriarProdutoUseCase(repo=self.produto_repository())
+    produto_repository = providers.Factory(
+        DynamoDBProdutoRepository,
+        table_name=config.produtos_table,
+    )
+
+    criar_produto = providers.Factory(
+        CriarProdutoUseCase,
+        repo=produto_repository,
+    )
 ```
 
 ```python
 # catalogo-service/src/presentation/handlers/catalogo.py
+container = CatalogoContainer()
+container.config.from_dict({"produtos_table": os.environ["PRODUTOS_TABLE"]})
+
 def handler(event, context):
     body = json.loads(event["body"])
-    use_case = container.criar_produto_use_case()
+    use_case = container.criar_produto()
     result = use_case.execute(CriarProdutoDTO(**body))
     return {"statusCode": 201, "body": json.dumps(result.to_dict())}
 ```
 
-### Testes — Container com Fake/InMemory
+### Testes — Override de Providers
 
 ```python
 # tests/conftest.py
-class FakeCatalogoContainer:
-    def produto_repository(self):
-        return InMemoryProdutoRepository()
-
-    def criar_produto_use_case(self):
-        return CriarProdutoUseCase(repo=self.produto_repository())
-
-# Injeta o container fake antes dos testes
-app.state.catalogo_container = FakeCatalogoContainer()
+@pytest.fixture
+def catalogo_container():
+    container = CatalogoContainer()
+    # Override troca implementacao real por fake — sem mudar nenhum codigo
+    container.produto_repository.override(providers.Factory(InMemoryProdutoRepository))
+    yield container
+    container.produto_repository.reset_override()
 ```
 
-### Por que NAO usar FastAPI Depends()
+### Por que dependency-injector e nao FastAPI Depends()
 
-| Aspecto | `Depends()` | Container manual |
-|---------|-------------|-----------------|
+| Aspecto | `Depends()` | `dependency-injector` |
+|---------|-------------|----------------------|
 | Acoplamento ao framework | Sim — DI vive no FastAPI | Nao — container e Python puro |
-| Lambda handlers | Nao funciona (sem FastAPI) | Funciona igual |
-| Testabilidade | `dependency_overrides` (API do FastAPI) | Trocar container (Python puro) |
+| Lambda handlers | Nao funciona (sem FastAPI) | Funciona igual (container.provider()) |
+| Testabilidade | `dependency_overrides` (API do FastAPI) | `.override()` (API da lib, framework-agnostico) |
 | Clean Architecture | Viola — framework controla composicao | Respeita — composicao e independente |
-| Para o artigo | Superficial | Demonstra inversao de dependencia real |
-
-**Ponto chave:** O Use Case nao sabe se esta rodando no FastAPI ou Lambda, nao sabe se o banco e PostgreSQL ou DynamoDB. O container e o unico ponto que sabe. Isso e Clean Architecture de verdade.
+| Tipagem | Limitada | `Provide[]` type hints funcionam com IDEs |
+| Singleton/Factory/Config | Manual | Built-in (providers tipados) |
 
 ### Fluxo de Dependencia Completo
 
 ```
-presentation/routes.py          presentation/handlers/catalogo.py
-         │                                   │
-         ▼                                   ▼
-    container.py (SQLAlchemy)          container.py (DynamoDB)
-         │                                   │
-         ▼                                   ▼
-    CriarProdutoUseCase ◄──── IDENTICO ────► CriarProdutoUseCase
-         │                                   │
-         ▼                                   ▼
-    ProdutoRepository (interface)      ProdutoRepository (interface)
-         │                                   │
-         ▼                                   ▼
-    SQLAlchemyProdutoRepo            DynamoDBProdutoRepo
-         │                                   │
-         ▼                                   ▼
-    PostgreSQL                         DynamoDB
+presentation/routes.py              presentation/handlers/catalogo.py
+  @inject + Provide[]                  container.criar_produto()
+         │                                      │
+         ▼                                      ▼
+    CatalogoContainer                   CatalogoContainer
+    (SQLAlchemy providers)              (DynamoDB providers)
+         │                                      │
+         ▼                                      ▼
+    CriarProdutoUseCase ◄───── IDENTICO ──────► CriarProdutoUseCase
+         │                                      │
+         ▼                                      ▼
+    ProdutoRepository (interface)         ProdutoRepository (interface)
+         │                                      │
+         ▼                                      ▼
+    SQLAlchemyProdutoRepo               DynamoDBProdutoRepo
+         │                                      │
+         ▼                                      ▼
+    PostgreSQL                            DynamoDB
 ```
 
 ---

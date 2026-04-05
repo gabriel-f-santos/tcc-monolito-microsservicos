@@ -63,21 +63,23 @@ Checklist for reviewing code against Domain-Driven Design and Clean Architecture
   - Domain entities are plain Python classes, not ORM models
   - Mapping between ORM model and domain entity happens in repository
 
-### 5. Dependency Injection (Container)
+### 5. Dependency Injection (dependency-injector)
 
-- [ ] **Each BC has a `container.py`**
+- [ ] **Each BC has a `container.py` with `DeclarativeContainer`**
   - It is the ONLY file that imports from infrastructure
-  - Creates concrete repos and injects into use cases
+  - Uses `providers.Factory` for repos and use cases
 - [ ] **Use Cases receive repos via constructor**
   - `def __init__(self, repo: ProdutoRepository)` — interface, not implementation
   - NEVER `from infrastructure.repositories import ...` in use case
-- [ ] **Presentation uses container, not direct instantiation**
-  - `container.criar_produto_use_case()` — not `CriarProdutoUseCase(SQLAlchemyRepo(...))`
+- [ ] **Routes use `@inject` + `Provide[]`, not direct instantiation**
+  - `use_case: CriarProdutoUseCase = Provide[Container.criar_produto]`
+  - NOT `CriarProdutoUseCase(SQLAlchemyRepo(...))`
 - [ ] **No FastAPI Depends() for DI**
   - `Depends()` couples DI to the framework
-  - Container is plain Python, works in FastAPI and Lambda
-- [ ] **Tests use fake container**
-  - `FakeContainer` with in-memory repos, no DB needed
+  - `dependency-injector` is framework-agnostic
+- [ ] **Tests use `.override()`**
+  - `container.produto_repository.override(providers.Factory(InMemoryRepo))`
+  - Reset after test: `container.produto_repository.reset_override()`
 
 ### 6. Domain Events
 

@@ -46,13 +46,14 @@ Microservices: each service IS a BC, with `src/shared/` + `src/domain/` + layers
 - Domain entities are plain Python classes, NOT ORM models
 - Mapping between ORM/DynamoDB and domain entity happens inside the repository
 
-**Dependency Injection (Manual Container):**
-- Each BC has a `container.py` — the Composition Root
+**Dependency Injection (dependency-injector library):**
+- Each BC has a `container.py` with `DeclarativeContainer` — the Composition Root
 - It is the ONLY file that knows concrete implementations
-- Use Cases receive repos via constructor (NEVER import from infrastructure directly)
-- Presentation uses container to get ready-made use cases
-- Tests inject a fake container with in-memory repos
+- Use `providers.Factory` for repos and use cases, `providers.Singleton` for engine/settings
+- Routes use `@inject` decorator + `Provide[Container.provider]` type hint
+- Tests use `container.provider.override(providers.Factory(FakeRepo))`
 - DO NOT use FastAPI Depends() for DI — it couples composition to the framework
+- Wire container on app startup: `container.wire(modules=[...])`
 
 **Communication between Bounded Contexts:**
 - ZERO synchronous calls between Catalogo and Estoque
