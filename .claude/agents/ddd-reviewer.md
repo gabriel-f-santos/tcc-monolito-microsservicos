@@ -38,17 +38,23 @@ For each finding, report:
 Run these commands to gather data:
 
 ```bash
-# Find infrastructure imports in domain layer
-grep -r "from infrastructure\|import sqlalchemy\|import boto3\|from fastapi" src/domain/ || echo "Clean"
+# Find infrastructure imports in domain layers
+for mod in auth catalogo estoque; do
+  echo "=== $mod ==="
+  grep -r "from.*infrastructure\|import sqlalchemy\|import boto3\|from fastapi" "src/$mod/domain/" 2>/dev/null || echo "Clean"
+done
 
 # Find HTTP exceptions in domain/application
-grep -r "HTTPException\|status_code" src/domain/ src/application/ || echo "Clean"
+for mod in auth catalogo estoque; do
+  grep -r "HTTPException\|status_code" "src/$mod/domain/" "src/$mod/application/" 2>/dev/null || echo "$mod: Clean"
+done
 
-# Find cross-context imports
-grep -r "from.*catalogo.*import" src/estoque/ 2>/dev/null || echo "No cross-imports"
-grep -r "from.*estoque.*import" src/catalogo/ 2>/dev/null || echo "No cross-imports"
+# Find cross-context imports (MUST be zero)
+grep -r "from src.catalogo" src/estoque/ 2>/dev/null || echo "No catalogo→estoque"
+grep -r "from src.estoque" src/catalogo/ 2>/dev/null || echo "No estoque→catalogo"
+grep -r "from src.auth" src/catalogo/ src/estoque/ 2>/dev/null || echo "No auth leaking"
 
-# Check repository pattern
+# Check repository pattern per module
 find src/ -name "*repository*" -type f
 ```
 

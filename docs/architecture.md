@@ -34,41 +34,89 @@ O sistema possui dois Bounded Contexts claramente delimitados:
 
 Cada bounded context segue a mesma estrutura de 4 camadas:
 
-```
-src/
-├── domain/              # Camada interna — ZERO dependencias externas
-│   ├── entities/        # Agregados e entidades (classes Python puras)
-│   ├── value_objects/   # Objetos de valor imutaveis (SKU, Dinheiro, Quantidade)
-│   ├── repositories/    # Interfaces abstratas (ABC) — nao implementacoes
-│   ├── events/          # Eventos de dominio (dataclasses)
-│   └── exceptions/      # Excecoes de dominio com codigos da spec
-│
-├── application/         # Casos de uso — orquestram dominio e repositorios
-│   ├── use_cases/       # Um arquivo por caso de uso (CriarProduto, RegistrarSaida)
-│   └── dtos/            # Data Transfer Objects (entrada/saida dos use cases)
-│
-├── infrastructure/      # Implementacoes concretas — depende de frameworks
-│   ├── repositories/    # SQLAlchemy (monolito) ou boto3/DynamoDB (microsservicos)
-│   ├── database/        # Engine, sessao, conexao
-│   └── config/          # Settings via env vars (pydantic-settings ou os.environ)
-│
-└── presentation/        # Camada externa — recebe requisicoes
-    ├── routes/          # FastAPI routes (monolito)
-    ├── handlers/        # Lambda handlers puros (microsservicos)
-    └── schemas/         # Schemas de request/response (Pydantic)
-```
-
-### Direcao da Dependencia
+### Monolito — Organizacao por Dominio
 
 ```
-Presentation ──► Application ──► Domain ◄── Infrastructure
-   (rotas)        (use cases)    (puro)     (repos concretos)
+monolito/src/
+├── shared/                        # Codigo compartilhado entre modulos
+│   ├── domain/
+│   │   ├── entities/base.py       # BaseEntity (UUID + timestamps)
+│   │   ├── exceptions/base.py     # DomainException (code + message)
+│   │   └── repositories/base.py   # BaseRepository ABC (get, save, delete)
+│   └── infrastructure/
+│       ├── config/settings.py     # pydantic-settings (DATABASE_URL, JWT_SECRET)
+│       ├── database/session.py    # SQLAlchemy engine + session
+│       └── observability.py       # OpenTelemetry setup
+│
+├── auth/                          # Bounded Context: Autenticacao
+│   ├── domain/                    # Usuario entity, excecoes de auth
+│   ├── application/               # Login, Registrar use cases
+│   ├── infrastructure/            # UsuarioRepository (SQLAlchemy)
+│   └── presentation/              # Rotas /api/v1/auth/*, middleware JWT
+│
+├── catalogo/                      # Bounded Context: Catalogo de Produtos
+│   ├── domain/                    # Produto, Categoria, SKU, Dinheiro
+│   ├── application/               # CriarProduto, AtualizarProduto, etc.
+│   ├── infrastructure/            # ProdutoRepository, CategoriaRepository
+│   └── presentation/              # Rotas /api/v1/produtos, /categorias
+│
+├── estoque/                       # Bounded Context: Controle de Estoque
+│   ├── domain/                    # ItemEstoque, Movimentacao, Quantidade
+│   ├── application/               # RegistrarEntrada, RegistrarSaida
+│   ├── infrastructure/            # ItemEstoqueRepository, MovimentacaoRepository
+│   └── presentation/              # Rotas /api/v1/estoque/*
+│
+└── presentation/
+    ├── app.py                     # FastAPI app (compoe routers de todos os modulos)
+    └── routes/health.py           # GET /health (transversal)
 ```
 
-- **Domain** nao importa nada de fora. E Python puro.
-- **Application** depende apenas de interfaces do Domain.
-- **Infrastructure** implementa interfaces do Domain (inversao de dependencia).
-- **Presentation** chama Use Cases e mapeia excecoes de dominio para HTTP.
+**Vantagem da organizacao por dominio:**
+- Cada pasta e um Bounded Context autocontido
+- Extrair para microsservico = copiar a pasta
+- Import entre modulos e explicito (fronteira fisica no filesystem)
+- Metricas por modulo: `radon cc src/catalogo/ -s -a`
+
+### Microsservicos — Cada Servico e um Bounded Context
+
+```
+microsservicos/
+├── catalogo-service/src/
+│   ├── shared/domain/             # BaseEntity, DomainException, BaseRepository
+│   ├── domain/                    # Produto, Categoria, SKU, Dinheiro, Usuario
+│   ├── application/               # Use cases (identicos ao monolito)
+│   ├── infrastructure/            # DynamoDB repos (boto3)
+│   └── presentation/handlers/     # Lambda handlers puros
+│
+└── estoque-service/src/
+    ├── shared/domain/             # BaseEntity, DomainException, BaseRepository
+    ├── domain/                    # ItemEstoque, Movimentacao, Quantidade
+    ├── application/               # Use cases (identicos ao monolito)
+    ├── infrastructure/            # DynamoDB repos (boto3)
+    └── presentation/handlers/     # Lambda handlers puros + event consumer
+```
+
+### Direcao da Dependencia (dentro de cada modulo)
+
+```
+presentation/ ──► application/ ──► domain/ ◄── infrastructure/
+   (rotas)        (use cases)      (puro)      (repos concretos)
+```
+
+- **domain/** nao importa nada de fora. E Python puro. Apenas herda de `shared/`.
+- **application/** depende apenas de interfaces do domain/.
+- **infrastructure/** implementa interfaces do domain/ (inversao de dependencia).
+- **presentation/** chama Use Cases e mapeia excecoes de dominio para HTTP.
+
+### Regra de Import entre Modulos
+
+```
+auth/       → shared/ (apenas)
+catalogo/   → shared/ (apenas)
+estoque/    → shared/ (apenas)
+catalogo/ ✗ estoque/  (PROIBIDO — comunicacao via eventos)
+estoque/  ✗ catalogo/ (PROIBIDO — usa projecao local)
+```
 
 ---
 

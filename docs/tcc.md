@@ -167,9 +167,11 @@ A comunicacao entre contextos ocorre exclusivamente via eventos de dominio publi
 
 **Arquitetura e decisoes tecnicas**
 
-Ambas as versoes seguem "Clean Architecture" (Martin, 2017), com separacao rigida em quatro camadas: dominio (agregados, entidades, "value objects", interfaces de repositorio), aplicacao (casos de uso), infraestrutura (implementacoes de repositorio, adaptadores de mensageria) e apresentacao (controladores HTTP ou "handlers" Lambda).
+Ambas as versoes seguem "Clean Architecture" (Martin, 2017) com **organizacao por dominio**: o codigo e estruturado em modulos correspondentes aos "Bounded Contexts" [BC] do DDD, e nao em camadas horizontais. Cada modulo (auth, catalogo, estoque) contem suas proprias quatro camadas internas: dominio (agregados, entidades, "value objects", interfaces de repositorio), aplicacao (casos de uso), infraestrutura (implementacoes de repositorio) e apresentacao (controladores HTTP ou "handlers" Lambda). Um modulo compartilhado ("shared") fornece as abstracoes base (entidade, excecao, repositorio) e configuracao de infraestrutura.
 
-A versao monolitica utiliza o "framework" FastAPI com rotas HTTP que delegam aos casos de uso, repositorios implementados com SQLAlchemy sobre PostgreSQL, e execucao em servidor ASGI ["Asynchronous Server Gateway Interface"] convencional.
+Essa organizacao oferece tres vantagens mensuráveis: (1) cada "Bounded Context" e autocontido, podendo ser extraido como microsservico copiando-se a pasta; (2) imports entre modulos sao explicitos — a fronteira logica do DDD se materializa como fronteira fisica no sistema de arquivos; (3) metricas de qualidade podem ser coletadas por modulo individualmente (por exemplo, complexidade ciclomatica apenas do modulo de estoque).
+
+A versao monolitica utiliza o "framework" FastAPI com rotas HTTP que delegam aos casos de uso, repositorios implementados com SQLAlchemy sobre PostgreSQL, e execucao em servidor ASGI ["Asynchronous Server Gateway Interface"] convencional. O container Docker e limitado a 512MB de memoria, equivalente a configuracao das funcoes Lambda.
 
 A versao em microsservicos utiliza "handlers" AWS Lambda puros (sem adaptador Mangum), onde cada funcao Lambda recebe o evento do API Gateway e delega ao mesmo caso de uso. Os repositorios sao implementados com a biblioteca boto3 sobre DynamoDB. Essa decisao arquitetural — Lambda puro em vez de adaptador — foi intencional para demonstrar que a camada de aplicacao (casos de uso) e genuinamente agnostica ao mecanismo de transporte. O mesmo caso de uso funciona identicamente quando chamado por uma rota FastAPI ou por um "handler" Lambda.
 

@@ -1,6 +1,6 @@
 from uuid import UUID
 
-from src.domain.entities.base import BaseEntity
+from src.shared.domain.entities.base import BaseEntity
 
 
 def test_base_entity_generates_uuid():

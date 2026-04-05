@@ -2,34 +2,47 @@
 
 ## Arquitetura
 
-Este projeto segue **DDD** (Domain-Driven Design) e **Clean Architecture**.
+DDD (Domain-Driven Design) + Clean Architecture, **organizado por domínio**.
 
-### Camadas (direção da dependência: presentation → application → domain ← infrastructure)
+### Estrutura
 
-- `src/domain/` — Agregados, Entidades, Value Objects, interfaces de Repository, exceções de domínio. **ZERO imports de framework**.
-- `src/application/` — Casos de uso. Dependem apenas de interfaces do domínio. Recebem repositórios via construtor.
-- `src/infrastructure/` — Implementações de repositório (SQLAlchemy/PostgreSQL), configuração, banco de dados.
-- `src/presentation/` — Rotas FastAPI. Apenas delegam aos casos de uso.
+```
+src/
+├── shared/          # BaseEntity, DomainException, BaseRepository, Settings, DB session
+├── auth/            # BC: Autenticação (Usuario, JWT)
+├── catalogo/        # BC: Catálogo de Produtos (Produto, Categoria, SKU, Dinheiro)
+├── estoque/         # BC: Controle de Estoque (ItemEstoque, Movimentacao, Quantidade)
+└── presentation/    # FastAPI app + health check
+```
 
-### Regras
+Cada módulo (auth, catalogo, estoque) tem: `domain/`, `application/`, `infrastructure/`, `presentation/`.
 
-- Domínio nunca importa de infrastructure ou presentation
-- Invariantes de negócio ficam dentro dos agregados (ex: saldo >= 0 no ItemEstoque)
-- Exceções são de domínio (DomainException com code), não HTTPException
+### Regras de Dependência
+
+- `domain/` é Python puro — ZERO imports de framework
+- `application/` depende apenas de interfaces do `domain/`
+- `infrastructure/` implementa interfaces do `domain/` (SQLAlchemy)
+- `presentation/` apenas delega aos use cases
+- **Import entre módulos PROIBIDO** — apenas `shared/` é compartilhado
+- `catalogo/` NÃO importa de `estoque/` e vice-versa
+- Comunicação entre BCs: in-process (chamada direta no use case, sem evento)
+
+### Invariantes
+
+- Regras de negócio DENTRO dos agregados (ex: `saldo >= 0` no ItemEstoque)
+- Exceções de domínio (DomainException com code), não HTTPException
 - Presentation mapeia exceções de domínio para status HTTP
-- Repository Pattern: interface abstrata no domínio, implementação concreta na infraestrutura
-- Comunicação entre Bounded Contexts (Catálogo e Estoque): apenas eventos assíncronos
 
 ## Stack
 
 - Python 3.13 / FastAPI / SQLAlchemy 2 / PostgreSQL 16
 - Testes: pytest + httpx (TestClient)
-- Métricas: radon (CC), radon (MI), xenon
+- Métricas: radon (CC/MI), xenon
 - Docker: `docker compose up -d` para PostgreSQL
 
 ## Especificação
 
-O domínio, contratos de API e eventos estão em `docs/spec.md`. Siga rigorosamente.
+`docs/spec.md` — domínio, contratos de API, eventos, testes por feature. Siga rigorosamente.
 
 ## Comandos
 
@@ -40,6 +53,7 @@ uvicorn src.presentation.app:app  # Servidor local
 pytest -v                         # Testes
 radon cc src/ -s -a               # Complexidade ciclomática
 radon mi src/ -s                  # Índice de manutenibilidade
+radon cc src/catalogo/ -s -a      # CC por módulo
 ```
 
 ## Medição de Tempo (para o TCC)
