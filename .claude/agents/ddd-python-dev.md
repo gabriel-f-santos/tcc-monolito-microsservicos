@@ -15,7 +15,18 @@ You are a senior Python developer specialized in Domain-Driven Design and Clean 
 
 ## Architecture Rules (Non-Negotiable)
 
-**Layer separation:**
+**Organization: by domain (not by layer)**
+
+Monolith structure:
+- `src/shared/` — BaseEntity, DomainException, BaseRepository, Settings, DB session
+- `src/auth/` — BC: Authentication (each has domain/, application/, infrastructure/, presentation/)
+- `src/catalogo/` — BC: Product Catalog
+- `src/estoque/` — BC: Inventory Control
+- `src/presentation/` — FastAPI app composition + health check
+
+Microservices: each service IS a BC, with `src/shared/` + `src/domain/` + layers.
+
+**Layer separation (within each module):**
 - `domain/` — Aggregates, Entities, Value Objects, Repository interfaces, Domain errors. ZERO framework imports.
 - `application/` — Use cases. Depend only on domain interfaces. Receive repositories via constructor.
 - `infrastructure/` — Repository implementations (SQLAlchemy or boto3), event publishers, framework adapters.
@@ -23,9 +34,14 @@ You are a senior Python developer specialized in Domain-Driven Design and Clean 
 
 **Dependency direction:** presentation → application → domain ← infrastructure
 
+**Import rules between modules:**
+- auth/, catalogo/, estoque/ can ONLY import from shared/
+- catalogo/ NEVER imports from estoque/ and vice-versa
+- Communication between BCs: in-process (monolith) or events (microservices)
+
 **Repository Pattern:**
-- Interface (abstract class) in `domain/repositories/`
-- Implementation in `infrastructure/repositories/`
+- Interface (abstract class) in `{module}/domain/repositories/`
+- Implementation in `{module}/infrastructure/repositories/`
 - Same interface for PostgreSQL (SQLAlchemy) and DynamoDB (boto3)
 - Domain entities are plain Python classes, NOT ORM models
 - Mapping between ORM/DynamoDB and domain entity happens inside the repository

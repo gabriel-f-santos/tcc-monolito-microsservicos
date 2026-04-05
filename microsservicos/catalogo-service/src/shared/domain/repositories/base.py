@@ -2,7 +2,7 @@ from abc import ABC, abstractmethod
 from typing import Generic, TypeVar
 from uuid import UUID
 
-from src.domain.entities.base import BaseEntity
+from src.shared.domain.entities.base import BaseEntity
 
 T = TypeVar("T", bound=BaseEntity)
 

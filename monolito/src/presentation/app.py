@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 
-from src.infrastructure.observability import setup_telemetry
+from src.shared.infrastructure.observability import setup_telemetry
 from src.presentation.routes.health import router as health_router
 
 app = FastAPI(
