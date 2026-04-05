@@ -1,0 +1,205 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: Microsservicos - Produtos e Estoque (Serverless)
+
+Globals:
+  Function:
+    Runtime: python3.13
+    MemorySize: 512
+    Timeout: 30
+    Tracing: Active
+    Layers:
+      # AWS Distro for OpenTelemetry (ADOT) Python Lambda Layer
+      # Envia traces para X-Ray e pode exportar para Grafana Cloud via OTLP
+      # ARN varia por regiao — este e para us-east-1
+      - !Sub "arn:aws:lambda:${AWS::Region}:901920570463:layer:aws-otel-python-amd64-ver-1-25-0:1"
+    Environment:
+      Variables:
+        ENVIRONMENT: !Ref Environment
+        AWS_LAMBDA_EXEC_WRAPPER: /opt/otel-instrument
+        OTEL_SERVICE_NAME: !Sub "${Environment}-microsservicos"
+
+Parameters:
+  Environment:
+    Type: String
+    Default: dev
+  JwtSecret:
+    Type: String
+    NoEcho: true
+    Default: change-me-in-production
+
+Resources:
+  # ============================================================
+  # CATALOGO SERVICE
+  # ============================================================
+
+  CatalogoHealthFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: catalogo-service/src/presentation/handlers/health.handler
+      CodeUri: .
+      Description: Health check do Catalogo
+      Environment:
+        Variables:
+          PRODUTOS_TABLE: !Ref ProdutosTable
+          CATEGORIAS_TABLE: !Ref CategoriasTable
+          USUARIOS_TABLE: !Ref UsuariosTable
+          EVENTOS_TOPIC_ARN: !Ref EventosDominioTopic
+          JWT_SECRET: !Ref JwtSecret
+      Events:
+        HealthApi:
+          Type: Api
+          Properties:
+            Path: /catalogo/health
+            Method: get
+
+  # ============================================================
+  # ESTOQUE SERVICE
+  # ============================================================
+
+  EstoqueHealthFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: estoque-service/src/presentation/handlers/health.handler
+      CodeUri: .
+      Description: Health check do Estoque
+      Environment:
+        Variables:
+          ITENS_ESTOQUE_TABLE: !Ref ItensEstoqueTable
+          MOVIMENTACOES_TABLE: !Ref MovimentacoesTable
+          JWT_SECRET: !Ref JwtSecret
+      Events:
+        HealthApi:
+          Type: Api
+          Properties:
+            Path: /estoque/health
+            Method: get
+
+  # Consumer Lambda — consome eventos do Catalogo via SQS
+  EstoqueEventConsumer:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: estoque-service/src/presentation/handlers/event_consumer.handler
+      CodeUri: .
+      Description: Consome eventos de dominio do Catalogo
+      Environment:
+        Variables:
+          ITENS_ESTOQUE_TABLE: !Ref ItensEstoqueTable
+      Events:
+        SQSEvent:
+          Type: SQS
+          Properties:
+            Queue: !GetAtt EstoqueEventosQueue.Arn
+            BatchSize: 1
+
+  # ============================================================
+  # DYNAMODB TABLES
+  # ============================================================
+
+  UsuariosTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: !Sub "${Environment}-usuarios"
+      BillingMode: PAY_PER_REQUEST
+      AttributeDefinitions:
+        - AttributeName: id
+          AttributeType: S
+      KeySchema:
+        - AttributeName: id
+          KeyType: HASH
+
+  ProdutosTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: !Sub "${Environment}-produtos"
+      BillingMode: PAY_PER_REQUEST
+      AttributeDefinitions:
+        - AttributeName: id
+          AttributeType: S
+      KeySchema:
+        - AttributeName: id
+          KeyType: HASH
+
+  CategoriasTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: !Sub "${Environment}-categorias"
+      BillingMode: PAY_PER_REQUEST
+      AttributeDefinitions:
+        - AttributeName: id
+          AttributeType: S
+      KeySchema:
+        - AttributeName: id
+          KeyType: HASH
+
+  ItensEstoqueTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: !Sub "${Environment}-itens-estoque"
+      BillingMode: PAY_PER_REQUEST
+      AttributeDefinitions:
+        - AttributeName: id
+          AttributeType: S
+      KeySchema:
+        - AttributeName: id
+          KeyType: HASH
+
+  MovimentacoesTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: !Sub "${Environment}-movimentacoes"
+      BillingMode: PAY_PER_REQUEST
+      AttributeDefinitions:
+        - AttributeName: id
+          AttributeType: S
+      KeySchema:
+        - AttributeName: id
+          KeyType: HASH
+
+  # ============================================================
+  # MESSAGING (SNS + SQS)
+  # ============================================================
+
+  EventosDominioTopic:
+    Type: AWS::SNS::Topic
+    Properties:
+      TopicName: !Sub "${Environment}-eventos-dominio"
+
+  EstoqueEventosQueue:
+    Type: AWS::SQS::Queue
+    Properties:
+      QueueName: !Sub "${Environment}-estoque-eventos"
+      VisibilityTimeout: 60
+
+  # SNS -> SQS subscription
+  EstoqueEventosSubscription:
+    Type: AWS::SNS::Subscription
+    Properties:
+      TopicArn: !Ref EventosDominioTopic
+      Protocol: sqs
+      Endpoint: !GetAtt EstoqueEventosQueue.Arn
+
+  # Allow SNS to send messages to SQS
+  EstoqueQueuePolicy:
+    Type: AWS::SQS::QueuePolicy
+    Properties:
+      Queues:
+        - !Ref EstoqueEventosQueue
+      PolicyDocument:
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: sns.amazonaws.com
+            Action: sqs:SendMessage
+            Resource: !GetAtt EstoqueEventosQueue.Arn
+            Condition:
+              ArnEquals:
+                aws:SourceArn: !Ref EventosDominioTopic
+
+Outputs:
+  ApiUrl:
+    Description: URL do API Gateway
+    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod"
+  EventosTopicArn:
+    Description: ARN do topico SNS de eventos de dominio
+    Value: !Ref EventosDominioTopic

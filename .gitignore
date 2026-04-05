@@ -1,0 +1,50 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+dist/
+build/
+.eggs/
+*.egg
+
+# Virtual environments
+.venv/
+venv/
+
+# Environment files
+.env
+*.tfvars
+!*.tfvars.example
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Terraform
+.terraform/
+*.tfstate
+*.tfstate.backup
+.terraform.lock.hcl
+
+# AWS SAM
+.aws-sam/
+samconfig.toml
+
+# Metrics (generated, not committed)
+**/metrics/*.json
+**/metrics/*.csv
+
+# OS
+.DS_Store
+Thumbs.db
+
+# pyenv
+.python-version

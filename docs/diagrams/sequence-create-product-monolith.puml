@@ -1,0 +1,34 @@
+@startuml sequence-create-product-monolith
+title Criacao de Produto — Monolito
+
+actor Operador
+participant "FastAPI\nRoute" as route
+participant "CriarProduto\nUseCase" as uc
+participant "Produto\nAggregate" as domain
+participant "ProdutoRepository\n(SQLAlchemy)" as repo
+database "PostgreSQL" as db
+
+Operador -> route: POST /api/v1/produtos
+activate route
+
+route -> uc: execute(dados)
+activate uc
+
+uc -> domain: Produto.criar(sku, nome, preco, categoria_id)
+activate domain
+domain --> uc: produto (validado)
+deactivate domain
+
+uc -> repo: salvar(produto)
+activate repo
+repo -> db: INSERT INTO produtos
+db --> repo: OK
+deactivate repo
+
+uc --> route: ProdutoResponse
+deactivate uc
+
+route --> Operador: 201 Created
+deactivate route
+
+@enduml
