@@ -31,7 +31,6 @@ docker run -d \
   --memory-swap=512m \
   -p 8080:8080 \
   -e DATABASE_URL="${database_url}" \
-  -e ENVIRONMENT="${environment}" \
   -e OTEL_ENABLED="${otel_enabled}" \
   -e OTEL_EXPORTER_OTLP_ENDPOINT="${otel_endpoint}" \
   -e OTEL_EXPORTER_OTLP_HEADERS="${otel_headers}" \

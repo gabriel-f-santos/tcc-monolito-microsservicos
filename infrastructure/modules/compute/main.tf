@@ -1,5 +1,4 @@
 variable "project_name" { type = string }
-variable "environment" { type = string }
 variable "aws_region" { type = string }
 variable "vpc_id" { type = string }
 variable "public_subnet_ids" { type = list(string) }
@@ -117,7 +116,6 @@ resource "aws_launch_template" "main" {
     ecr_repo_url = var.ecr_repo_url
     aws_region   = var.aws_region
     database_url = var.database_url
-    environment  = var.environment
     otel_enabled = var.otel_enabled
     otel_endpoint = var.otel_endpoint
     otel_headers  = var.otel_headers
