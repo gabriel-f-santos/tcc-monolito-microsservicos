@@ -1,39 +1,110 @@
 # Features — Prompts para Implementacao com IA
 
-## Como usar
+## Estrategia de Medicao
 
-Cada arquivo abaixo e um **prompt autocontido**. Para medir tempo de implementacao:
+### Fase A: Construir monolito completo (Features 0-4)
 
-1. Abra uma sessao limpa da IA (Claude Code, Codex, etc)
+Implementar todas as features no monolito usando Claude Code. Monolito fica 100% funcional.
+Nesta fase medimos: tempo, tokens, iteracoes, diff, radon (por feature).
+
+### Fase B: Migrar para microsservicos (Features 0-5)
+
+Com o monolito pronto, migrar para microsservicos: trocar presentation (Lambda handlers),
+infrastructure (DynamoDB repos), adicionar eventos (Feature 5).
+Medimos: tempo total de migracao, o que muda vs o que permanece igual.
+
+### Fase C: Adicionar feature nova em ambos (Feature 7)
+
+Feature 7 (Alerta de Estoque Baixo) NAO existe em nenhuma arquitetura.
+Implementar em ambos e comparar:
+- Tempo para adicionar no monolito (Claude Code)
+- Tempo para adicionar nos microsservicos (Claude Code)
+- Tempo para adicionar no monolito (Codex)
+- Tempo para adicionar nos microsservicos (Codex)
+
+**Esta e a medicao principal do TCC** — mostra o impacto da arquitetura na manutenibilidade.
+
+## Como medir
+
+Para cada implementacao:
+
+1. Abra uma sessao limpa da IA (contexto zerado)
 2. Cole o conteudo do arquivo da feature como prompt
-3. Inicie o cronometro
+3. Inicie cronometro
 4. A IA implementa codigo + testes
 5. Pare o cronometro quando todos os testes passam
-6. Registre: tempo, iteracoes, `git diff --stat`, `radon cc/mi` antes e depois
+6. Registre na planilha abaixo
+
+## Metricas a coletar
+
+| Metrica | Como |
+|---------|------|
+| Tempo | Cronometro manual (inicio do prompt → testes passam) |
+| Tokens | Exibido pelo Claude Code no final da sessao |
+| Iteracoes | Quantas vezes re-promptou ate testes passarem |
+| Diff | `git diff --stat` |
+| CC antes/depois | `radon cc src/{modulo}/ -s -a` |
+| MI antes/depois | `radon mi src/{modulo}/ -s` |
+| Cobertura | `pytest --cov=src.{modulo}` |
 
 ## Ordem de execucao
 
-| # | Feature | Depende de | Monolito | Microsservicos |
-|---|---------|-----------|----------|----------------|
-| 0 | Auth JWT | — | src/auth/ | auth-service/ |
-| 1 | CRUD Categoria | Feature 0 | src/catalogo/ | catalogo-service/ |
-| 2 | CRUD Produto | Feature 1 | src/catalogo/ | catalogo-service/ |
-| 3 | Entrada Estoque | Feature 2 | src/estoque/ | estoque-service/ |
-| 4 | Saida Estoque | Feature 3 | src/estoque/ | estoque-service/ |
-| 5 | Eventos de Dominio | Features 1-4 | — | catalogo + estoque |
-| 6 | Filtro por Categoria | Features 1-4 | src/estoque/ | estoque-service/ |
+### Fase A — Monolito (Claude Code)
 
-## Cada feature e implementada 4 vezes
+| # | Feature | Prompt | Testes |
+|---|---------|--------|--------|
+| 0 | Auth JWT | `feature-0-auth.md` | 6 |
+| 1 | CRUD Categoria | `feature-1-categoria.md` | 5 |
+| 2 | CRUD Produto | `feature-2-produto.md` | 9 |
+| 3 | Entrada Estoque | `feature-3-entrada.md` | 7 |
+| 4 | Saida Estoque | `feature-4-saida.md` | 4 |
 
-| Implementacao | Arquitetura | Ferramenta IA |
-|--------------|-------------|---------------|
-| 1 | Monolito | Claude Code |
-| 2 | Monolito | Codex |
-| 3 | Microsservicos | Claude Code |
-| 4 | Microsservicos | Codex |
+### Fase B — Migracao para Microsservicos (Claude Code)
+
+| # | Feature | Prompt | Testes |
+|---|---------|--------|--------|
+| 0-4 | Migrar Features 0-4 | Migrar camadas presentation + infrastructure | 31 |
+| 5 | Eventos de Dominio | `feature-5-eventos.md` | 3 |
+
+### Fase C — Feature Nova (medicao principal)
+
+| # | Arq | IA | Prompt | Testes |
+|---|-----|----|--------|--------|
+| 7 | Monolito | Claude Code | `feature-7-alerta-estoque.md` | 3 |
+| 7 | Monolito | Codex | `feature-7-alerta-estoque.md` | 3 |
+| 7 | Microsservicos | Claude Code | `feature-7-alerta-estoque.md` | 3 |
+| 7 | Microsservicos | Codex | `feature-7-alerta-estoque.md` | 3 |
+
+### Apos todas as features — Feature 6 (Filtro)
+
+| # | Feature | Prompt | Testes |
+|---|---------|--------|--------|
+| 6 | Filtro Categoria | `feature-6-filtro.md` | 2 |
 
 ## Planilha de coleta
 
-| Feature | Arq | IA | Tempo (min) | Iteracoes | Diff (linhas) | CC antes | CC depois | MI antes | MI depois | Cobertura |
-|---------|-----|----|-------------|-----------|---------------|----------|-----------|----------|-----------|-----------|
-| | | | | | | | | | | |
+### Fase A — Construcao do Monolito
+
+| Feature | IA | Tempo (min) | Tokens | Iteracoes | Diff | CC antes | CC depois | MI antes | MI depois | Cov % |
+|---------|-----|-------------|--------|-----------|------|----------|-----------|----------|-----------|-------|
+| 0 Auth | Claude | | | | | | | | | |
+| 1 Categoria | Claude | | | | | | | | | |
+| 2 Produto | Claude | | | | | | | | | |
+| 3 Entrada | Claude | | | | | | | | | |
+| 4 Saida | Claude | | | | | | | | | |
+
+### Fase B — Migracao
+
+| Etapa | IA | Tempo (min) | Tokens | Iteracoes | Diff |
+|-------|----|-------------|--------|-----------|------|
+| Migrar 0-4 | Claude | | | | |
+| Feature 5 Eventos | Claude | | | | |
+
+### Fase C — Feature Nova (Alerta Estoque)
+
+| Arq | IA | Tempo (min) | Tokens | Iteracoes | Diff | CC antes | CC depois | MI antes | MI depois |
+|-----|----|-------------|--------|-----------|------|----------|-----------|----------|-----------|
+| Monolito | Claude | | | | | | | | |
+| Monolito | Codex | | | | | | | | |
+| Microsservicos | Claude | | | | | | | | |
+| Microsservicos | Codex | | | | | | | | |
