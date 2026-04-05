@@ -5,10 +5,12 @@ on:
     branches: [main]
     paths:
       - 'microsservicos/**'
+      - '.github/workflows/microsservicos.yml'
   pull_request:
     branches: [main]
     paths:
       - 'microsservicos/**'
+      - '.github/workflows/microsservicos.yml'
 
 env:
   WORKING_DIR: microsservicos

@@ -5,10 +5,12 @@ on:
     branches: [main]
     paths:
       - 'monolito/**'
+      - '.github/workflows/monolito.yml'
   pull_request:
     branches: [main]
     paths:
       - 'monolito/**'
+      - '.github/workflows/monolito.yml'
 
 env:
   WORKING_DIR: monolito
