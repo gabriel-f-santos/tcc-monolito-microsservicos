@@ -382,8 +382,11 @@ Base path: `/api/v1`
 
 ## 8. Features (Spec-Driven — cada feature é um prompt para a IA)
 
-Cada feature abaixo é autocontida: escopo, endpoints, regras e critérios de aceite (testes).
-A IA recebe apenas a feature e a arquitetura base. O cronômetro começa no prompt.
+**IMPORTANTE:** Os prompts completos de cada feature estao em `docs/features/feature-X-nome.md`.
+Cada arquivo e autocontido com: contexto, endpoints, regras, testes e criterio de pronto.
+Veja `docs/features/README.md` para instrucoes de medicao.
+
+Abaixo esta o resumo de cada feature para referencia rapida.
 
 ---
 
@@ -884,13 +887,15 @@ test_projecao_categoria_atualizada_via_evento
 
 | # | Feature | Contexto | Testes mínimos | Pré-requisito |
 |---|---------|----------|---------------|---------------|
-| 0 | Autenticação (JWT) | Transversal | 11 | — |
-| 1 | CRUD Categoria | Catálogo | 6 | Feature 0 |
-| 2 | CRUD Produto | Catálogo | 15 | Feature 1 |
-| 3 | Entrada de Estoque | Estoque | 10 | Feature 2 |
-| 4 | Saída de Estoque | Estoque | 8 | Feature 3 |
-| 5 | Eventos de Domínio | Transversal | 6 | Features 1-4 |
-| 6 | Filtro por Categoria | Transversal | 4 | Features 1-4 |
-| **Total** | | | **60 testes** | |
+| # | Feature | Prompt | Testes | Depende de |
+|---|---------|--------|--------|-----------|
+| 0 | Auth JWT | `docs/features/feature-0-auth.md` | 6 | — |
+| 1 | CRUD Categoria | `docs/features/feature-1-categoria.md` | 5 | Feature 0 |
+| 2 | CRUD Produto | `docs/features/feature-2-produto.md` | 9 | Feature 1 |
+| 3 | Entrada Estoque | `docs/features/feature-3-entrada.md` | 7 | Feature 2 |
+| 4 | Saida Estoque | `docs/features/feature-4-saida.md` | 4 | Feature 3 |
+| 5 | Eventos | `docs/features/feature-5-eventos.md` | 3 | Features 1-4 |
+| 6 | Filtro Categoria | `docs/features/feature-6-filtro.md` | 2 | Features 1-4 |
+| **Total** | | | **36 testes** | |
 
 **Meta de cobertura por feature:** >= 70% das linhas do código novo (medido com `pytest --cov`)
