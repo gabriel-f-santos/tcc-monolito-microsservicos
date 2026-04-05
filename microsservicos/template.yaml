@@ -38,7 +38,7 @@ Resources:
     Type: AWS::Serverless::Function
     Properties:
       Handler: src/presentation/handlers/authorizer.handler
-      CodeUri: catalogo-service
+      CodeUri: auth-service
       Description: Lambda Authorizer - valida JWT e retorna IAM policy
       MemorySize: 256
       Timeout: 5
@@ -54,7 +54,7 @@ Resources:
     Type: AWS::Serverless::Function
     Properties:
       Handler: src/presentation/handlers/auth.registrar_handler
-      CodeUri: catalogo-service
+      CodeUri: auth-service
       Description: Registrar novo usuario
       Environment:
         Variables:
@@ -74,7 +74,7 @@ Resources:
     Type: AWS::Serverless::Function
     Properties:
       Handler: src/presentation/handlers/auth.login_handler
-      CodeUri: catalogo-service
+      CodeUri: auth-service
       Description: Login - gera JWT
       Environment:
         Variables:
@@ -89,6 +89,22 @@ Resources:
             Method: post
             Auth:
               Authorizer: NONE  # Publico
+
+  AuthHealthFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: src/presentation/handlers/health.handler
+      CodeUri: auth-service
+      Description: Health check do Auth
+      Events:
+        Api:
+          Type: Api
+          Properties:
+            RestApiId: !Ref TccApi
+            Path: /auth/health
+            Method: get
+            Auth:
+              Authorizer: NONE
 
   # ============================================================
   # CATALOGO SERVICE (protegido por Lambda Authorizer)

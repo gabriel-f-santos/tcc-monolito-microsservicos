@@ -20,32 +20,44 @@
 
 ## 2. Bounded Contexts
 
-### 2.1 Catálogo de Produtos
+### 2.1 Autenticação
+
+**Responsabilidade:** Gerenciar registro de usuários, autenticação (login) e validação de tokens JWT.
+
+**O que NÃO faz:** Não conhece produtos, categorias ou estoque. Apenas garante identidade.
+
+**Implantação:**
+- Monolito: módulo `src/auth/` com middleware FastAPI
+- Microsserviços: `auth-service/` com Lambda Authorizer (cache 300s no API Gateway)
+
+### 2.2 Catálogo de Produtos
 
 **Responsabilidade:** Gerenciar o ciclo de vida dos produtos — criação, atualização, categorização e consulta.
 
 **O que NÃO faz:** Não sabe nada sobre quantidades, movimentações ou saldos. Não conhece o conceito de estoque.
 
-### 2.2 Controle de Estoque
+### 2.3 Controle de Estoque
 
 **Responsabilidade:** Rastrear quantidades, registrar movimentações (entradas e saídas) e manter o saldo atualizado.
 
 **O que NÃO faz:** Não cria nem edita produtos. Mantém apenas uma **projeção local** com os dados mínimos que precisa (SKU, nome) — recebidos via evento.
 
-### 2.3 Mapa de Contextos
+### 2.4 Mapa de Contextos
 
 ```
-┌─────────────────────┐         Evento Assíncrono          ┌─────────────────────┐
-│                     │  ProdutoCriado / ProdutoAtualizado  │                     │
-│  Catálogo de        │ ──────────────────────────────────► │  Controle de        │
-│  Produtos           │         (SNS → SQS)                │  Estoque            │
-│                     │                                     │                     │
-│  - Produto (CRUD)   │                                     │  - Item de Estoque  │
-│  - Categoria        │                                     │  - Movimentação     │
-│                     │                                     │  - Saldo            │
-└─────────────────────┘                                     └─────────────────────┘
-       PostgreSQL                                                DynamoDB
-      (monolito)                                            (microsserviços)
+┌───────────────┐
+│ Autenticação  │     JWT stateless (cada serviço valida independente)
+│               │─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─
+│ - Usuario     │                                                         │
+│ - JWT         │
+└───────────────┘
+                    ┌─────────────────────┐     Evento Assíncrono      ┌─────────────────────┐
+                    │  Catálogo de        │  ProdutoCriado / Atualizado │  Controle de        │
+                    │  Produtos           │ ──────────────────────────► │  Estoque            │
+                    │                     │       (SNS → SQS)          │                     │
+                    │  - Produto (CRUD)   │                            │  - Item de Estoque  │
+                    │  - Categoria        │                            │  - Movimentação     │
+                    └─────────────────────┘                            └─────────────────────┘
 ```
 
 **Relação:** Upstream-Downstream (Catálogo publica, Estoque consome).

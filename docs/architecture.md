@@ -8,9 +8,15 @@ O sistema adota **Domain-Driven Design** (Evans, 2003) para modelagem e **Clean 
 
 ## Bounded Contexts
 
-O sistema possui dois Bounded Contexts claramente delimitados:
+O sistema possui tres Bounded Contexts:
 
 ```
+┌──────────────────┐
+│   AUTENTICACAO   │   JWT stateless — cada servico valida independente
+│                  │   Monolito: middleware FastAPI
+│  Usuario (Ent.)  │   Microsservicos: Lambda Authorizer (cache 300s)
+└──────────────────┘
+
 ┌──────────────────────────┐           ┌──────────────────────────┐
 │   CATALOGO DE PRODUTOS   │           │   CONTROLE DE ESTOQUE    │
 │                          │  Evento   │                          │
@@ -19,14 +25,16 @@ O sistema possui dois Bounded Contexts claramente delimitados:
 │    ├── Dinheiro (VO)     │           │    └── Projecao local    │
 │    └── Categoria (Ent.)  │           │  Movimentacao (Entidade) │
 │                          │           │    ├── Quantidade (VO)   │
-│  Usuario (Entidade)      │           │    └── TipoMovimentacao  │
-│    └── Auth JWT          │           │                          │
+│                          │           │    └── TipoMovimentacao  │
 └──────────────────────────┘           └──────────────────────────┘
         UPSTREAM                              DOWNSTREAM
      (publica eventos)                    (consome eventos)
 ```
 
-**Regra fundamental:** O Estoque nunca chama o Catalogo. Toda comunicacao e via eventos de dominio (assincrono nos microsservicos, sincrono no monolito).
+**Regras fundamentais:**
+- O Estoque nunca chama o Catalogo — comunicacao via eventos (assincrono nos microsservicos, sincrono no monolito)
+- Auth e independente — JWT e stateless, nenhum servico chama o auth-service para validar token
+- Cada BC mapeia 1:1 para um microsservico (auth-service, catalogo-service, estoque-service)
 
 ---
 
@@ -81,14 +89,21 @@ monolito/src/
 
 ```
 microsservicos/
-├── catalogo-service/src/
+├── auth-service/src/              # BC: Autenticacao
 │   ├── shared/domain/             # BaseEntity, DomainException, BaseRepository
-│   ├── domain/                    # Produto, Categoria, SKU, Dinheiro, Usuario
+│   ├── domain/                    # Usuario
+│   ├── application/               # Login, Registrar use cases
+│   ├── infrastructure/            # DynamoDB repos (boto3)
+│   └── presentation/handlers/     # Lambda handlers + Lambda Authorizer
+│
+├── catalogo-service/src/          # BC: Catalogo de Produtos
+│   ├── shared/domain/             # BaseEntity, DomainException, BaseRepository
+│   ├── domain/                    # Produto, Categoria, SKU, Dinheiro
 │   ├── application/               # Use cases (identicos ao monolito)
 │   ├── infrastructure/            # DynamoDB repos (boto3)
 │   └── presentation/handlers/     # Lambda handlers puros
 │
-└── estoque-service/src/
+└── estoque-service/src/           # BC: Controle de Estoque
     ├── shared/domain/             # BaseEntity, DomainException, BaseRepository
     ├── domain/                    # ItemEstoque, Movimentacao, Quantidade
     ├── application/               # Use cases (identicos ao monolito)
@@ -315,7 +330,7 @@ GitHub Actions mede automaticamente o tempo de cada job. Dados do ultimo deploy 
 | Recurso | Tipo | Config |
 |---------|------|--------|
 | API Gateway | REST | /catalogo/* e /estoque/* |
-| Lambda | 3 funcoes (512MB, Python 3.13) | X-Ray ativo |
+| Lambda | ~8 funcoes (512MB, Python 3.13) + 1 authorizer (256MB) | X-Ray ativo |
 | DynamoDB | 5 tabelas (PAY_PER_REQUEST) | usuarios, produtos, categorias, itens-estoque, movimentacoes |
 | SNS | 1 topico (prod-eventos-dominio) | Fan-out |
 | SQS | 1 fila (prod-estoque-eventos) | Visibility 60s |
