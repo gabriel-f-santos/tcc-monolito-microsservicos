@@ -12,12 +12,6 @@ def handler(event, context):
 
     Valida JWT e retorna IAM policy.
     API Gateway cacheia o resultado por 300s (configurado no template.yaml).
-
-    Fluxo:
-    1. API Gateway extrai token do header Authorization
-    2. Invoca este authorizer (ou usa cache se mesmo token)
-    3. Se policy Allow → encaminha para handler Lambda
-    4. Se policy Deny → retorna 401 sem invocar handler
     """
     token = event.get("authorizationToken", "")
     method_arn = event.get("methodArn", "")
@@ -25,11 +19,10 @@ def handler(event, context):
     if not token.startswith("Bearer "):
         raise Exception("Unauthorized")
 
-    jwt_token = token[7:]  # Remove "Bearer "
+    jwt_token = token[7:]
 
     try:
         # TODO: Implementar validacao JWT real na Feature 0
-        # user_id = decode_jwt(jwt_token, JWT_SECRET)
         raise Exception("Auth not implemented yet")
     except Exception:
         raise Exception("Unauthorized")
