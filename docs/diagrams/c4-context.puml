@@ -1,0 +1,18 @@
+@startuml c4-context
+!include <C4/C4_Context>
+
+title Diagrama de Contexto — Sistema de Gerenciamento de Produtos e Estoque
+
+Person(user, "Operador", "Gerencia produtos e movimentacoes de estoque")
+
+System(catalogo, "Catalogo de Produtos", "Gerencia ciclo de vida dos produtos: criacao, atualizacao, categorizacao e consulta")
+System(estoque, "Controle de Estoque", "Rastreia quantidades, registra movimentacoes (entradas e saidas) e mantem saldo atualizado")
+
+System_Ext(mensageria, "Mensageria (SNS/SQS)", "Transporta eventos de dominio entre contextos")
+
+Rel(user, catalogo, "CRUD de produtos e categorias", "HTTPS")
+Rel(user, estoque, "Registra entradas e saidas", "HTTPS")
+Rel(catalogo, mensageria, "Publica eventos", "ProdutoCriado, ProdutoAtualizado, ProdutoDesativado")
+Rel(mensageria, estoque, "Consome eventos", "Cria/atualiza projecao local")
+
+@enduml

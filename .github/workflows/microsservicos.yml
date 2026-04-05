@@ -1,0 +1,104 @@
+name: Microsservicos CI/CD
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'microsservicos/**'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'microsservicos/**'
+
+env:
+  WORKING_DIR: microsservicos
+  SAM_STACK_NAME: tcc-microsservicos
+
+jobs:
+  test:
+    name: Test & Quality
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ${{ env.WORKING_DIR }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+
+      - name: Install test dependencies
+        run: pip install pytest radon xenon
+
+      - name: Run tests
+        run: pytest tests/ -v --tb=short
+
+      - name: Cyclomatic complexity
+        run: |
+          mkdir -p metrics
+          radon cc catalogo-service/src/ estoque-service/src/ -s -a -j > metrics/cc-report.json
+          radon cc catalogo-service/src/ estoque-service/src/ -s -a
+
+      - name: Maintainability index
+        run: |
+          radon mi catalogo-service/src/ estoque-service/src/ -s -j > metrics/mi-report.json
+          radon mi catalogo-service/src/ estoque-service/src/ -s
+
+      - name: Quality gate (xenon)
+        run: |
+          xenon catalogo-service/src/ -b B -m A -a A
+          xenon estoque-service/src/ -b B -m A -a A
+
+      - name: Upload metrics
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: microsservicos-metrics
+          path: microsservicos/metrics/
+
+  deploy:
+    name: SAM Build & Deploy
+    needs: test
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ${{ env.WORKING_DIR }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+
+      - name: Setup SAM CLI
+        uses: aws-actions/setup-sam@v2
+        with:
+          use-installer: true
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      - name: SAM build
+        run: sam build
+
+      - name: SAM deploy
+        env:
+          S3_BUCKET: ${{ secrets.SAM_S3_BUCKET }}
+        run: |
+          sam deploy \
+            --stack-name "$SAM_STACK_NAME" \
+            --no-confirm-changeset \
+            --no-fail-on-empty-changeset \
+            --s3-bucket "$S3_BUCKET" \
+            --capabilities CAPABILITY_IAM \
+            --parameter-overrides Environment=prod

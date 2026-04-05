@@ -1,0 +1,23 @@
+@startuml c4-container-monolith
+!include <C4/C4_Container>
+
+title Diagrama de Container — Versao Monolito
+
+Person(user, "Operador")
+
+System_Boundary(monolito, "Monolito") {
+    Container(api, "FastAPI Application", "Python / ASGI", "Rotas HTTP que delegam aos casos de uso")
+    Container(domain, "Dominio", "Python", "Agregados, Entidades, Value Objects, interfaces de Repository")
+    Container(usecases, "Casos de Uso", "Python", "Logica de aplicacao: CriarProduto, RegistrarEntrada, etc.")
+    Container(repos, "Repositorios SQLAlchemy", "Python / SQLAlchemy", "Implementacao do Repository Pattern")
+}
+
+ContainerDb(db, "PostgreSQL", "Banco relacional", "Produtos, categorias, itens de estoque, movimentacoes")
+
+Rel(user, api, "HTTPS")
+Rel(api, usecases, "Chama")
+Rel(usecases, domain, "Usa")
+Rel(usecases, repos, "Persiste via interface")
+Rel(repos, db, "SQL")
+
+@enduml

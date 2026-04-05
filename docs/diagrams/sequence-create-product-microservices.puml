@@ -1,0 +1,73 @@
+@startuml sequence-create-product-microservices
+title Criacao de Produto — Microsservicos Serverless
+
+actor Operador
+participant "API Gateway" as apigw
+participant "Lambda Handler\n(Catalogo)" as lambda
+participant "CriarProduto\nUseCase" as uc
+participant "Produto\nAggregate" as domain
+participant "ProdutoRepository\n(DynamoDB)" as repo
+database "DynamoDB\nCatalogo" as dynamo
+queue "SNS Topic" as sns
+queue "SQS Queue" as sqs
+participant "Lambda Consumer\n(Estoque)" as consumer
+participant "CriarItemEstoque\nUseCase" as uc_est
+participant "ItemEstoqueRepository\n(DynamoDB)" as repo_est
+database "DynamoDB\nEstoque" as dynamo_est
+
+Operador -> apigw: POST /api/v1/produtos
+activate apigw
+
+apigw -> lambda: event, context
+activate lambda
+
+lambda -> uc: execute(dados)
+activate uc
+
+uc -> domain: Produto.criar(sku, nome, preco, categoria_id)
+activate domain
+domain --> uc: produto (validado)
+deactivate domain
+
+uc -> repo: salvar(produto)
+activate repo
+repo -> dynamo: PutItem
+dynamo --> repo: OK
+deactivate repo
+
+uc -> sns: publicar(ProdutoCriado)
+activate sns
+sns --> uc: OK
+deactivate sns
+
+uc --> lambda: ProdutoResponse
+deactivate uc
+
+lambda --> apigw: 201 Created
+deactivate lambda
+
+apigw --> Operador: 201 Created
+deactivate apigw
+
+== Processamento assincrono (consistencia eventual) ==
+
+sns -> sqs: Encaminha evento
+activate sqs
+sqs -> consumer: Dispara Lambda
+deactivate sqs
+activate consumer
+
+consumer -> uc_est: execute(evento ProdutoCriado)
+activate uc_est
+
+uc_est -> repo_est: salvar(ItemEstoque com saldo=0)
+activate repo_est
+repo_est -> dynamo_est: PutItem
+dynamo_est --> repo_est: OK
+deactivate repo_est
+
+uc_est --> consumer: OK
+deactivate uc_est
+deactivate consumer
+
+@enduml
