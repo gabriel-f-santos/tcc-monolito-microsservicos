@@ -8,16 +8,12 @@ Globals:
     MemorySize: 512
     Timeout: 30
     Tracing: Active
-    Layers:
-      # AWS Distro for OpenTelemetry (ADOT) Python Lambda Layer
-      # Envia traces para X-Ray e pode exportar para Grafana Cloud via OTLP
-      # ARN varia por regiao — este e para us-east-1
-      - !Sub "arn:aws:lambda:${AWS::Region}:901920570463:layer:aws-otel-python-amd64-ver-1-25-0:1"
+    # TODO: Adicionar ADOT Lambda Layer quando disponivel para Python 3.13
+    # Layers:
+    #   - !Sub "arn:aws:lambda:${AWS::Region}:901920570463:layer:aws-otel-python-amd64-ver-1-25-0:1"
     Environment:
       Variables:
         ENVIRONMENT: !Ref Environment
-        AWS_LAMBDA_EXEC_WRAPPER: /opt/otel-instrument
-        OTEL_SERVICE_NAME: !Sub "${Environment}-microsservicos"
 
 Parameters:
   Environment:
@@ -36,8 +32,8 @@ Resources:
   CatalogoHealthFunction:
     Type: AWS::Serverless::Function
     Properties:
-      Handler: catalogo-service/src/presentation/handlers/health.handler
-      CodeUri: .
+      Handler: src/presentation/handlers/health.handler
+      CodeUri: catalogo-service
       Description: Health check do Catalogo
       Environment:
         Variables:
@@ -60,8 +56,8 @@ Resources:
   EstoqueHealthFunction:
     Type: AWS::Serverless::Function
     Properties:
-      Handler: estoque-service/src/presentation/handlers/health.handler
-      CodeUri: .
+      Handler: src/presentation/handlers/health.handler
+      CodeUri: estoque-service
       Description: Health check do Estoque
       Environment:
         Variables:
@@ -79,8 +75,8 @@ Resources:
   EstoqueEventConsumer:
     Type: AWS::Serverless::Function
     Properties:
-      Handler: estoque-service/src/presentation/handlers/event_consumer.handler
-      CodeUri: .
+      Handler: src/presentation/handlers/event_consumer.handler
+      CodeUri: estoque-service
       Description: Consome eventos de dominio do Catalogo
       Environment:
         Variables:
