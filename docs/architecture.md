@@ -60,18 +60,21 @@ monolito/src/
 │   ├── domain/                    # Usuario entity, excecoes de auth
 │   ├── application/               # Login, Registrar use cases
 │   ├── infrastructure/            # UsuarioRepository (SQLAlchemy)
+│   ├── container.py               # Composition Root — conecta interfaces a implementacoes
 │   └── presentation/              # Rotas /api/v1/auth/*, middleware JWT
 │
 ├── catalogo/                      # Bounded Context: Catalogo de Produtos
 │   ├── domain/                    # Produto, Categoria, SKU, Dinheiro
 │   ├── application/               # CriarProduto, AtualizarProduto, etc.
 │   ├── infrastructure/            # ProdutoRepository, CategoriaRepository
+│   ├── container.py               # Composition Root
 │   └── presentation/              # Rotas /api/v1/produtos, /categorias
 │
 ├── estoque/                       # Bounded Context: Controle de Estoque
 │   ├── domain/                    # ItemEstoque, Movimentacao, Quantidade
 │   ├── application/               # RegistrarEntrada, RegistrarSaida
 │   ├── infrastructure/            # ItemEstoqueRepository, MovimentacaoRepository
+│   ├── container.py               # Composition Root
 │   └── presentation/              # Rotas /api/v1/estoque/*
 │
 └── presentation/
@@ -193,32 +196,128 @@ class CriarProdutoUseCase:
 
 ---
 
-## Apresentacao — A Outra Prova
+## Injecao de Dependencia — Composition Root
 
-O mesmo Use Case e chamado de formas diferentes:
+### Problema
 
-### Monolito (FastAPI Route)
+Use Cases dependem de interfaces (Repository). Alguem precisa decidir qual implementacao concreta usar (SQLAlchemy ou DynamoDB). Onde colocar essa decisao?
+
+**Errado:** no Use Case (acoplaria ao framework)
+**Errado:** no FastAPI `Depends()` (acoplaria a composicao ao framework — violacao de Clean Architecture)
+**Correto:** em um **Composition Root** (container) por Bounded Context
+
+### Padrao: Container Manual
+
+Cada BC tem um `container.py` que e o **unico arquivo que conhece implementacoes concretas**. Domain e Application nunca importam de Infrastructure diretamente.
+
+```
+domain/         → Python puro (interfaces)
+application/    → Python puro (usa interfaces via construtor)
+infrastructure/ → Implementa interfaces
+container.py    → UNICO lugar que conecta interface → implementacao
+presentation/   → Usa container para obter use cases prontos
+```
+
+### Monolito — Container com SQLAlchemy
 
 ```python
+# src/catalogo/container.py
+class CatalogoContainer:
+    """Composition Root do BC Catalogo.
+    Unico lugar que sabe que ProdutoRepository = SQLAlchemy."""
+
+    def __init__(self, session_factory):
+        self._session_factory = session_factory
+
+    def produto_repository(self) -> ProdutoRepository:
+        return SQLAlchemyProdutoRepository(self._session_factory())
+
+    def categoria_repository(self) -> CategoriaRepository:
+        return SQLAlchemyCategoriaRepository(self._session_factory())
+
+    def criar_produto_use_case(self) -> CriarProdutoUseCase:
+        return CriarProdutoUseCase(repo=self.produto_repository())
+```
+
+```python
+# src/catalogo/presentation/routes.py
+# A rota NAO sabe qual implementacao de repo esta usando
 @router.post("/api/v1/produtos")
-def criar_produto(body: CriarProdutoRequest, session = Depends(get_session)):
-    repo = SQLAlchemyProdutoRepository(session)
-    use_case = CriarProdutoUseCase(repo)
+def criar_produto(body: CriarProdutoRequest):
+    use_case = container.criar_produto_use_case()
     return use_case.execute(body.to_dto())
 ```
 
-### Microsservico (Lambda Handler puro — sem FastAPI, sem Mangum)
+### Microsservicos — Container com DynamoDB
 
 ```python
+# catalogo-service/src/container.py
+class CatalogoContainer:
+    """Mesmo contrato, implementacao diferente."""
+
+    def produto_repository(self) -> ProdutoRepository:
+        return DynamoDBProdutoRepository(os.environ["PRODUTOS_TABLE"])
+
+    def criar_produto_use_case(self) -> CriarProdutoUseCase:
+        return CriarProdutoUseCase(repo=self.produto_repository())
+```
+
+```python
+# catalogo-service/src/presentation/handlers/catalogo.py
 def handler(event, context):
     body = json.loads(event["body"])
-    repo = DynamoDBProdutoRepository(os.environ["PRODUTOS_TABLE"])
-    use_case = CriarProdutoUseCase(repo)
+    use_case = container.criar_produto_use_case()
     result = use_case.execute(CriarProdutoDTO(**body))
     return {"statusCode": 201, "body": json.dumps(result.to_dict())}
 ```
 
-**Ponto chave para o artigo:** As camadas de Domain e Application sao identicas. Apenas Presentation e Infrastructure mudam.
+### Testes — Container com Fake/InMemory
+
+```python
+# tests/conftest.py
+class FakeCatalogoContainer:
+    def produto_repository(self):
+        return InMemoryProdutoRepository()
+
+    def criar_produto_use_case(self):
+        return CriarProdutoUseCase(repo=self.produto_repository())
+
+# Injeta o container fake antes dos testes
+app.state.catalogo_container = FakeCatalogoContainer()
+```
+
+### Por que NAO usar FastAPI Depends()
+
+| Aspecto | `Depends()` | Container manual |
+|---------|-------------|-----------------|
+| Acoplamento ao framework | Sim — DI vive no FastAPI | Nao — container e Python puro |
+| Lambda handlers | Nao funciona (sem FastAPI) | Funciona igual |
+| Testabilidade | `dependency_overrides` (API do FastAPI) | Trocar container (Python puro) |
+| Clean Architecture | Viola — framework controla composicao | Respeita — composicao e independente |
+| Para o artigo | Superficial | Demonstra inversao de dependencia real |
+
+**Ponto chave:** O Use Case nao sabe se esta rodando no FastAPI ou Lambda, nao sabe se o banco e PostgreSQL ou DynamoDB. O container e o unico ponto que sabe. Isso e Clean Architecture de verdade.
+
+### Fluxo de Dependencia Completo
+
+```
+presentation/routes.py          presentation/handlers/catalogo.py
+         │                                   │
+         ▼                                   ▼
+    container.py (SQLAlchemy)          container.py (DynamoDB)
+         │                                   │
+         ▼                                   ▼
+    CriarProdutoUseCase ◄──── IDENTICO ────► CriarProdutoUseCase
+         │                                   │
+         ▼                                   ▼
+    ProdutoRepository (interface)      ProdutoRepository (interface)
+         │                                   │
+         ▼                                   ▼
+    SQLAlchemyProdutoRepo            DynamoDBProdutoRepo
+         │                                   │
+         ▼                                   ▼
+    PostgreSQL                         DynamoDB
+```
 
 ---
 

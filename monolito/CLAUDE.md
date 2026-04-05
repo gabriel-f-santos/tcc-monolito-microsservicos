@@ -15,14 +15,24 @@ src/
 └── presentation/    # FastAPI app + health check
 ```
 
-Cada módulo (auth, catalogo, estoque) tem: `domain/`, `application/`, `infrastructure/`, `presentation/`.
+Cada módulo (auth, catalogo, estoque) tem: `domain/`, `application/`, `infrastructure/`, `container.py`, `presentation/`.
+
+### Injeção de Dependência (Container Manual)
+
+- Cada BC tem um `container.py` — **Composition Root**
+- É o ÚNICO arquivo que conhece implementações concretas (SQLAlchemy)
+- Use Cases recebem repos via construtor (NUNCA importam de infrastructure)
+- Presentation usa o container para obter use cases prontos
+- Testes injetam container fake com repos in-memory
+- **NÃO usar FastAPI Depends() para DI** — acopla ao framework
 
 ### Regras de Dependência
 
 - `domain/` é Python puro — ZERO imports de framework
 - `application/` depende apenas de interfaces do `domain/`
 - `infrastructure/` implementa interfaces do `domain/` (SQLAlchemy)
-- `presentation/` apenas delega aos use cases
+- `container.py` conecta interfaces → implementações (único ponto de acoplamento)
+- `presentation/` usa container, delega aos use cases
 - **Import entre módulos PROIBIDO** — apenas `shared/` é compartilhado
 - `catalogo/` NÃO importa de `estoque/` e vice-versa
 - Comunicação entre BCs: in-process (chamada direta no use case, sem evento)

@@ -46,6 +46,14 @@ Microservices: each service IS a BC, with `src/shared/` + `src/domain/` + layers
 - Domain entities are plain Python classes, NOT ORM models
 - Mapping between ORM/DynamoDB and domain entity happens inside the repository
 
+**Dependency Injection (Manual Container):**
+- Each BC has a `container.py` — the Composition Root
+- It is the ONLY file that knows concrete implementations
+- Use Cases receive repos via constructor (NEVER import from infrastructure directly)
+- Presentation uses container to get ready-made use cases
+- Tests inject a fake container with in-memory repos
+- DO NOT use FastAPI Depends() for DI — it couples composition to the framework
+
 **Communication between Bounded Contexts:**
 - ZERO synchronous calls between Catalogo and Estoque
 - Events only (SNS/SQS in microservices, in-process in monolith)
@@ -68,8 +76,9 @@ Microservices: each service IS a BC, with `src/shared/` + `src/domain/` + layers
 ## When Implementing a Feature
 
 1. Start from the domain layer (entities, VOs, repository interface)
-2. Write the use case
-3. Implement the repository
-4. Wire up the presentation layer (route or handler)
-5. Write tests
-6. Run `radon cc` and `radon mi` to check quality
+2. Write the use case (receives repo via constructor, uses interface only)
+3. Implement the repository (SQLAlchemy or DynamoDB)
+4. Wire up the container.py (connect interface → implementation)
+5. Wire up the presentation layer (route or handler uses container)
+6. Write tests (inject fake container with in-memory repos)
+7. Run `radon cc` and `radon mi` to check quality

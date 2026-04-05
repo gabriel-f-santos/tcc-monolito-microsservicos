@@ -63,7 +63,23 @@ Checklist for reviewing code against Domain-Driven Design and Clean Architecture
   - Domain entities are plain Python classes, not ORM models
   - Mapping between ORM model and domain entity happens in repository
 
-### 5. Domain Events
+### 5. Dependency Injection (Container)
+
+- [ ] **Each BC has a `container.py`**
+  - It is the ONLY file that imports from infrastructure
+  - Creates concrete repos and injects into use cases
+- [ ] **Use Cases receive repos via constructor**
+  - `def __init__(self, repo: ProdutoRepository)` — interface, not implementation
+  - NEVER `from infrastructure.repositories import ...` in use case
+- [ ] **Presentation uses container, not direct instantiation**
+  - `container.criar_produto_use_case()` — not `CriarProdutoUseCase(SQLAlchemyRepo(...))`
+- [ ] **No FastAPI Depends() for DI**
+  - `Depends()` couples DI to the framework
+  - Container is plain Python, works in FastAPI and Lambda
+- [ ] **Tests use fake container**
+  - `FakeContainer` with in-memory repos, no DB needed
+
+### 6. Domain Events
 
 - [ ] **Events are simple data classes**
   - No logic, no methods beyond serialization
@@ -87,8 +103,11 @@ Checklist for reviewing code against Domain-Driven Design and Clean Architecture
 | Smell | Problem | Fix |
 |-------|---------|-----|
 | `from infrastructure import` in domain/ | Layer violation | Invert dependency with interface |
+| `from infrastructure import` in use case | DI violation | Use constructor injection via container |
+| `Depends()` for use case/repo creation | Framework coupling | Use container.py instead |
 | `import requests` or `httpx` in use case | Sync coupling | Use event via SNS/SQS |
 | Business rule in route/handler | Logic leak | Move to aggregate or use case |
 | `session.query()` in use case | ORM leak | Use repository interface |
 | Estoque importing Produto entity | BC coupling | Use local projection |
 | `if saldo < quantidade` outside aggregate | Invariant leak | Move check into ItemEstoque |
+| Use case instantiating repo directly | Missing DI | Wire via container.py |
