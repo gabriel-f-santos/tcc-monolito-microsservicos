@@ -121,6 +121,38 @@ resource "aws_iam_user_policy" "github_actions" {
           "autoscaling:DescribeInstanceRefreshes"
         ]
         Resource = "*"
+      },
+      {
+        Effect = "Allow"
+        Action = [
+          "cloudformation:*",
+          "lambda:*",
+          "apigateway:*",
+          "dynamodb:*",
+          "sns:*",
+          "sqs:*",
+          "iam:GetRole",
+          "iam:CreateRole",
+          "iam:DeleteRole",
+          "iam:AttachRolePolicy",
+          "iam:DetachRolePolicy",
+          "iam:PutRolePolicy",
+          "iam:DeleteRolePolicy",
+          "iam:PassRole",
+          "iam:TagRole",
+          "iam:GetRolePolicy",
+          "s3:GetObject",
+          "s3:PutObject",
+          "s3:GetBucketLocation",
+          "s3:ListBucket",
+          "xray:PutTraceSegments",
+          "xray:PutTelemetryRecords",
+          "logs:CreateLogGroup",
+          "logs:CreateLogStream",
+          "logs:PutLogEvents",
+          "logs:DescribeLogGroups"
+        ]
+        Resource = "*"
       }
     ]
   })
