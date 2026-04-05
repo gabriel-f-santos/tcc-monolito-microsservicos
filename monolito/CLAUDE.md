@@ -17,14 +17,15 @@ src/
 
 Cada módulo (auth, catalogo, estoque) tem: `domain/`, `application/`, `infrastructure/`, `container.py`, `presentation/`.
 
-### Injeção de Dependência (Container Manual)
+### Injeção de Dependência (dependency-injector)
 
-- Cada BC tem um `container.py` — **Composition Root**
+- Cada BC tem um `container.py` com `DeclarativeContainer` — **Composition Root**
 - É o ÚNICO arquivo que conhece implementações concretas (SQLAlchemy)
-- Use Cases recebem repos via construtor (NUNCA importam de infrastructure)
-- Presentation usa o container para obter use cases prontos
-- Testes injetam container fake com repos in-memory
+- Use Cases recebem repos via construtor (`providers.Factory`)
+- Rotas usam `@inject` + `Provide[]` para receber use cases
+- Testes usam `container.provider.override()` com repos in-memory
 - **NÃO usar FastAPI Depends() para DI** — acopla ao framework
+- Container é wired no startup do app via `container.wire(modules=[...])`
 
 ### Regras de Dependência
 
