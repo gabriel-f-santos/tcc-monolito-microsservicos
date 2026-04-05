@@ -79,43 +79,62 @@ Objetivo: medir impacto da arquitetura em qualidade, desempenho, custo e produti
 
 ---
 
-## Fase 5 — Features Incrementais (AQUI MEDE TEMPO)
+## Fase 5A — Construir Monolito Completo (Claude Code)
 
-Cada feature abaixo é implementada **duas vezes**: no monolito e nos microsserviços.
-Cada implementação é feita **duas vezes**: uma com Claude Code, outra com Codex.
+Implementar Features 0-4 no monolito. Medir tempo/tokens por feature.
+Prompts completos em `docs/features/feature-X-nome.md`.
 
-### Features na ordem (spec.md seção 8):
+| # | Feature | Prompt | Testes |
+|---|---------|--------|--------|
+| 0 | Auth JWT | `feature-0-auth.md` | 6 |
+| 1 | CRUD Categoria | `feature-1-categoria.md` | 5 |
+| 2 | CRUD Produto | `feature-2-produto.md` | 9 |
+| 3 | Entrada Estoque | `feature-3-entrada.md` | 7 |
+| 4 | Saida Estoque | `feature-4-saida.md` | 4 |
 
-0. **Autenticação JWT** (11 testes mínimos)
-1. **CRUD de Categoria** (6 testes mínimos)
-2. **CRUD de Produto** (15 testes mínimos)
-3. **Entrada de Estoque** (10 testes mínimos)
-4. **Saída de Estoque** (8 testes mínimos)
-5. **Eventos de Domínio** (6 testes — só microsserviços)
-6. **Filtro por Categoria no Estoque** (4 testes — transversal)
+**Total: 31 testes, monolito 100% funcional ao final**
 
-**Total: 60 testes mínimos, meta >= 70% cobertura por feature**
+## Fase 5B — Migrar para Microsservicos (Claude Code)
 
-### O que medir em cada feature:
+Com monolito pronto, migrar: trocar presentation (Lambda) + infrastructure (DynamoDB).
+Medir tempo total de migracao + Feature 5 (Eventos).
 
-| Métrica | Como |
+| # | Etapa | Testes |
+|---|-------|--------|
+| 0-4 | Migrar camadas presentation + infrastructure | 31 |
+| 5 | Adicionar Eventos de Domínio (SNS/SQS) | 3 |
+
+## Fase 5C — Feature Nova: Medicao Principal
+
+Feature 7 (Alerta de Estoque Baixo) nao existe em nenhuma arquitetura.
+Implementar em ambos, com Claude Code e Codex. **Esta e a medicao principal.**
+
+| Arq | IA | Prompt | Testes |
+|-----|----|--------|--------|
+| Monolito | Claude Code | `feature-7-alerta-estoque.md` | 3 |
+| Monolito | Codex | `feature-7-alerta-estoque.md` | 3 |
+| Microsservicos | Claude Code | `feature-7-alerta-estoque.md` | 3 |
+| Microsservicos | Codex | `feature-7-alerta-estoque.md` | 3 |
+
+## Fase 5D — Feature Transversal
+
+| # | Feature | Prompt | Testes |
+|---|---------|--------|--------|
+| 6 | Filtro por Categoria | `feature-6-filtro.md` | 2 |
+
+### Metricas coletadas por feature
+
+| Metrica | Como |
 |---------|------|
-| Tempo de geração da IA | Cronômetro (início do prompt → código pronto) |
-| Nº de iterações/correções | Contar re-prompts até o código passar nos testes |
-| Tamanho do diff | `git diff --stat` |
-| Complexidade ciclomática (antes/depois) | `radon cc` |
-| Índice de manutenibilidade (antes/depois) | `radon mi` |
-| Testes passando | pytest |
+| Tempo | Cronometro manual (inicio do prompt → testes passam) |
+| Tokens | Exibido pelo Claude Code / Codex no final |
+| Iteracoes | Quantas vezes re-promptou ate testes passarem |
+| Diff | `git diff --stat` |
+| CC antes/depois | `radon cc src/{modulo}/ -s -a` |
+| MI antes/depois | `radon mi src/{modulo}/ -s` |
+| Cobertura | `pytest --cov=src.{modulo}` |
 
-### Planilha de coleta:
-
-| Feature | Arquitetura | Ferramenta IA | Tempo (min) | Iterações | Diff (linhas) | CC antes | CC depois | MI antes | MI depois |
-|---------|-------------|---------------|-------------|-----------|---------------|----------|-----------|----------|-----------|
-| CRUD Produto | Monolito | Claude Code | | | | | | | |
-| CRUD Produto | Monolito | Codex | | | | | | | |
-| CRUD Produto | Microsserviço | Claude Code | | | | | | | |
-| CRUD Produto | Microsserviço | Codex | | | | | | | |
-| ... | ... | ... | | | | | | | |
+Planilha completa em `docs/features/README.md`.
 
 ---
 

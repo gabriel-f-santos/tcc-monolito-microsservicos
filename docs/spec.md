@@ -896,6 +896,9 @@ test_projecao_categoria_atualizada_via_evento
 | 4 | Saida Estoque | `docs/features/feature-4-saida.md` | 4 | Feature 3 |
 | 5 | Eventos | `docs/features/feature-5-eventos.md` | 3 | Features 1-4 |
 | 6 | Filtro Categoria | `docs/features/feature-6-filtro.md` | 2 | Features 1-4 |
-| **Total** | | | **36 testes** | |
+| 7 | Alerta Estoque Baixo | `docs/features/feature-7-alerta-estoque.md` | 3 | Features 1-4 |
+| **Total** | | | **39 testes** | |
+
+**Feature 7 e a medicao principal** — implementada em ambas as arquiteturas ja funcionais, com Claude Code e Codex, para comparar tempo de adicionar feature nova.
 
 **Meta de cobertura por feature:** >= 70% das linhas do código novo (medido com `pytest --cov`)
