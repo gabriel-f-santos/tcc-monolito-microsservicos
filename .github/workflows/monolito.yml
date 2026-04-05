@@ -37,11 +37,13 @@ jobs:
 
       - name: Cyclomatic complexity
         run: |
+          mkdir -p metrics
           radon cc src/ -s -a -j > metrics/cc-report.json
           radon cc src/ -s -a
 
       - name: Maintainability index
         run: |
+          mkdir -p metrics
           radon mi src/ -s -j > metrics/mi-report.json
           radon mi src/ -s
 
