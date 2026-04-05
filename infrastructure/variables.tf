@@ -10,11 +10,6 @@ variable "project_name" {
   default     = "tcc-monolito"
 }
 
-variable "environment" {
-  description = "Ambiente (dev, prod)"
-  type        = string
-  default     = "dev"
-}
 
 variable "db_password" {
   description = "Senha do banco RDS"

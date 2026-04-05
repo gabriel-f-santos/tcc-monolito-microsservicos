@@ -102,5 +102,4 @@ jobs:
             --no-confirm-changeset \
             --no-fail-on-empty-changeset \
             --s3-bucket "$S3_BUCKET" \
-            --capabilities CAPABILITY_IAM \
-            --parameter-overrides Environment=prod
+            --capabilities CAPABILITY_IAM

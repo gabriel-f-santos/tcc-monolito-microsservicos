@@ -1,5 +1,4 @@
 aws_region   = "us-east-1"
 project_name = "tcc-monolito"
-environment  = "dev"
 db_password  = "CHANGE_ME"
 my_ip        = "YOUR_IP/32"

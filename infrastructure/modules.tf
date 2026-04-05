@@ -22,7 +22,6 @@ module "database" {
 module "compute" {
   source       = "./modules/compute"
   project_name = var.project_name
-  environment  = var.environment
   aws_region   = var.aws_region
 
   vpc_id            = module.network.vpc_id

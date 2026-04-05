@@ -22,7 +22,7 @@ def setup_telemetry(app, engine=None):
     resource = Resource.create({
         "service.name": "monolito",
         "service.version": "0.1.0",
-        "deployment.environment": settings.environment,
+        "deployment.environment": "production",
     })
 
     provider = TracerProvider(resource=resource)
