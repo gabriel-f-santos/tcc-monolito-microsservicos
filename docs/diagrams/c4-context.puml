@@ -1,18 +1,29 @@
 @startuml c4-context
 !include <C4/C4_Context>
 
-title Diagrama de Contexto — Sistema de Gerenciamento de Produtos e Estoque
+title Diagrama de Contexto - Sistema de Gerenciamento de Produtos e Estoque
 
-Person(user, "Operador", "Gerencia produtos e movimentacoes de estoque")
+Person(operador, "Operador", "Gerencia produtos, categorias e movimentacoes de estoque")
 
-System(catalogo, "Catalogo de Produtos", "Gerencia ciclo de vida dos produtos: criacao, atualizacao, categorizacao e consulta")
-System(estoque, "Controle de Estoque", "Rastreia quantidades, registra movimentacoes (entradas e saidas) e mantem saldo atualizado")
+System_Boundary(sistema, "Sistema de Produtos e Estoque") {
+    System(monolito, "Monolito", "FastAPI + PostgreSQL\nEC2 ASG + ALB\nTodos os bounded contexts em um unico deploy")
+}
 
-System_Ext(mensageria, "Mensageria (SNS/SQS)", "Transporta eventos de dominio entre contextos")
+System_Boundary(sistema_ms, "Sistema de Produtos e Estoque (Serverless)") {
+    System(catalogo, "Catalogo Service", "Lambda + DynamoDB\nCRUD de produtos e categorias\nPublica eventos de dominio")
+    System(estoque, "Estoque Service", "Lambda + DynamoDB\nMovimentacoes, saldo\nConsome eventos via SQS")
+}
 
-Rel(user, catalogo, "CRUD de produtos e categorias", "HTTPS")
-Rel(user, estoque, "Registra entradas e saidas", "HTTPS")
-Rel(catalogo, mensageria, "Publica eventos", "ProdutoCriado, ProdutoAtualizado, ProdutoDesativado")
-Rel(mensageria, estoque, "Consome eventos", "Cria/atualiza projecao local")
+System_Ext(mensageria, "SNS / SQS", "Transporta eventos de dominio\nentre bounded contexts")
+System_Ext(grafana, "Grafana Cloud", "Dashboards de observabilidade\nLatencia, throughput, cold starts")
+
+Rel(operador, monolito, "HTTPS", "ALB porta 80")
+Rel(operador, catalogo, "HTTPS", "API Gateway")
+Rel(operador, estoque, "HTTPS", "API Gateway")
+Rel(catalogo, mensageria, "Publica", "ProdutoCriado\nProdutoAtualizado\nProdutoDesativado")
+Rel(mensageria, estoque, "Consome", "Cria/atualiza projecao local")
+Rel(monolito, grafana, "OTLP", "Traces e metricas")
+Rel(catalogo, grafana, "X-Ray", "Traces")
+Rel(estoque, grafana, "X-Ray", "Traces")
 
 @enduml

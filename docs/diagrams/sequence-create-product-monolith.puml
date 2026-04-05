@@ -1,21 +1,32 @@
 @startuml sequence-create-product-monolith
-title Criacao de Produto — Monolito
+title Criacao de Produto - Monolito
 
 actor Operador
+participant "ALB\n:80" as alb
 participant "FastAPI\nRoute" as route
+participant "Auth\nMiddleware" as auth
 participant "CriarProduto\nUseCase" as uc
 participant "Produto\nAggregate" as domain
-participant "ProdutoRepository\n(SQLAlchemy)" as repo
-database "PostgreSQL" as db
+participant "ProdutoRepo\n(SQLAlchemy)" as repo
+participant "ItemEstoqueRepo\n(SQLAlchemy)" as repo_est
+database "PostgreSQL\n(RDS)" as db
 
-Operador -> route: POST /api/v1/produtos
+Operador -> alb: POST /api/v1/produtos\nAuthorization: Bearer <jwt>
+alb -> route: HTTP :8080
 activate route
 
-route -> uc: execute(dados)
+route -> auth: Validar token
+activate auth
+auth --> route: user_id
+deactivate auth
+
+route -> uc: execute(dados, user_id)
 activate uc
 
 uc -> domain: Produto.criar(sku, nome, preco, categoria_id)
 activate domain
+domain -> domain: Validar SKU (3-50 chars, alfanumerico)
+domain -> domain: Validar Dinheiro (preco > 0)
 domain --> uc: produto (validado)
 deactivate domain
 
@@ -25,10 +36,19 @@ repo -> db: INSERT INTO produtos
 db --> repo: OK
 deactivate repo
 
+note right of uc: No monolito, criacao do\nItemEstoque e sincrona\n(sem evento/fila)
+
+uc -> repo_est: salvar(ItemEstoque(produto_id, saldo=0))
+activate repo_est
+repo_est -> db: INSERT INTO itens_estoque
+db --> repo_est: OK
+deactivate repo_est
+
 uc --> route: ProdutoResponse
 deactivate uc
 
-route --> Operador: 201 Created
+route --> alb: 201 Created
+alb --> Operador: 201 + JSON
 deactivate route
 
 @enduml
