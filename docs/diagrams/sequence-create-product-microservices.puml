@@ -1,31 +1,38 @@
 @startuml sequence-create-product-microservices
-title Criacao de Produto — Microsservicos Serverless
+title Criacao de Produto - Microsservicos Serverless
 
 actor Operador
-participant "API Gateway" as apigw
-participant "Lambda Handler\n(Catalogo)" as lambda
+participant "API\nGateway" as apigw
+participant "Lambda\nHandler" as lambda
+participant "Auth\nValidator" as auth
 participant "CriarProduto\nUseCase" as uc
 participant "Produto\nAggregate" as domain
-participant "ProdutoRepository\n(DynamoDB)" as repo
-database "DynamoDB\nCatalogo" as dynamo
-queue "SNS Topic" as sns
-queue "SQS Queue" as sqs
-participant "Lambda Consumer\n(Estoque)" as consumer
-participant "CriarItemEstoque\nUseCase" as uc_est
-participant "ItemEstoqueRepository\n(DynamoDB)" as repo_est
-database "DynamoDB\nEstoque" as dynamo_est
+participant "ProdutoRepo\n(DynamoDB)" as repo
+database "DynamoDB\nprod-produtos" as dynamo
+queue "SNS Topic\nprod-eventos-dominio" as sns
+queue "SQS Queue\nprod-estoque-eventos" as sqs
+participant "Lambda\nConsumer" as consumer
+participant "CriarItem\nUseCase" as uc_est
+participant "ItemEstoqueRepo\n(DynamoDB)" as repo_est
+database "DynamoDB\nprod-itens-estoque" as dynamo_est
 
-Operador -> apigw: POST /api/v1/produtos
+Operador -> apigw: POST /api/v1/produtos\nAuthorization: Bearer <jwt>
 activate apigw
-
 apigw -> lambda: event, context
 activate lambda
 
-lambda -> uc: execute(dados)
+lambda -> auth: Validar JWT (stateless, mesmo secret)
+activate auth
+auth --> lambda: user_id
+deactivate auth
+
+lambda -> uc: execute(dados, user_id)
 activate uc
 
 uc -> domain: Produto.criar(sku, nome, preco, categoria_id)
 activate domain
+domain -> domain: Validar SKU (3-50 chars, alfanumerico)
+domain -> domain: Validar Dinheiro (preco > 0)
 domain --> uc: produto (validado)
 deactivate domain
 
@@ -37,7 +44,7 @@ deactivate repo
 
 uc -> sns: publicar(ProdutoCriado)
 activate sns
-sns --> uc: OK
+sns --> uc: MessageId
 deactivate sns
 
 uc --> lambda: ProdutoResponse
@@ -45,29 +52,36 @@ deactivate uc
 
 lambda --> apigw: 201 Created
 deactivate lambda
-
-apigw --> Operador: 201 Created
+apigw --> Operador: 201 + JSON
 deactivate apigw
 
 == Processamento assincrono (consistencia eventual) ==
 
-sns -> sqs: Encaminha evento
+sns -> sqs: Encaminha mensagem
 activate sqs
-sqs -> consumer: Dispara Lambda
+sqs -> consumer: Dispara Lambda (BatchSize=1)
 deactivate sqs
 activate consumer
 
-consumer -> uc_est: execute(evento ProdutoCriado)
+consumer -> uc_est: execute(ProdutoCriado)
 activate uc_est
 
-uc_est -> repo_est: salvar(ItemEstoque com saldo=0)
+uc_est -> repo_est: salvar(ItemEstoque(produto_id, saldo=0))
 activate repo_est
-repo_est -> dynamo_est: PutItem
+repo_est -> dynamo_est: PutItem (idempotente)
 dynamo_est --> repo_est: OK
 deactivate repo_est
 
 uc_est --> consumer: OK
 deactivate uc_est
 deactivate consumer
+
+note right of consumer
+  Diferenca chave vs monolito:
+  - Assincrono (delay entre criar produto e item de estoque)
+  - Desacoplado (Catalogo nao sabe que Estoque existe)
+  - Resiliente (se Estoque cai, SQS retenta)
+  - Idempotente (reprocessar nao duplica)
+end note
 
 @enduml

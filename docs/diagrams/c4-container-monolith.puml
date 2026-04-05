@@ -1,23 +1,34 @@
 @startuml c4-container-monolith
 !include <C4/C4_Container>
 
-title Diagrama de Container — Versao Monolito
+title Diagrama de Container - Monolito (EC2 + PostgreSQL)
 
-Person(user, "Operador")
+Person(operador, "Operador")
 
-System_Boundary(monolito, "Monolito") {
-    Container(api, "FastAPI Application", "Python / ASGI", "Rotas HTTP que delegam aos casos de uso")
-    Container(domain, "Dominio", "Python", "Agregados, Entidades, Value Objects, interfaces de Repository")
-    Container(usecases, "Casos de Uso", "Python", "Logica de aplicacao: CriarProduto, RegistrarEntrada, etc.")
-    Container(repos, "Repositorios SQLAlchemy", "Python / SQLAlchemy", "Implementacao do Repository Pattern")
+System_Boundary(aws, "AWS us-east-1") {
+
+    Container(alb, "Application Load Balancer", "AWS ALB", "Porta 80 / Health check /health")
+
+    System_Boundary(asg, "Auto Scaling Group (1-2 t3.micro)") {
+        Container(docker, "Container Docker (512MB)", "Python 3.13 / FastAPI / Uvicorn :8080", "Toda a aplicacao em um unico processo")
+    }
+
+    System_Boundary(app_layers, "Camadas da Aplicacao") {
+        Container(presentation, "Presentation", "FastAPI Routes", "Rotas HTTP, validacao de input\nMiddleware JWT auth")
+        Container(application, "Application", "Use Cases", "CriarProduto, RegistrarEntrada\nRegistrarSaida, etc.")
+        Container(domain, "Domain", "Entidades + VOs", "Produto, ItemEstoque, Movimentacao\nSKU, Dinheiro, Quantidade")
+        Container(infra_repo, "Infrastructure", "SQLAlchemy Repos", "ProdutoRepository\nItemEstoqueRepository\nUsuarioRepository")
+    }
+
+    ContainerDb(rds, "PostgreSQL 16", "RDS db.t4g.micro", "produtos, categorias, usuarios\nitens_estoque, movimentacoes\nTodas as tabelas no mesmo banco")
 }
 
-ContainerDb(db, "PostgreSQL", "Banco relacional", "Produtos, categorias, itens de estoque, movimentacoes")
-
-Rel(user, api, "HTTPS")
-Rel(api, usecases, "Chama")
-Rel(usecases, domain, "Usa")
-Rel(usecases, repos, "Persiste via interface")
-Rel(repos, db, "SQL")
+Rel(operador, alb, "HTTPS")
+Rel(alb, docker, "HTTP :8080")
+Rel(docker, presentation, "Contem")
+Rel(presentation, application, "Delega")
+Rel(application, domain, "Usa")
+Rel(application, infra_repo, "Persiste via interface")
+Rel(infra_repo, rds, "SQL / SQLAlchemy")
 
 @enduml

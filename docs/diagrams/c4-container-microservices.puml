@@ -1,37 +1,41 @@
 @startuml c4-container-microservices
 !include <C4/C4_Container>
 
-title Diagrama de Container — Versao Microsservicos Serverless
+title Diagrama de Container - Microsservicos Serverless (Lambda + DynamoDB)
 
-Person(user, "Operador")
+Person(operador, "Operador")
 
-System_Boundary(catalogo_svc, "Catalogo Service") {
-    Container(lambda_cat, "Lambda Handler", "Python", "Recebe evento do API Gateway e delega ao caso de uso")
-    Container(uc_cat, "Casos de Uso", "Python", "Identicos ao monolito: CriarProduto, AtualizarProduto, etc.")
-    Container(domain_cat, "Dominio", "Python", "Agregados, Entidades, Value Objects")
-    Container(repo_cat, "Repositorio DynamoDB", "Python / boto3", "Implementacao do Repository Pattern")
+System_Boundary(aws, "AWS us-east-1") {
+
+    Container(apigw, "API Gateway", "AWS", "Roteia HTTPS para Lambdas\n/catalogo/* e /estoque/*")
+
+    System_Boundary(catalogo_svc, "Catalogo Service (Bounded Context)") {
+        Container(lambda_cat, "Lambda Handlers", "Python 3.13 / 512MB", "health, auth, produtos, categorias")
+        Container(uc_cat, "Use Cases", "Python", "CriarProduto, CriarCategoria\nLogin, Registrar")
+        Container(domain_cat, "Domain", "Python", "Produto, Categoria, Usuario\nSKU, Dinheiro")
+        Container(repo_cat, "DynamoDB Repos", "boto3", "ProdutoRepository\nCategoriaRepository\nUsuarioRepository")
+    }
+
+    System_Boundary(estoque_svc, "Estoque Service (Bounded Context)") {
+        Container(lambda_est, "Lambda Handlers", "Python 3.13 / 512MB", "health, estoque, movimentacoes")
+        Container(lambda_consumer, "Event Consumer", "Python 3.13 / 512MB", "Consome SQS\nCria/atualiza projecao")
+        Container(uc_est, "Use Cases", "Python", "RegistrarEntrada\nRegistrarSaida")
+        Container(domain_est, "Domain", "Python", "ItemEstoque, Movimentacao\nQuantidade, TipoMovimentacao")
+        Container(repo_est, "DynamoDB Repos", "boto3", "ItemEstoqueRepository\nMovimentacaoRepository")
+    }
+
+    ContainerDb(dynamo_cat, "DynamoDB", "PAY_PER_REQUEST", "prod-produtos\nprod-categorias\nprod-usuarios")
+    ContainerDb(dynamo_est, "DynamoDB", "PAY_PER_REQUEST", "prod-itens-estoque\nprod-movimentacoes")
+    ContainerQueue(sns, "SNS Topic", "prod-eventos-dominio", "Fan-out de eventos")
+    ContainerQueue(sqs, "SQS Queue", "prod-estoque-eventos", "Buffer de consumo")
 }
 
-System_Boundary(estoque_svc, "Estoque Service") {
-    Container(lambda_est, "Lambda Handler", "Python", "Recebe evento do API Gateway e delega ao caso de uso")
-    Container(lambda_consumer, "Lambda Consumer", "Python", "Consome eventos da fila SQS")
-    Container(uc_est, "Casos de Uso", "Python", "Identicos ao monolito: RegistrarEntrada, RegistrarSaida, etc.")
-    Container(domain_est, "Dominio", "Python", "Agregados, Entidades, Value Objects")
-    Container(repo_est, "Repositorio DynamoDB", "Python / boto3", "Implementacao do Repository Pattern")
-}
-
-ContainerDb(dynamo_cat, "DynamoDB", "Tabelas de produtos e categorias")
-ContainerDb(dynamo_est, "DynamoDB", "Tabelas de itens de estoque e movimentacoes")
-Container(apigw, "API Gateway", "AWS", "Roteia requisicoes HTTP para as Lambdas")
-ContainerQueue(sns, "SNS Topic", "AWS", "Topico de eventos de dominio")
-ContainerQueue(sqs, "SQS Queue", "AWS", "Fila de consumo do Estoque")
-
-Rel(user, apigw, "HTTPS")
+Rel(operador, apigw, "HTTPS")
 Rel(apigw, lambda_cat, "Invoca")
 Rel(apigw, lambda_est, "Invoca")
 Rel(lambda_cat, uc_cat, "Chama")
 Rel(uc_cat, domain_cat, "Usa")
-Rel(uc_cat, repo_cat, "Persiste via interface")
+Rel(uc_cat, repo_cat, "Persiste")
 Rel(repo_cat, dynamo_cat, "DynamoDB API")
 Rel(uc_cat, sns, "Publica evento")
 Rel(sns, sqs, "Encaminha")
@@ -39,7 +43,7 @@ Rel(sqs, lambda_consumer, "Dispara")
 Rel(lambda_consumer, uc_est, "Chama")
 Rel(lambda_est, uc_est, "Chama")
 Rel(uc_est, domain_est, "Usa")
-Rel(uc_est, repo_est, "Persiste via interface")
+Rel(uc_est, repo_est, "Persiste")
 Rel(repo_est, dynamo_est, "DynamoDB API")
 
 @enduml
