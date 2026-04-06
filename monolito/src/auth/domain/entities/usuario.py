@@ -11,7 +11,7 @@ class Usuario(BaseEntity):
     senha_hash: str = ""
 
     def __post_init__(self):
-        super().__post_init__() if hasattr(super(), '__post_init__') else None
+        super().__post_init__()
         if not self.nome or not self.nome.strip():
             raise DomainException("NOME_OBRIGATORIO", "Nome e obrigatorio")
         if not self.email or not self.email.strip():

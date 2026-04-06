@@ -35,19 +35,20 @@
 - **Observacoes:** Completou em 1 prompt. Seguiu RULES.md: __post_init__ na entidade, sem libs externas no app layer. Container com wiring_config.
 
 ### Feature 2: CRUD Produto
-- **Inicio:** 
-- **Fim:** 
-- **Tempo total:** 
-- **Tokens:** 
-- **Iteracoes:** 
-- **Diff:** 
-- **CC antes:** 
-- **CC depois:** 
-- **MI antes:** 
+- **Inicio:** 2026-04-05 23:01
+- **Fim:** 2026-04-05 23:04
+- **Tempo total:** 3min 44s
+- **Modo:** dangerously-skip-permissions
+- **Tokens:** (verificar na sessao)
+- **Iteracoes:** 1
+- **Diff:** 7 arquivos, +224 linhas (novos: produto.py, sku.py, dinheiro.py, 5 use cases, repo)
+- **CC antes:** A (1.74)
+- **CC depois:** A (2.03) — 86 blocos analisados
+- **MI antes:** A (~90%)
 - **MI depois:** 
 - **Cobertura:** 
-- **Testes:** /9
-- **Observacoes:** 
+- **Testes:** 9/9 (25 total)
+- **Observacoes:** Completou em 1 prompt. Criou VOs (SKU, Dinheiro), agregado Produto, 5 use cases, repo SQLAlchemy. Reusou container e routes existentes do catalogo.
 
 ### Feature 3: Entrada Estoque
 - **Inicio:** 
