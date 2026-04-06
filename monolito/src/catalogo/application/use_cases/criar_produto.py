@@ -7,7 +7,7 @@ from src.catalogo.domain.entities.produto import Produto
 from src.catalogo.domain.exceptions.catalogo import CategoriaNaoEncontrada, ProdutoSkuDuplicado
 from src.catalogo.domain.repositories.categoria_repository import CategoriaRepository
 from src.catalogo.domain.repositories.produto_repository import ProdutoRepository
-from src.catalogo.domain.services.estoque_service import EstoqueService
+from src.shared.domain.services.estoque_service import EstoqueService
 from src.catalogo.domain.value_objects.dinheiro import Dinheiro
 from src.catalogo.domain.value_objects.sku import SKU
 
