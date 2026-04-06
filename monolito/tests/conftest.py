@@ -8,6 +8,8 @@ from src.presentation.app import app
 # Import all models so Base.metadata knows about them
 import src.auth.infrastructure.repositories.sqlalchemy_usuario_repository  # noqa: F401
 import src.catalogo.infrastructure.repositories.sqlalchemy_categoria_repository  # noqa: F401
+import src.catalogo.infrastructure.repositories.sqlalchemy_produto_repository  # noqa: F401
+import src.estoque.infrastructure.repositories.sqlalchemy_item_estoque_repository  # noqa: F401
 
 
 @pytest.fixture(scope="session", autouse=True)

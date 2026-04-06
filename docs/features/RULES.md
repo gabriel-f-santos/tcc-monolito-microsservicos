@@ -31,12 +31,26 @@ Se um use case precisa de hash, JWT, email, HTTP, fila:
 ## Entidades e Agregados
 
 - Toda entidade DEVE ter `__post_init__` validando campos obrigatorios
-- `__post_init__` DEVE chamar `super().__post_init__()` como primeira linha
+- `__post_init__` DEVE chamar `super().__post_init__()` como primeira linha (incondicional, sem hasattr)
 - NUNCA defaults vazios sem validacao (`str = ""` sem check no `__post_init__`)
 - Campos opcionais: usar `str | None = None` (nao `str = ""`)
-- Codigos de excecao devem ser prefixados pelo BC (ex: `CATEGORIA_NOME_OBRIGATORIO`, nao `NOME_OBRIGATORIO`)
+- Codigos de excecao devem ser UNICOS e prefixados pelo BC (ex: `PRODUTO_NOME_OBRIGATORIO`, nao `NOME_OBRIGATORIO`)
 - Regras de negocio DENTRO do agregado (ex: `saldo >= 0`)
+- **Mutacao de estado DENTRO do agregado** — use case NUNCA muta campos diretamente
+  - CORRETO: `produto.atualizar(nome=novo_nome)` — agregado valida internamente
+  - ERRADO: `produto.nome = novo_nome` no use case
+  - `atualizado_em` e responsabilidade do agregado, nao do use case
 - Value Objects: `@dataclass(frozen=True)` — imutaveis
+
+## Comunicacao entre Bounded Contexts
+
+- **PROIBIDO** importar de outro BC em domain/ ou application/
+- Se um use case precisa chamar outro BC:
+  1. Criar interface ABC em `domain/services/` do BC CHAMADOR
+  2. Implementar em `infrastructure/services/` (pode importar do outro BC)
+  3. Injetar via container
+- No monolito: implementacao in-process
+- Nos microsservicos: implementacao via evento (SNS/SQS)
 
 ## SQLAlchemy (Infrastructure)
 
