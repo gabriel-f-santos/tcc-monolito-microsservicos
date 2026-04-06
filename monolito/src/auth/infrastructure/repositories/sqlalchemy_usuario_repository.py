@@ -1,14 +1,12 @@
 from uuid import UUID
 
-from sqlalchemy import Column, DateTime, String
+from sqlalchemy import Column, DateTime, String, select
 from sqlalchemy.dialects.postgresql import UUID as PG_UUID
-from sqlalchemy.orm import Session, registry, sessionmaker
+from sqlalchemy.orm import sessionmaker
 
+from src.shared.infrastructure.database.base import Base
 from src.auth.domain.entities.usuario import Usuario
 from src.auth.domain.repositories.usuario_repository import UsuarioRepository
-
-mapper_registry = registry()
-Base = mapper_registry.generate_base()
 
 
 class UsuarioModel(Base):
@@ -54,7 +52,8 @@ class SQLAlchemyUsuarioRepository(UsuarioRepository):
 
     def get_by_email(self, email: str) -> Usuario | None:
         with self.session_factory() as session:
-            model = session.query(UsuarioModel).filter(UsuarioModel.email == email).first()
+            stmt = select(UsuarioModel).where(UsuarioModel.email == email)
+            model = session.execute(stmt).scalar_one_or_none()
             return model.to_domain() if model else None
 
     def save(self, entity: Usuario) -> Usuario:

@@ -19,19 +19,20 @@
 - **Observacoes:** Feature completa em 1 prompt. Usou dependency-injector corretamente. Criou container, middleware JWT, use cases, repository SQLAlchemy, domain entities/exceptions. Seguiu estrutura DDD por dominio conforme docs.
 
 ### Feature 1: CRUD Categoria
-- **Inicio:** 
-- **Fim:** 
-- **Tempo total:** 
-- **Tokens:** 
-- **Iteracoes:** 
-- **Diff:** 
-- **CC antes:** 
-- **CC depois:** 
-- **MI antes:** 
-- **MI depois:** 
-- **Cobertura:** 
-- **Testes:** /5
-- **Observacoes:** 
+- **Inicio:** 2026-04-05 22:42
+- **Fim:** 2026-04-05 22:45
+- **Tempo total:** 2min 25s
+- **Modo:** dangerously-skip-permissions
+- **Tokens:** (verificar na sessao)
+- **Iteracoes:** 1
+- **Diff:** 14 arquivos, +412 linhas
+- **CC antes:** A (1.69)
+- **CC depois:** A (1.74) — tudo A, nenhuma acima de B
+- **MI antes:** A (87%)
+- **MI depois:** A (~90%) — catalogo repo 53.63, entidade 63.82
+- **Cobertura:** (rodar pytest --cov)
+- **Testes:** 5/5 (16 total)
+- **Observacoes:** Completou em 1 prompt. Seguiu RULES.md: __post_init__ na entidade, sem libs externas no app layer. Container com wiring_config.
 
 ### Feature 2: CRUD Produto
 - **Inicio:** 
