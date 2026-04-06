@@ -10,6 +10,11 @@ class RegistrarEntradaRequest(BaseModel):
     motivo: str | None = None
 
 
+class RegistrarSaidaRequest(BaseModel):
+    quantidade: int = Field(..., gt=0)
+    motivo: str | None = None
+
+
 class ItemEstoqueResponse(BaseModel):
     id: UUID
     produto_id: UUID

@@ -10,11 +10,16 @@ from src.estoque.application.use_cases.registrar_entrada import (
     RegistrarEntradaDTO,
     RegistrarEntradaUseCase,
 )
+from src.estoque.application.use_cases.registrar_saida import (
+    RegistrarSaidaDTO,
+    RegistrarSaidaUseCase,
+)
 from src.estoque.container import EstoqueContainer
 from src.estoque.presentation.schemas import (
     ItemEstoqueResponse,
     MovimentacaoResponse,
     RegistrarEntradaRequest,
+    RegistrarSaidaRequest,
 )
 
 router = APIRouter(tags=["estoque"])
@@ -57,6 +62,23 @@ def registrar_entrada(
             item_estoque_id=item_id,
             quantidade=body.quantidade,
             lote=body.lote,
+            motivo=body.motivo,
+        )
+    )
+    return _build_mov_response(mov)
+
+
+@router.post("/api/v1/estoque/{item_id}/saida", response_model=MovimentacaoResponse, status_code=201)
+@inject
+def registrar_saida(
+    item_id: UUID,
+    body: RegistrarSaidaRequest,
+    use_case: RegistrarSaidaUseCase = Depends(Provide[EstoqueContainer.registrar_saida]),
+):
+    mov = use_case.execute(
+        RegistrarSaidaDTO(
+            item_estoque_id=item_id,
+            quantidade=body.quantidade,
             motivo=body.motivo,
         )
     )

@@ -67,19 +67,20 @@
 - **Observacoes:** Feature mais demorada (9min54s vs 3min44s anterior). Segundo BC completo, novo container, movimentacao, VOs (Quantidade, TipoMovimentacao). Atualizou EstoqueService para incluir projecao (sku, nome, categoria).
 
 ### Feature 4: Saida Estoque
-- **Inicio:** 
-- **Fim:** 
-- **Tempo total:** 
+- **Inicio:** 2026-04-05 23:45
+- **Fim:** 2026-04-05 23:48
+- **Tempo total:** 2min 45s
+- **Modo:** dangerously-skip-permissions
 - **Tokens:** 
 - **Iteracoes:** 
 - **Diff:** 
-- **CC antes:** 
+- **CC antes:** A (1.85)
 - **CC depois:** 
 - **MI antes:** 
 - **MI depois:** 
 - **Cobertura:** 
-- **Testes:** /4
-- **Observacoes:** 
+- **Testes:** 4/4 (36 total)
+- **Observacoes:** Feature mais rapida. Adicionou registrar_saida() no agregado ItemEstoque, rota e testes. Diff limpo — 6 arquivos, +197 linhas.
 
 ---
 

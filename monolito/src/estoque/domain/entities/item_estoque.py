@@ -5,7 +5,11 @@ from uuid import UUID, uuid4
 from src.shared.domain.entities.base import BaseEntity
 from src.shared.domain.exceptions.base import DomainException
 from src.estoque.domain.entities.movimentacao import Movimentacao
-from src.estoque.domain.exceptions.estoque import ItemInativo, QuantidadeInvalida
+from src.estoque.domain.exceptions.estoque import (
+    EstoqueInsuficiente,
+    ItemInativo,
+    QuantidadeInvalida,
+)
 from src.estoque.domain.value_objects.tipo_movimentacao import TipoMovimentacao
 
 
@@ -49,6 +53,28 @@ class ItemEstoque(BaseEntity):
             tipo=TipoMovimentacao.ENTRADA,
             quantidade=quantidade,
             lote=lote,
+            motivo=motivo,
+            criado_em=now,
+            atualizado_em=now,
+        )
+
+    def registrar_saida(
+        self, quantidade: int, motivo: str | None = None
+    ) -> Movimentacao:
+        if quantidade <= 0:
+            raise QuantidadeInvalida()
+        if self.saldo < quantidade:
+            raise EstoqueInsuficiente(saldo_atual=self.saldo, solicitado=quantidade)
+
+        self.saldo -= quantidade
+        self.atualizado_em = datetime.now(timezone.utc)
+
+        now = datetime.now(timezone.utc)
+        return Movimentacao(
+            id=uuid4(),
+            item_estoque_id=self.id,
+            tipo=TipoMovimentacao.SAIDA,
+            quantidade=quantidade,
             motivo=motivo,
             criado_em=now,
             atualizado_em=now,
