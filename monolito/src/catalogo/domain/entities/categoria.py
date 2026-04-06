@@ -10,7 +10,7 @@ class Categoria(BaseEntity):
     descricao: str | None = None
 
     def __post_init__(self):
-        super().__post_init__() if hasattr(super(), '__post_init__') else None
+        super().__post_init__()
         if not self.nome or not self.nome.strip():
             raise DomainException("CATEGORIA_NOME_OBRIGATORIO", "Nome da categoria e obrigatorio")
         if len(self.nome) > 100:
