@@ -27,14 +27,31 @@ Cada módulo (auth, catalogo, estoque) tem: `domain/`, `application/`, `infrastr
 - **NÃO usar FastAPI Depends() para DI** — acopla ao framework
 - Container é wired no startup do app via `container.wire(modules=[...])`
 
-### Regras de Dependência
+### Regras de Dependência (RÍGIDAS)
 
-- `domain/` é Python puro — ZERO imports de framework
-- `application/` depende apenas de interfaces do `domain/`
-- `infrastructure/` implementa interfaces do `domain/` (SQLAlchemy)
+- `domain/` é Python puro — ZERO imports de framework ou libs externas
+- `application/` depende apenas de interfaces do `domain/` — ZERO imports de libs externas
+  - **PROIBIDO:** `import bcrypt`, `from jose import jwt`, `import boto3` em use cases
+  - Se o use case precisa de hash, JWT, HTTP, etc → criar interface em `domain/services/` e implementar em `infrastructure/services/`
+- `infrastructure/` implementa interfaces do `domain/` (SQLAlchemy, bcrypt, jose, boto3)
 - `container.py` conecta interfaces → implementações (único ponto de acoplamento)
 - `presentation/` usa container, delega aos use cases
 - **Import entre módulos PROIBIDO** — apenas `shared/` é compartilhado
+
+### Regras de Entidades e Agregados
+
+- Toda entidade DEVE ter `__post_init__` validando invariantes (campos obrigatórios, ranges)
+- NUNCA usar defaults vazios (`str = ""`) sem validação em `__post_init__`
+- Regras de negócio ficam DENTRO do agregado, não no use case
+- Value Objects devem ser `frozen=True` (imutáveis)
+
+### Padrão para Serviços Externos
+
+Sempre que um use case precisa de uma capacidade externa (hash, JWT, email, HTTP, fila):
+1. Criar **interface ABC** em `domain/services/nome_servico.py`
+2. Criar **implementação** em `infrastructure/services/nome_concreto.py`
+3. Registrar como `providers.Singleton` no `container.py`
+4. Injetar no use case via construtor
 - `catalogo/` NÃO importa de `estoque/` e vice-versa
 - Comunicação entre BCs: in-process (chamada direta no use case, sem evento)
 
