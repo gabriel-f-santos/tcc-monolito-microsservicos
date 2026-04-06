@@ -87,4 +87,14 @@ async def domain_exception_handler(request, exc: DomainException):
     return JSONResponse(status_code=status, content={"detail": exc.message, "code": exc.code})
 
 
+# --- Create tables on startup (no Alembic for TCC simplicity) ---
+from src.shared.infrastructure.database.base import Base
+from src.shared.infrastructure.database.session import engine
+import src.auth.infrastructure.repositories.sqlalchemy_usuario_repository  # noqa: F401
+import src.catalogo.infrastructure.repositories.sqlalchemy_categoria_repository  # noqa: F401
+import src.catalogo.infrastructure.repositories.sqlalchemy_produto_repository  # noqa: F401
+import src.estoque.infrastructure.repositories.sqlalchemy_item_estoque_repository  # noqa: F401
+import src.estoque.infrastructure.repositories.sqlalchemy_movimentacao_repository  # noqa: F401
+Base.metadata.create_all(engine)
+
 setup_telemetry(app)
