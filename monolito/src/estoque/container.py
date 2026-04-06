@@ -4,6 +4,7 @@ from src.estoque.application.use_cases.buscar_item import BuscarItemUseCase
 from src.estoque.application.use_cases.listar_itens import ListarItensUseCase
 from src.estoque.application.use_cases.listar_movimentacoes import ListarMovimentacoesUseCase
 from src.estoque.application.use_cases.registrar_entrada import RegistrarEntradaUseCase
+from src.estoque.application.use_cases.registrar_saida import RegistrarSaidaUseCase
 from src.estoque.infrastructure.repositories.sqlalchemy_item_estoque_repository import (
     SQLAlchemyItemEstoqueRepository,
 )
@@ -36,6 +37,12 @@ class EstoqueContainer(containers.DeclarativeContainer):
     # Use Cases
     registrar_entrada = providers.Factory(
         RegistrarEntradaUseCase,
+        item_repo=item_estoque_repository,
+        mov_repo=movimentacao_repository,
+    )
+
+    registrar_saida = providers.Factory(
+        RegistrarSaidaUseCase,
         item_repo=item_estoque_repository,
         mov_repo=movimentacao_repository,
     )
