@@ -159,6 +159,137 @@ def test_buscar_item_por_produto(client: TestClient):
     assert data["saldo"] == 0
 
 
+def test_registrar_saida(client: TestClient):
+    token = _get_token(client)
+    cat = _criar_categoria(client, token)
+    produto = _criar_produto(client, token, cat["id"])
+    item = _get_item_by_produto(client, token, produto["id"])
+
+    # Entrada de 100
+    client.post(
+        f"/api/v1/estoque/{item['id']}/entrada",
+        json={"quantidade": 100},
+        headers=_auth_header(token),
+    )
+
+    # Saida de 30
+    response = client.post(
+        f"/api/v1/estoque/{item['id']}/saida",
+        json={"quantidade": 30, "motivo": "Venda"},
+        headers=_auth_header(token),
+    )
+    assert response.status_code == 201
+    data = response.json()
+    assert data["tipo"] == "SAIDA"
+    assert data["quantidade"] == 30
+    assert data["motivo"] == "Venda"
+
+    # Saldo deve ser 70
+    resp = client.get(
+        f"/api/v1/estoque/{item['id']}",
+        headers=_auth_header(token),
+    )
+    assert resp.json()["saldo"] == 70
+
+
+def test_saida_estoque_insuficiente(client: TestClient):
+    token = _get_token(client)
+    cat = _criar_categoria(client, token)
+    produto = _criar_produto(client, token, cat["id"])
+    item = _get_item_by_produto(client, token, produto["id"])
+
+    # Entrada de 10
+    client.post(
+        f"/api/v1/estoque/{item['id']}/entrada",
+        json={"quantidade": 10},
+        headers=_auth_header(token),
+    )
+
+    # Saida de 20 — insuficiente
+    response = client.post(
+        f"/api/v1/estoque/{item['id']}/saida",
+        json={"quantidade": 20},
+        headers=_auth_header(token),
+    )
+    assert response.status_code == 422
+    assert response.json()["code"] == "ESTOQUE_INSUFICIENTE"
+
+    # Saldo nao alterou
+    resp = client.get(
+        f"/api/v1/estoque/{item['id']}",
+        headers=_auth_header(token),
+    )
+    assert resp.json()["saldo"] == 10
+
+
+def test_saida_zera_estoque(client: TestClient):
+    token = _get_token(client)
+    cat = _criar_categoria(client, token)
+    produto = _criar_produto(client, token, cat["id"])
+    item = _get_item_by_produto(client, token, produto["id"])
+
+    # Entrada de 50
+    client.post(
+        f"/api/v1/estoque/{item['id']}/entrada",
+        json={"quantidade": 50},
+        headers=_auth_header(token),
+    )
+
+    # Saida de 50 — zera
+    response = client.post(
+        f"/api/v1/estoque/{item['id']}/saida",
+        json={"quantidade": 50},
+        headers=_auth_header(token),
+    )
+    assert response.status_code == 201
+
+    resp = client.get(
+        f"/api/v1/estoque/{item['id']}",
+        headers=_auth_header(token),
+    )
+    assert resp.json()["saldo"] == 0
+
+
+def test_multiplas_movimentacoes(client: TestClient):
+    token = _get_token(client)
+    cat = _criar_categoria(client, token)
+    produto = _criar_produto(client, token, cat["id"])
+    item = _get_item_by_produto(client, token, produto["id"])
+
+    # Entrada 100
+    client.post(
+        f"/api/v1/estoque/{item['id']}/entrada",
+        json={"quantidade": 100},
+        headers=_auth_header(token),
+    )
+
+    # Saida 30, Saida 30
+    client.post(
+        f"/api/v1/estoque/{item['id']}/saida",
+        json={"quantidade": 30},
+        headers=_auth_header(token),
+    )
+    client.post(
+        f"/api/v1/estoque/{item['id']}/saida",
+        json={"quantidade": 30},
+        headers=_auth_header(token),
+    )
+
+    # Saldo = 40
+    resp = client.get(
+        f"/api/v1/estoque/{item['id']}",
+        headers=_auth_header(token),
+    )
+    assert resp.json()["saldo"] == 40
+
+    # 3 movimentacoes (1 entrada + 2 saidas)
+    resp = client.get(
+        f"/api/v1/estoque/{item['id']}/movimentacoes",
+        headers=_auth_header(token),
+    )
+    assert len(resp.json()) == 3
+
+
 def test_historico_movimentacoes(client: TestClient):
     token = _get_token(client)
     cat = _criar_categoria(client, token)

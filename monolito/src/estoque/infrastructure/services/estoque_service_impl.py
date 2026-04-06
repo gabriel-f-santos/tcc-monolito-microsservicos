@@ -1,7 +1,7 @@
 from datetime import datetime, timezone
 from uuid import UUID, uuid4
 
-from src.catalogo.domain.services.estoque_service import EstoqueService
+from src.shared.domain.services.estoque_service import EstoqueService
 from src.estoque.domain.entities.item_estoque import ItemEstoque
 from src.estoque.domain.repositories.item_estoque_repository import ItemEstoqueRepository
 
