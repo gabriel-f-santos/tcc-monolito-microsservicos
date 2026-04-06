@@ -27,10 +27,24 @@ Monolith structure:
 Microservices: each service IS a BC, with `src/shared/` + `src/domain/` + layers.
 
 **Layer separation (within each module):**
-- `domain/` — Aggregates, Entities, Value Objects, Repository interfaces, Domain errors. ZERO framework imports.
-- `application/` — Use cases. Depend only on domain interfaces. Receive repositories via constructor.
-- `infrastructure/` — Repository implementations (SQLAlchemy or boto3), event publishers, framework adapters.
+- `domain/` — Aggregates, Entities, Value Objects, Repository interfaces, Domain services (ABCs), Domain errors. ZERO framework imports, ZERO external library imports.
+- `application/` — Use cases. Depend ONLY on domain interfaces. ZERO external library imports (no bcrypt, jose, boto3, etc). If a use case needs external capability → use domain service interface.
+- `infrastructure/` — Repository implementations, service implementations (bcrypt, jose, SNS, etc). The ONLY layer allowed to import external libraries.
 - `presentation/` — FastAPI routes (monolith) or Lambda handlers (microservices). Only call use cases.
+
+**External capabilities pattern (MANDATORY):**
+When a use case needs hashing, JWT, email, HTTP, queue, etc:
+1. Create ABC interface in `{module}/domain/services/`
+2. Create implementation in `{module}/infrastructure/services/`
+3. Register as `providers.Singleton` in `container.py`
+4. Inject into use case via constructor
+NEVER import external libraries directly in domain/ or application/
+
+**Entity invariant rules (MANDATORY):**
+- Every entity MUST have `__post_init__` validating required fields and business rules
+- NEVER use empty defaults (`str = ""`) without validation in `__post_init__`
+- Business rules enforced INSIDE the aggregate, not in use cases
+- Value Objects MUST be `frozen=True` (immutable)
 
 **Dependency direction:** presentation → application → domain ← infrastructure
 

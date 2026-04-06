@@ -3,6 +3,7 @@
 ## Contexto
 
 Leia estes arquivos antes de implementar:
+- `docs/features/RULES.md` — regras obrigatorias (violacoes sao CRITICAL)
 - `docs/architecture.md` — padrao DDD, camadas, container DI (dependency-injector)
 - `microsservicos/CLAUDE.md` — regras do projeto
 - `docs/spec.md` secoes 1-7 — dominio, agregados, VOs, erros, eventos
