@@ -86,21 +86,44 @@
 
 ## Fase B — Migracao para Microsservicos (Claude Code)
 
-### Migracao Features 0-4
+### Migration 0: Auth Service
 - **Inicio:** 
 - **Fim:** 
 - **Tempo total:** 
+- **Modo:** dangerously-skip-permissions
 - **Tokens:** 
 - **Iteracoes:** 
-- **Diff:** 
-- **Testes:** /31
+- **Arquivos copiados (domain+app):** /7
+- **Arquivos novos (infra+presentation):** 
+- **% codigo reutilizado:** 
+- **Testes:** /6
 - **Observacoes:** 
 
-### Feature 5: Eventos de Dominio
+### Migration 1: Catalogo Service
 - **Inicio:** 
 - **Fim:** 
 - **Tempo total:** 
+- **Modo:** dangerously-skip-permissions
 - **Tokens:** 
+- **Iteracoes:** 
+- **Arquivos copiados (domain+app):** /16
+- **Arquivos novos (infra+presentation):** 
+- **% codigo reutilizado:** 
+- **Testes:** /14
+- **Observacoes:** 
+
+### Migration 2: Estoque Service (inclui eventos)
+- **Inicio:** 
+- **Fim:** 
+- **Tempo total:** 
+- **Modo:** dangerously-skip-permissions
+- **Tokens:** 
+- **Iteracoes:** 
+- **Arquivos copiados (domain+app):** /12
+- **Arquivos novos (infra+presentation+eventos):** 
+- **% codigo reutilizado:** 
+- **Testes:** /14
+- **Observacoes:** 
 - **Iteracoes:** 
 - **Diff:** 
 - **Testes:** /3

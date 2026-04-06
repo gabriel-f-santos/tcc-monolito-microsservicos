@@ -7,11 +7,28 @@
 Implementar todas as features no monolito usando Claude Code. Monolito fica 100% funcional.
 Nesta fase medimos: tempo, tokens, iteracoes, diff, radon (por feature).
 
-### Fase B: Migrar para microsservicos (Features 0-5)
+### Fase B: Migrar para microsservicos (3 servicos)
 
-Com o monolito pronto, migrar para microsservicos: trocar presentation (Lambda handlers),
-infrastructure (DynamoDB repos), adicionar eventos (Feature 5).
-Medimos: tempo total de migracao, o que muda vs o que permanece igual.
+Com o monolito pronto, migrar cada BC para seu microsservico.
+Cada migracao tem seu prompt autocontido em `docs/features/migration-X-service.md`.
+
+| # | Prompt | BC | Testes |
+|---|--------|----|--------|
+| 0 | `migration-0-auth-service.md` | Auth | 6 |
+| 1 | `migration-1-catalogo-service.md` | Catalogo | 14 |
+| 2 | `migration-2-estoque-service.md` | Estoque + Eventos | 14 |
+
+### Metricas especificas da migracao
+
+| Metrica | O que mostra | Como coletar |
+|---------|-------------|-------------|
+| Arquivos copiados sem alteracao | domain + application intactos = DDD funcionou | Contar arquivos identicos |
+| Arquivos novos | Custo real da migracao | `git diff --stat` |
+| % codigo reutilizado | ROI da arquitetura | (copiados / total) * 100 |
+| Linhas de domain inalteradas | Isolamento real | `diff` entre monolito e microsservico |
+| Linhas de infrastructure novas | Custo de trocar banco | Contar linhas DynamoDB repos |
+| Testes que passam | Contrato mantido | pytest |
+| Tempo por servico | Esforço com IA | Cronometro |
 
 ### Fase C: Adicionar feature nova em ambos (Feature 7)
 
