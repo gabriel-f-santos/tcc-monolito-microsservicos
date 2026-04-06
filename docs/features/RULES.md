@@ -31,9 +31,20 @@ Se um use case precisa de hash, JWT, email, HTTP, fila:
 ## Entidades e Agregados
 
 - Toda entidade DEVE ter `__post_init__` validando campos obrigatorios
-- NUNCA defaults vazios sem validacao (`str = ""` sem check)
+- `__post_init__` DEVE chamar `super().__post_init__()` como primeira linha
+- NUNCA defaults vazios sem validacao (`str = ""` sem check no `__post_init__`)
+- Campos opcionais: usar `str | None = None` (nao `str = ""`)
+- Codigos de excecao devem ser prefixados pelo BC (ex: `CATEGORIA_NOME_OBRIGATORIO`, nao `NOME_OBRIGATORIO`)
 - Regras de negocio DENTRO do agregado (ex: `saldo >= 0`)
 - Value Objects: `@dataclass(frozen=True)` — imutaveis
+
+## SQLAlchemy (Infrastructure)
+
+- Usar API moderna SQLAlchemy 2: `select()` + `session.execute()` + `.scalar_one_or_none()` / `.scalars().all()`
+- NUNCA usar `session.query()` (API legada 1.x, deprecated)
+- Todos os Models herdam de `src.shared.infrastructure.database.base.Base` (Base compartilhado)
+- NUNCA criar `registry()` ou `Base` local por BC
+- `conftest.py` usa `Base.metadata.create_all()` unico para todas as tabelas
 
 ## Container (dependency-injector)
 
