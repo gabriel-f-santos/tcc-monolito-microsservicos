@@ -1,14 +1,12 @@
 from uuid import UUID
 
-from sqlalchemy import Column, DateTime, String
+from sqlalchemy import Column, DateTime, String, select
 from sqlalchemy.dialects.postgresql import UUID as PG_UUID
-from sqlalchemy.orm import registry, sessionmaker
+from sqlalchemy.orm import sessionmaker
 
+from src.shared.infrastructure.database.base import Base
 from src.catalogo.domain.entities.categoria import Categoria
 from src.catalogo.domain.repositories.categoria_repository import CategoriaRepository
-
-mapper_registry = registry()
-Base = mapper_registry.generate_base()
 
 
 class CategoriaModel(Base):
@@ -16,7 +14,7 @@ class CategoriaModel(Base):
 
     id = Column(PG_UUID(as_uuid=True), primary_key=True)
     nome = Column(String(100), nullable=False, unique=True, index=True)
-    descricao = Column(String(1000), nullable=True, default="")
+    descricao = Column(String(1000), nullable=True)
     criado_em = Column(DateTime(timezone=True), nullable=False)
     atualizado_em = Column(DateTime(timezone=True), nullable=False)
 
@@ -24,7 +22,7 @@ class CategoriaModel(Base):
         return Categoria(
             id=self.id,
             nome=self.nome,
-            descricao=self.descricao or "",
+            descricao=self.descricao,
             criado_em=self.criado_em,
             atualizado_em=self.atualizado_em,
         )
@@ -51,12 +49,14 @@ class SQLAlchemyCategoriaRepository(CategoriaRepository):
 
     def get_by_nome(self, nome: str) -> Categoria | None:
         with self.session_factory() as session:
-            model = session.query(CategoriaModel).filter(CategoriaModel.nome == nome).first()
+            stmt = select(CategoriaModel).where(CategoriaModel.nome == nome)
+            model = session.execute(stmt).scalar_one_or_none()
             return model.to_domain() if model else None
 
     def list_all(self) -> list[Categoria]:
         with self.session_factory() as session:
-            models = session.query(CategoriaModel).all()
+            stmt = select(CategoriaModel)
+            models = session.execute(stmt).scalars().all()
             return [m.to_domain() for m in models]
 
     def save(self, entity: Categoria) -> Categoria:
