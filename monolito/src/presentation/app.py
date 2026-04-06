@@ -9,6 +9,8 @@ from src.presentation.routes.health import router as health_router
 from src.auth.container import AuthContainer
 from src.auth.presentation.routes import router as auth_router
 from src.auth.presentation.middleware import JWTMiddleware
+from src.catalogo.container import CatalogoContainer
+from src.catalogo.presentation.routes import router as catalogo_router
 
 app = FastAPI(
     title="Monolito - Produtos e Estoque",
@@ -22,18 +24,26 @@ auth_container = AuthContainer(
     jwt_expiration_hours=settings.jwt_expiration_hours,
 )
 
+# --- DI containers (catalogo) ---
+catalogo_container = CatalogoContainer(
+    session_factory=SessionLocal,
+)
+
 # --- Middleware ---
 app.add_middleware(JWTMiddleware, token_service=auth_container.token_service())
 
 # --- Routers ---
 app.include_router(health_router)
 app.include_router(auth_router)
+app.include_router(catalogo_router)
 
 # --- Exception handlers ---
 DOMAIN_STATUS_MAP = {
     "EMAIL_DUPLICADO": 409,
     "CREDENCIAIS_INVALIDAS": 401,
     "TOKEN_INVALIDO": 401,
+    "CATEGORIA_NOME_DUPLICADO": 409,
+    "CATEGORIA_NAO_ENCONTRADA": 404,
 }
 
 
