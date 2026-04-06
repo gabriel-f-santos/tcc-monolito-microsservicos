@@ -14,17 +14,11 @@ from src.catalogo.infrastructure.repositories.sqlalchemy_categoria_repository im
 from src.catalogo.infrastructure.repositories.sqlalchemy_produto_repository import (
     SQLAlchemyProdutoRepository,
 )
-from src.catalogo.infrastructure.services.estoque_service_impl import EstoqueServiceImpl
-from src.estoque.infrastructure.repositories.sqlalchemy_item_estoque_repository import (
-    SQLAlchemyItemEstoqueRepository,
-)
 
 
 class CatalogoContainer(containers.DeclarativeContainer):
     """Composition Root do BC Catalogo.
-    Unico lugar que conhece implementacoes concretas.
-    O import de estoque.infrastructure aqui e intencional:
-    o container e infraestrutura, nao dominio."""
+    ZERO imports de outros BCs — estoque_service e injetado externamente via app.py."""
 
     wiring_config = containers.WiringConfiguration(
         modules=["src.catalogo.presentation.routes"],
@@ -32,8 +26,9 @@ class CatalogoContainer(containers.DeclarativeContainer):
 
     # External dependencies
     session_factory = providers.Dependency()
+    estoque_service = providers.Dependency()  # Injected by app.py from EstoqueContainer
 
-    # Repositories — own BC
+    # Repositories — own BC only
     categoria_repository = providers.Singleton(
         SQLAlchemyCategoriaRepository,
         session_factory=session_factory,
@@ -42,17 +37,6 @@ class CatalogoContainer(containers.DeclarativeContainer):
     produto_repository = providers.Singleton(
         SQLAlchemyProdutoRepository,
         session_factory=session_factory,
-    )
-
-    # Cross-BC service — interface in domain, implementation in infrastructure
-    _item_estoque_repository = providers.Singleton(
-        SQLAlchemyItemEstoqueRepository,
-        session_factory=session_factory,
-    )
-
-    estoque_service = providers.Singleton(
-        EstoqueServiceImpl,
-        item_estoque_repo=_item_estoque_repository,
     )
 
     # Use Cases — Categoria

@@ -58,6 +58,11 @@ class CriarProdutoUseCase:
         produto = self.repo.save(produto)
 
         # Comunicacao cross-BC via interface (nao import direto)
-        self.estoque_service.inicializar_item(produto.id)
+        self.estoque_service.inicializar_item(
+            produto_id=produto.id,
+            sku=produto.sku.valor,
+            nome_produto=produto.nome,
+            categoria_nome=categoria.nome,
+        )
 
         return produto
