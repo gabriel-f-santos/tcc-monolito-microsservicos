@@ -8,6 +8,12 @@ class EstoqueService(ABC):
     Nos microsservicos, publicaria evento no SNS."""
 
     @abstractmethod
-    def inicializar_item(self, produto_id: UUID) -> None:
+    def inicializar_item(
+        self,
+        produto_id: UUID,
+        sku: str,
+        nome_produto: str,
+        categoria_nome: str,
+    ) -> None:
         """Cria ItemEstoque com saldo=0 para um produto recem-criado."""
         ...

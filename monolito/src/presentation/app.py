@@ -11,6 +11,11 @@ from src.auth.presentation.routes import router as auth_router
 from src.auth.presentation.middleware import JWTMiddleware
 from src.catalogo.container import CatalogoContainer
 from src.catalogo.presentation.routes import router as catalogo_router
+from src.estoque.container import EstoqueContainer
+from src.estoque.presentation.routes import router as estoque_router
+
+# Cross-BC service: implementation lives in estoque BC, interface in catalogo BC
+from src.estoque.infrastructure.services.estoque_service_impl import EstoqueServiceImpl
 
 app = FastAPI(
     title="Monolito - Produtos e Estoque",
@@ -18,15 +23,26 @@ app = FastAPI(
 )
 
 # --- DI containers ---
+# app.py is the ONLY file that knows all containers and cross-BC wiring.
+
 auth_container = AuthContainer(
     session_factory=SessionLocal,
     jwt_secret=settings.jwt_secret,
     jwt_expiration_hours=settings.jwt_expiration_hours,
 )
 
-# --- DI containers (catalogo) ---
+estoque_container = EstoqueContainer(
+    session_factory=SessionLocal,
+)
+
+# Cross-BC wiring: build estoque service using estoque's repo, inject into catalogo
+_estoque_service = EstoqueServiceImpl(
+    item_estoque_repo=estoque_container.item_estoque_repository(),
+)
+
 catalogo_container = CatalogoContainer(
     session_factory=SessionLocal,
+    estoque_service=_estoque_service,
 )
 
 # --- Middleware ---
@@ -36,18 +52,32 @@ app.add_middleware(JWTMiddleware, token_service=auth_container.token_service())
 app.include_router(health_router)
 app.include_router(auth_router)
 app.include_router(catalogo_router)
+app.include_router(estoque_router)
 
 # --- Exception handlers ---
 DOMAIN_STATUS_MAP = {
+    # Auth
     "EMAIL_DUPLICADO": 409,
     "CREDENCIAIS_INVALIDAS": 401,
     "TOKEN_INVALIDO": 401,
+    # Catalogo
     "CATEGORIA_NOME_DUPLICADO": 409,
     "CATEGORIA_NAO_ENCONTRADA": 404,
+    "CATEGORIA_NOME_OBRIGATORIO": 422,
     "PRODUTO_SKU_DUPLICADO": 409,
     "PRODUTO_NAO_ENCONTRADO": 404,
+    "PRODUTO_SKU_OBRIGATORIO": 422,
+    "PRODUTO_NOME_OBRIGATORIO": 422,
+    "PRODUTO_PRECO_OBRIGATORIO": 422,
+    "PRODUTO_CATEGORIA_OBRIGATORIA": 422,
     "PRECO_INVALIDO": 422,
     "SKU_INVALIDO": 422,
+    # Estoque
+    "ESTOQUE_ITEM_NAO_ENCONTRADO": 404,
+    "ESTOQUE_QUANTIDADE_INVALIDA": 422,
+    "ESTOQUE_ITEM_INATIVO": 422,
+    "ESTOQUE_INSUFICIENTE": 422,
+    "ESTOQUE_SALDO_NEGATIVO": 422,
 }
 
 

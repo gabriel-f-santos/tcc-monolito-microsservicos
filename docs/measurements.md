@@ -51,19 +51,20 @@
 - **Observacoes:** Completou em 1 prompt. Criou VOs (SKU, Dinheiro), agregado Produto, 5 use cases, repo SQLAlchemy. Reusou container e routes existentes do catalogo.
 
 ### Feature 3: Entrada Estoque
-- **Inicio:** 
-- **Fim:** 
-- **Tempo total:** 
-- **Tokens:** 
+- **Inicio:** 2026-04-05 23:18
+- **Fim:** 2026-04-05 23:28
+- **Tempo total:** 9min 54s
+- **Modo:** dangerously-skip-permissions
+- **Tokens:** (verificar na sessao)
 - **Iteracoes:** 
-- **Diff:** 
-- **CC antes:** 
-- **CC depois:** 
+- **Diff:** 23 arquivos, +115 linhas (mod) + novos (container, 4 use cases, 2 entities, 2 VOs, 2 repos, routes, schemas)
+- **CC antes:** A (2.03)
+- **CC depois:** A (1.85) — estoque 62 blocos
 - **MI antes:** 
 - **MI depois:** 
 - **Cobertura:** 
-- **Testes:** /7
-- **Observacoes:** 
+- **Testes:** 7/7 (32 total)
+- **Observacoes:** Feature mais demorada (9min54s vs 3min44s anterior). Segundo BC completo, novo container, movimentacao, VOs (Quantidade, TipoMovimentacao). Atualizou EstoqueService para incluir projecao (sku, nome, categoria).
 
 ### Feature 4: Saida Estoque
 - **Inicio:** 
