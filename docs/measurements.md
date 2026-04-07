@@ -87,17 +87,17 @@
 ## Fase B — Migracao para Microsservicos (Claude Code)
 
 ### Migration 0: Auth Service
-- **Inicio:** 
-- **Fim:** 
-- **Tempo total:** 
+- **Inicio:** 2026-04-07 20:53
+- **Fim:** 2026-04-07 20:58
+- **Tempo total:** 4min 47s
 - **Modo:** dangerously-skip-permissions
 - **Tokens:** 
-- **Iteracoes:** 
-- **Arquivos copiados (domain+app):** /7
-- **Arquivos novos (infra+presentation):** 
-- **% codigo reutilizado:** 
-- **Testes:** /6
-- **Observacoes:** 
+- **Iteracoes:** 1
+- **Arquivos copiados (domain+app):** 7/7 (4 identicos, 3 so import paths)
+- **Arquivos novos (infra+presentation+container):** 8
+- **% codigo reutilizado:** 46% arquivos, ~95% linhas (diffs sao so import paths)
+- **Testes:** 6/6 auth + 2 health = 8 passando
+- **Observacoes:** Lógica 100% identica ao monolito. Domain e Application copiados. Infra services (bcrypt, jose) copiados. Novos: DynamoDB repo, Lambda handlers, authorizer, container.
 
 ### Migration 1: Catalogo Service
 - **Inicio:** 
