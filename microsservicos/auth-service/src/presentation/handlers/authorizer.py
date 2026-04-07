@@ -1,31 +1,14 @@
-import os
 import logging
 
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
 
-JWT_SECRET = os.environ.get("JWT_SECRET", "")
-
 
 def handler(event, context):
     """Lambda Authorizer para API Gateway.
-
-    Valida JWT e retorna IAM policy.
-    API Gateway cacheia o resultado por 300s (configurado no template.yaml).
+    TODO: Implementar na Migration 0
     """
-    token = event.get("authorizationToken", "")
-    method_arn = event.get("methodArn", "")
-
-    if not token.startswith("Bearer "):
-        raise Exception("Unauthorized")
-
-    jwt_token = token[7:]
-
-    try:
-        # TODO: Implementar validacao JWT real na Feature 0
-        raise Exception("Auth not implemented yet")
-    except Exception:
-        raise Exception("Unauthorized")
+    raise Exception("Unauthorized")
 
 
 def _generate_policy(principal_id, effect, resource):

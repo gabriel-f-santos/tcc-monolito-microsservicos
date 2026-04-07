@@ -2,6 +2,8 @@
 
 ## Contexto
 
+**IMPORTANTE:** Cada microsservico e independente com seu proprio `pyproject.toml`, `tests/` e venv. Rode testes de DENTRO do diretorio do servico: `cd microsservicos/xxx-service && pytest`. Imports usam `src.` (nao `xxx-service.src.`).
+
 Leia estes arquivos antes de implementar:
 - `docs/features/RULES.md` — regras obrigatorias
 - `docs/architecture.md` — padrao DDD, camadas, container DI

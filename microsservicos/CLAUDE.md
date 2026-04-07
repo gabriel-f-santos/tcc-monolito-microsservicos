@@ -36,16 +36,28 @@ Dois servicos independentes seguindo **DDD** e **Clean Architecture**, deployado
 
 O dominio, contratos de API e eventos estao em `docs/spec.md`. Siga rigorosamente.
 
+## Estrutura Independente
+
+Cada microsservico e **independente** com seu proprio:
+- `pyproject.toml` — dependencias
+- `tests/` — testes
+- `.venv/` — virtual environment (nao commitado)
+
+**NUNCA** usar pyproject.toml ou venv compartilhado entre servicos.
+
 ## Comandos
 
 ```bash
-source .venv/bin/activate
-sam build                         # Build
-sam local start-api               # API local
-sam deploy --guided               # Deploy (primeira vez)
-sam deploy --no-confirm-changeset # Deploy (subsequentes)
+# Por servico (rodar de DENTRO do diretorio)
+cd microsservicos/auth-service
+python3 -m venv .venv && source .venv/bin/activate && pip install -e ".[dev]"
 pytest -v                         # Testes
-radon cc catalogo-service/src/ estoque-service/src/ -s -a  # CC
+radon cc src/ -s -a               # CC
+
+# SAM (rodar da raiz microsservicos/)
+cd microsservicos
+sam build                         # Build
+sam deploy --no-confirm-changeset # Deploy
 ```
 
 ## Medicao de Tempo (para o TCC)
