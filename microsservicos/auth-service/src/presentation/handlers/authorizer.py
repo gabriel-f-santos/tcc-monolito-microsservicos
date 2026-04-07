@@ -1,16 +1,10 @@
+import os
 import logging
-
-from src.container import AuthContainer
-from src.infrastructure.config.settings import settings
 
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
 
-container = AuthContainer(
-    usuarios_table=settings.usuarios_table,
-    jwt_secret=settings.jwt_secret,
-    jwt_expiration_hours=settings.jwt_expiration_hours,
-)
+JWT_SECRET = os.environ.get("JWT_SECRET", "")
 
 
 def handler(event, context):
@@ -28,9 +22,8 @@ def handler(event, context):
     jwt_token = token[7:]
 
     try:
-        token_service = container.token_service()
-        payload = token_service.decode_token(jwt_token)
-        return _generate_policy(payload["user_id"], "Allow", method_arn)
+        # TODO: Implementar validacao JWT real na Feature 0
+        raise Exception("Auth not implemented yet")
     except Exception:
         raise Exception("Unauthorized")
 
