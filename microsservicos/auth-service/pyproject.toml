@@ -1,0 +1,26 @@
+[build-system]
+requires = ["setuptools>=68.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "auth-service"
+version = "0.1.0"
+description = "Auth Service - Autenticacao JWT"
+requires-python = ">=3.13"
+dependencies = [
+    "boto3>=1.35.0",
+    "pydantic>=2.0.0",
+    "dependency-injector>=4.41.0",
+    "python-jose[cryptography]>=3.3.0",
+    "bcrypt>=4.0.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0.0",
+    "radon>=6.0.0",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]
