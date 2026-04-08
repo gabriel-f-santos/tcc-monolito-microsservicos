@@ -63,7 +63,7 @@ def _response(status_code: int, body: dict | list) -> dict:
 
 
 def _extract_id(path: str, prefix: str) -> str | None:
-    """Extract UUID from path like /catalogo/produtos/{id}"""
+    """Extract UUID from path like /api/v1/produtos/{id}"""
     remainder = path[len(prefix):]
     if remainder.startswith("/"):
         remainder = remainder[1:]
@@ -82,26 +82,26 @@ def handler(event, context):
         user_id = event.get("requestContext", {}).get("authorizer", {}).get("principalId")
 
         # --- Categorias ---
-        if path == "/catalogo/categorias" and method == "POST":
+        if path == "/api/v1/categorias" and method == "POST":
             body = json.loads(event["body"])
             use_case = container.criar_categoria()
             categoria = use_case.execute(CriarCategoriaDTO(**body))
             return _response(201, _categoria_to_dict(categoria))
 
-        if path == "/catalogo/categorias" and method == "GET":
+        if path == "/api/v1/categorias" and method == "GET":
             use_case = container.listar_categorias()
             categorias = use_case.execute()
             return _response(200, [_categoria_to_dict(c) for c in categorias])
 
-        if path.startswith("/catalogo/categorias/") and method == "GET":
-            cat_id = _extract_id(path, "/catalogo/categorias")
+        if path.startswith("/api/v1/categorias/") and method == "GET":
+            cat_id = _extract_id(path, "/api/v1/categorias")
             if cat_id:
                 use_case = container.buscar_categoria()
                 categoria = use_case.execute(UUID(cat_id))
                 return _response(200, _categoria_to_dict(categoria))
 
         # --- Produtos ---
-        if path == "/catalogo/produtos" and method == "POST":
+        if path == "/api/v1/produtos" and method == "POST":
             body = json.loads(event["body"])
             body["categoria_id"] = UUID(body["categoria_id"])
             body["preco"] = Decimal(str(body["preco"]))
@@ -109,22 +109,22 @@ def handler(event, context):
             produto = use_case.execute(CriarProdutoDTO(**body))
             return _response(201, _produto_to_dict(produto))
 
-        if path == "/catalogo/produtos" and method == "GET":
+        if path == "/api/v1/produtos" and method == "GET":
             params = event.get("queryStringParameters") or {}
             cat_id = UUID(params["categoria_id"]) if "categoria_id" in params else None
             use_case = container.listar_produtos()
             produtos = use_case.execute(categoria_id=cat_id)
             return _response(200, [_produto_to_dict(p) for p in produtos])
 
-        if path.startswith("/catalogo/produtos/") and method == "GET":
-            prod_id = _extract_id(path, "/catalogo/produtos")
+        if path.startswith("/api/v1/produtos/") and method == "GET":
+            prod_id = _extract_id(path, "/api/v1/produtos")
             if prod_id:
                 use_case = container.buscar_produto()
                 produto = use_case.execute(UUID(prod_id))
                 return _response(200, _produto_to_dict(produto))
 
-        if path.startswith("/catalogo/produtos/") and method == "PUT":
-            prod_id = _extract_id(path, "/catalogo/produtos")
+        if path.startswith("/api/v1/produtos/") and method == "PUT":
+            prod_id = _extract_id(path, "/api/v1/produtos")
             if prod_id:
                 body = json.loads(event["body"])
                 if "preco" in body:
@@ -133,8 +133,8 @@ def handler(event, context):
                 produto = use_case.execute(UUID(prod_id), AtualizarProdutoDTO(**body))
                 return _response(200, _produto_to_dict(produto))
 
-        if path.startswith("/catalogo/produtos/") and method == "DELETE":
-            prod_id = _extract_id(path, "/catalogo/produtos")
+        if path.startswith("/api/v1/produtos/") and method == "PATCH" and path.endswith("/desativar"):
+            prod_id = _extract_id(path, "/api/v1/produtos")
             if prod_id:
                 use_case = container.desativar_produto()
                 produto = use_case.execute(UUID(prod_id))

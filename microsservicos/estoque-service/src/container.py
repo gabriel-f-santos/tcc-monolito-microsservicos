@@ -25,19 +25,18 @@ class EstoqueContainer(containers.DeclarativeContainer):
     # External dependencies
     itens_estoque_table = providers.Dependency(instance_of=str)
     movimentacoes_table = providers.Dependency(instance_of=str)
-    endpoint_url = providers.Dependency(default=None)
 
     # Repositories
     item_estoque_repository = providers.Singleton(
         DynamoDBItemEstoqueRepository,
         table_name=itens_estoque_table,
-        endpoint_url=endpoint_url,
+        
     )
 
     movimentacao_repository = providers.Singleton(
         DynamoDBMovimentacaoRepository,
         table_name=movimentacoes_table,
-        endpoint_url=endpoint_url,
+        
     )
 
     # Use Cases — copied from monolith

@@ -21,7 +21,6 @@ class AuthContainer(containers.DeclarativeContainer):
 
     # External dependencies
     table_name = providers.Dependency(instance_of=str)
-    endpoint_url = providers.Dependency(default=None)
     jwt_secret = providers.Dependency(instance_of=str)
     jwt_expiration_hours = providers.Dependency(instance_of=int)
 
@@ -38,7 +37,7 @@ class AuthContainer(containers.DeclarativeContainer):
     usuario_repository = providers.Singleton(
         DynamoDBUsuarioRepository,
         table_name=table_name,
-        endpoint_url=endpoint_url,
+        
     )
 
     # Use Cases
