@@ -179,10 +179,13 @@ A troca de PostgreSQL (monolito) para DynamoDB (microsservicos) demonstra na pra
 
 A injecao de dependencia foi implementada com a biblioteca "dependency-injector", utilizando o padrao de "Composition Root" [CR]: cada "Bounded Context" possui um container declarativo (DeclarativeContainer) que e o unico ponto do sistema que conhece as implementacoes concretas dos repositorios. Os casos de uso recebem interfaces via construtor e desconhecem se estao conectados a PostgreSQL, DynamoDB ou repositorios em memoria (usados em testes). A biblioteca oferece provedores tipados (Factory, Singleton, Configuration) e um mecanismo de "override" que permite substituir implementacoes em testes sem alterar codigo de producao. Essa abordagem foi preferida ao mecanismo Depends() do FastAPI por nao acoplar a composicao de dependencias ao "framework", mantendo as camadas de dominio e aplicacao como Python puro — requisito fundamental da "Clean Architecture".
 
+Na migracao do monolito para microsservicos, as camadas de dominio e aplicacao foram copiadas integralmente, sem alteracao de logica de negocio. Das 34 unidades de codigo (arquivos Python) pertencentes a essas camadas, 11 foram copiadas sem qualquer modificacao e 23 apresentaram diferencas exclusivamente nos caminhos de importacao — consequencia da reorganizacao de diretorios entre as duas arquiteturas. No monolito, cada "Bounded Context" e um submodulo dentro de um unico projeto (`src.catalogo.domain`), enquanto nos microsservicos cada contexto e o servico inteiro (`src.domain`). Essa diferenca de caminhos e puramente estrutural e nao afeta a logica: os mesmos casos de uso, as mesmas entidades, os mesmos "Value Objects" e as mesmas interfaces de repositorio operam identicamente em ambos os ambientes. Nenhum arquivo de dominio ou aplicacao precisou de alteracao em regras de negocio, validacoes ou fluxos. A totalidade do codigo novo (24 arquivos) concentrou-se nas camadas de infraestrutura (repositorios DynamoDB, publicador SNS, consumidor SQS) e apresentacao ("handlers" Lambda), confirmando que a separacao de camadas proposta pela "Clean Architecture" cumpriu seu objetivo de isolar a logica de negocio das decisoes de infraestrutura.
+
 <!-- TODO: Adicionar diagrama da arquitetura como Figura ao passar para Word.
      Figura 1. Arquitetura do sistema monolitico
      Figura 2. Arquitetura dos microsservicos "serverless"
      Figura 3. Fluxo de eventos entre "Bounded Contexts"
+     Figura 4. Comparacao de reuso de codigo na migracao (script compare-migration.sh)
      Fonte: Dados originais da pesquisa -->
 
 **Ferramentas e tecnologias**
