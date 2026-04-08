@@ -100,17 +100,17 @@
 - **Observacoes:** Lógica 100% identica ao monolito. Domain e Application copiados. Infra services (bcrypt, jose) copiados. Novos: DynamoDB repo, Lambda handlers, authorizer, container.
 
 ### Migration 1: Catalogo Service
-- **Inicio:** 
-- **Fim:** 
-- **Tempo total:** 
+- **Inicio:** 2026-04-07 21:00
+- **Fim:** 2026-04-07 21:07
+- **Tempo total:** 6min 57s
 - **Modo:** dangerously-skip-permissions
 - **Tokens:** 
-- **Iteracoes:** 
-- **Arquivos copiados (domain+app):** /16
-- **Arquivos novos (infra+presentation):** 
-- **% codigo reutilizado:** 
-- **Testes:** /14
-- **Observacoes:** 
+- **Iteracoes:** 1
+- **Arquivos copiados (domain+app):** 15 (4 identicos, 11 import-path-only)
+- **Arquivos novos (infra+presentation+container):** 6 (2 DynamoDB repos, SNS service, handler, settings, container)
+- **% codigo reutilizado:** 71% arquivos, ~95% linhas
+- **Testes:** 14/14 catalogo + 2 health = 16 passando
+- **Observacoes:** Maior BC — 8 use cases, 2 VOs, 2 repos. SNS EstoqueService substitui in-process. Handler com roteamento por method+path.
 
 ### Migration 2: Estoque Service (inclui eventos)
 - **Inicio:** 
