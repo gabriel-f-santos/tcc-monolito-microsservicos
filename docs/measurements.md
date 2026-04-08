@@ -113,20 +113,17 @@
 - **Observacoes:** Maior BC — 8 use cases, 2 VOs, 2 repos. SNS EstoqueService substitui in-process. Handler com roteamento por method+path.
 
 ### Migration 2: Estoque Service (inclui eventos)
-- **Inicio:** 
-- **Fim:** 
-- **Tempo total:** 
+- **Inicio:** 2026-04-07 ~21:10
+- **Fim:** 2026-04-07 ~21:17
+- **Tempo total:** 6min 24s (segunda tentativa — primeira falhou e entrou em modo planejamento)
 - **Modo:** dangerously-skip-permissions
 - **Tokens:** 
-- **Iteracoes:** 
-- **Arquivos copiados (domain+app):** /12
-- **Arquivos novos (infra+presentation+eventos):** 
-- **% codigo reutilizado:** 
-- **Testes:** /14
-- **Observacoes:** 
-- **Iteracoes:** 
-- **Diff:** 
-- **Testes:** /3
+- **Iteracoes:** 2 (primeira falhou)
+- **Arquivos copiados (domain+app):** 14
+- **Arquivos novos (infra+presentation+eventos+container):** 6
+- **% codigo reutilizado:** 70% arquivos, ~95% linhas
+- **Testes:** 14/14 estoque + 3 eventos + 1 consumer = 18 passando
+- **Observacoes:** Primeira tentativa entrou em modo planejamento — git clean e reiniciou. Inclui event consumer para SQS (ProdutoCriado, ProdutoAtualizado, ProdutoDesativado).
 - **Observacoes:** 
 
 ---
