@@ -479,5 +479,40 @@ GitHub Actions mede automaticamente o tempo de cada job. Dados do ultimo deploy 
 | Servico | URL |
 |---------|-----|
 | Monolito | http://tcc-monolito-alb-1189235770.us-east-1.elb.amazonaws.com |
-| Catalogo | https://odkl9vxtd0.execute-api.us-east-1.amazonaws.com/Prod/catalogo |
-| Estoque | https://odkl9vxtd0.execute-api.us-east-1.amazonaws.com/Prod/estoque |
+| Auth | https://dw67rjquqj.execute-api.us-east-1.amazonaws.com/Prod/auth |
+| Catalogo | https://dw67rjquqj.execute-api.us-east-1.amazonaws.com/Prod/api/v1 |
+| Estoque | https://dw67rjquqj.execute-api.us-east-1.amazonaws.com/Prod/api/v1 |
+
+---
+
+## Licoes Aprendidas no Deploy (Serverless)
+
+Problemas encontrados e corrigidos durante o primeiro deploy dos microsservicos:
+
+### 1. requirements.txt obrigatorio para SAM
+
+SAM build usa `requirements.txt` para instalar dependencias no pacote Lambda. `pyproject.toml` nao e suficiente. Cada servico precisa do seu `requirements.txt`.
+
+### 2. IAM Policies nao suportadas em Globals
+
+`Globals.Function.Policies` causa `InvalidSamDocumentException`. Policies devem ser adicionadas em CADA funcao individualmente.
+
+### 3. Lambda Authorizer — cache com wildcard ARN
+
+Se o authorizer retorna `event["methodArn"]` (ARN especifico da rota), o cache do API Gateway invalida requests para outras rotas com o mesmo token. Solucao: retornar wildcard ARN (`arn:aws:execute-api:REGION:ACCOUNT:API/STAGE/*`).
+
+### 4. Paths do handler devem corresponder ao template.yaml
+
+Se o template define `Path: /api/v1/categorias`, o handler recebe exatamente `/api/v1/categorias` no campo `event["path"]`. Nao usar paths diferentes (ex: `/catalogo/categorias`).
+
+### 5. Container nao deve ter Dependency obrigatoria para endpoint_url
+
+`endpoint_url` e usado apenas para DynamoDB Local em testes. O repo aceita `endpoint_url=None` como default, entao o container nao precisa recebe-la.
+
+### 6. sam deploy nem sempre detecta mudancas no codigo Python
+
+SAM compara hashes dos pacotes. Se o template nao mudou, pode reportar "No changes to deploy" mesmo com codigo novo. Solucao: `rm -rf .aws-sam && sam build` antes de deploy.
+
+### 7. sam build requer Python da versao do runtime
+
+Se o runtime e `python3.13` e o local e `3.11`, usar `sam build --use-container` para buildar dentro de um container Docker com a versao correta.
