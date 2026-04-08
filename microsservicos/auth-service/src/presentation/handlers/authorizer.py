@@ -23,7 +23,15 @@ def handler(event, context):
     try:
         token_service = container.token_service()
         payload = token_service.decode_token(token)
-        return _generate_policy(payload["user_id"], "Allow", event["methodArn"])
+        # Use wildcard resource so cached policy works for all routes
+        arn_parts = event["methodArn"].split(":")
+        region = arn_parts[3]
+        account_id = arn_parts[4]
+        api_gw_parts = arn_parts[5].split("/")
+        api_id = api_gw_parts[0]
+        stage = api_gw_parts[1]
+        wildcard_arn = f"arn:aws:execute-api:{region}:{account_id}:{api_id}/{stage}/*"
+        return _generate_policy(payload["user_id"], "Allow", wildcard_arn)
     except TokenInvalido:
         raise Exception("Unauthorized")
 

@@ -27,20 +27,19 @@ class CatalogoContainer(containers.DeclarativeContainer):
     # External dependencies
     produtos_table = providers.Dependency(instance_of=str)
     categorias_table = providers.Dependency(instance_of=str)
-    endpoint_url = providers.Dependency(default=None)
     eventos_topic_arn = providers.Dependency(instance_of=str)
 
     # Repositories
     produto_repository = providers.Singleton(
         DynamoDBProdutoRepository,
         table_name=produtos_table,
-        endpoint_url=endpoint_url,
+        
     )
 
     categoria_repository = providers.Singleton(
         DynamoDBCategoriaRepository,
         table_name=categorias_table,
-        endpoint_url=endpoint_url,
+        
     )
 
     # Cross-BC service

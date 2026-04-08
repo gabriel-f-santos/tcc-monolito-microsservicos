@@ -37,6 +37,22 @@ Resources:
   AuthorizerFunction:
     Type: AWS::Serverless::Function
     Properties:
+      Policies:
+        - Version: "2012-10-17"
+          Statement:
+            - Effect: Allow
+              Action:
+                - dynamodb:GetItem
+                - dynamodb:PutItem
+                - dynamodb:UpdateItem
+                - dynamodb:DeleteItem
+                - dynamodb:Scan
+                - dynamodb:Query
+              Resource: !Sub "arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/tcc-*"
+            - Effect: Allow
+              Action:
+                - sns:Publish
+              Resource: !Sub "arn:aws:sns:${AWS::Region}:${AWS::AccountId}:tcc-*"
       Handler: src/presentation/handlers/authorizer.handler
       CodeUri: auth-service
       Description: Lambda Authorizer - valida JWT e retorna IAM policy
@@ -53,6 +69,22 @@ Resources:
   AuthRegistrarFunction:
     Type: AWS::Serverless::Function
     Properties:
+      Policies:
+        - Version: "2012-10-17"
+          Statement:
+            - Effect: Allow
+              Action:
+                - dynamodb:GetItem
+                - dynamodb:PutItem
+                - dynamodb:UpdateItem
+                - dynamodb:DeleteItem
+                - dynamodb:Scan
+                - dynamodb:Query
+              Resource: !Sub "arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/tcc-*"
+            - Effect: Allow
+              Action:
+                - sns:Publish
+              Resource: !Sub "arn:aws:sns:${AWS::Region}:${AWS::AccountId}:tcc-*"
       Handler: src/presentation/handlers/auth.registrar_handler
       CodeUri: auth-service
       Description: Registrar novo usuario
@@ -73,6 +105,22 @@ Resources:
   AuthLoginFunction:
     Type: AWS::Serverless::Function
     Properties:
+      Policies:
+        - Version: "2012-10-17"
+          Statement:
+            - Effect: Allow
+              Action:
+                - dynamodb:GetItem
+                - dynamodb:PutItem
+                - dynamodb:UpdateItem
+                - dynamodb:DeleteItem
+                - dynamodb:Scan
+                - dynamodb:Query
+              Resource: !Sub "arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/tcc-*"
+            - Effect: Allow
+              Action:
+                - sns:Publish
+              Resource: !Sub "arn:aws:sns:${AWS::Region}:${AWS::AccountId}:tcc-*"
       Handler: src/presentation/handlers/auth.login_handler
       CodeUri: auth-service
       Description: Login - gera JWT
@@ -129,6 +177,22 @@ Resources:
   CatalogoFunction:
     Type: AWS::Serverless::Function
     Properties:
+      Policies:
+        - Version: "2012-10-17"
+          Statement:
+            - Effect: Allow
+              Action:
+                - dynamodb:GetItem
+                - dynamodb:PutItem
+                - dynamodb:UpdateItem
+                - dynamodb:DeleteItem
+                - dynamodb:Scan
+                - dynamodb:Query
+              Resource: !Sub "arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/tcc-*"
+            - Effect: Allow
+              Action:
+                - sns:Publish
+              Resource: !Sub "arn:aws:sns:${AWS::Region}:${AWS::AccountId}:tcc-*"
       Handler: src/presentation/handlers/catalogo.handler
       CodeUri: catalogo-service
       Description: CRUD de produtos e categorias
@@ -192,6 +256,22 @@ Resources:
   EstoqueFunction:
     Type: AWS::Serverless::Function
     Properties:
+      Policies:
+        - Version: "2012-10-17"
+          Statement:
+            - Effect: Allow
+              Action:
+                - dynamodb:GetItem
+                - dynamodb:PutItem
+                - dynamodb:UpdateItem
+                - dynamodb:DeleteItem
+                - dynamodb:Scan
+                - dynamodb:Query
+              Resource: !Sub "arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/tcc-*"
+            - Effect: Allow
+              Action:
+                - sns:Publish
+              Resource: !Sub "arn:aws:sns:${AWS::Region}:${AWS::AccountId}:tcc-*"
       Handler: src/presentation/handlers/estoque.handler
       CodeUri: estoque-service
       Description: Consulta e movimentacoes de estoque
@@ -241,6 +321,22 @@ Resources:
   EstoqueEventConsumer:
     Type: AWS::Serverless::Function
     Properties:
+      Policies:
+        - Version: "2012-10-17"
+          Statement:
+            - Effect: Allow
+              Action:
+                - dynamodb:GetItem
+                - dynamodb:PutItem
+                - dynamodb:UpdateItem
+                - dynamodb:DeleteItem
+                - dynamodb:Scan
+                - dynamodb:Query
+              Resource: !Sub "arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/tcc-*"
+            - Effect: Allow
+              Action:
+                - sns:Publish
+              Resource: !Sub "arn:aws:sns:${AWS::Region}:${AWS::AccountId}:tcc-*"
       Handler: src/presentation/handlers/event_consumer.handler
       CodeUri: estoque-service
       Description: Consome eventos de dominio do Catalogo
