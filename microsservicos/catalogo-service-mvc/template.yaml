@@ -1,0 +1,135 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: Catalogo Service MVC — Produtos e Categorias (stack independente)
+
+Globals:
+  Function:
+    Runtime: python3.13
+    MemorySize: 512
+    Timeout: 30
+    Tracing: Active
+
+Resources:
+  CatalogoApi:
+    Type: AWS::Serverless::Api
+    Properties:
+      StageName: Prod
+      Auth:
+        DefaultAuthorizer: JwtAuthorizer
+        Authorizers:
+          JwtAuthorizer:
+            FunctionArn: !ImportValue tcc-mvc-auth-authorizer-arn
+            Identity:
+              Header: Authorization
+              ReauthorizeEvery: 300
+
+  # --- Health (publico) ---
+  HealthCheckFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: src/handlers/health.handler
+      CodeUri: .
+      Events:
+        Api:
+          Type: Api
+          Properties:
+            RestApiId: !Ref CatalogoApi
+            Path: /health
+            Method: get
+            Auth:
+              Authorizer: NONE
+
+  # --- Catalogo handler (protegido) ---
+  CatalogoFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: src/handlers/catalogo.handler
+      CodeUri: .
+      Policies:
+        - Version: "2012-10-17"
+          Statement:
+            - Effect: Allow
+              Action: ["dynamodb:GetItem","dynamodb:PutItem","dynamodb:UpdateItem","dynamodb:DeleteItem","dynamodb:Scan","dynamodb:Query"]
+              Resource:
+                - !GetAtt ProdutosTable.Arn
+                - !GetAtt CategoriasTable.Arn
+            - Effect: Allow
+              Action: ["sns:Publish"]
+              Resource: !Ref EventosDominioTopic
+      Environment:
+        Variables:
+          PRODUTOS_TABLE: !Ref ProdutosTable
+          CATEGORIAS_TABLE: !Ref CategoriasTable
+          EVENTOS_TOPIC_ARN: !Ref EventosDominioTopic
+      Events:
+        Categorias:
+          Type: Api
+          Properties:
+            RestApiId: !Ref CatalogoApi
+            Path: /api/v1/categorias
+            Method: ANY
+        CategoriaById:
+          Type: Api
+          Properties:
+            RestApiId: !Ref CatalogoApi
+            Path: /api/v1/categorias/{id}
+            Method: ANY
+        Produtos:
+          Type: Api
+          Properties:
+            RestApiId: !Ref CatalogoApi
+            Path: /api/v1/produtos
+            Method: ANY
+        ProdutoById:
+          Type: Api
+          Properties:
+            RestApiId: !Ref CatalogoApi
+            Path: /api/v1/produtos/{id}
+            Method: ANY
+        ProdutoDesativar:
+          Type: Api
+          Properties:
+            RestApiId: !Ref CatalogoApi
+            Path: /api/v1/produtos/{id}/desativar
+            Method: PATCH
+
+  # --- DynamoDB ---
+  CategoriasTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: tcc-mvc-catalogo-categorias
+      BillingMode: PAY_PER_REQUEST
+      AttributeDefinitions:
+        - AttributeName: id
+          AttributeType: S
+      KeySchema:
+        - AttributeName: id
+          KeyType: HASH
+
+  ProdutosTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: tcc-mvc-catalogo-produtos
+      BillingMode: PAY_PER_REQUEST
+      AttributeDefinitions:
+        - AttributeName: id
+          AttributeType: S
+      KeySchema:
+        - AttributeName: id
+          KeyType: HASH
+
+  # --- SNS (eventos de dominio) ---
+  EventosDominioTopic:
+    Type: AWS::SNS::Topic
+    Properties:
+      TopicName: tcc-mvc-catalogo-eventos
+
+Outputs:
+  ApiUrl:
+    Value: !Sub "https://${CatalogoApi}.execute-api.${AWS::Region}.amazonaws.com/Prod"
+    Export:
+      Name: tcc-mvc-catalogo-api-url
+  EventosTopicArn:
+    Value: !Ref EventosDominioTopic
+    Export:
+      Name: tcc-mvc-catalogo-eventos-topic-arn
