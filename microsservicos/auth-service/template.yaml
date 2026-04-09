@@ -1,0 +1,118 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: Auth Service DDD — Autenticacao JWT (stack independente)
+
+Globals:
+  Function:
+    Runtime: python3.13
+    MemorySize: 512
+    Timeout: 30
+    Tracing: Active
+
+Parameters:
+  JwtSecret:
+    Type: String
+    NoEcho: true
+    Default: change-me-in-production
+
+Resources:
+  AuthApi:
+    Type: AWS::Serverless::Api
+    Properties:
+      StageName: Prod
+
+  # --- Health (publico) ---
+  HealthCheckFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: src/handlers/health.handler
+      CodeUri: .
+      Events:
+        Api:
+          Type: Api
+          Properties:
+            RestApiId: !Ref AuthApi
+            Path: /health
+            Method: get
+
+  # --- Auth handlers (publicos) ---
+  RegistrarFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: src/handlers/auth.registrar_handler
+      CodeUri: .
+      Policies:
+        - Version: "2012-10-17"
+          Statement:
+            - Effect: Allow
+              Action: ["dynamodb:GetItem","dynamodb:PutItem","dynamodb:Scan"]
+              Resource: !GetAtt UsuariosTable.Arn
+      Environment:
+        Variables:
+          USUARIOS_TABLE: !Ref UsuariosTable
+          JWT_SECRET: !Ref JwtSecret
+      Events:
+        Api:
+          Type: Api
+          Properties:
+            RestApiId: !Ref AuthApi
+            Path: /api/v1/auth/registrar
+            Method: post
+
+  LoginFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: src/handlers/auth.login_handler
+      CodeUri: .
+      Policies:
+        - Version: "2012-10-17"
+          Statement:
+            - Effect: Allow
+              Action: ["dynamodb:GetItem","dynamodb:Scan"]
+              Resource: !GetAtt UsuariosTable.Arn
+      Environment:
+        Variables:
+          USUARIOS_TABLE: !Ref UsuariosTable
+          JWT_SECRET: !Ref JwtSecret
+      Events:
+        Api:
+          Type: Api
+          Properties:
+            RestApiId: !Ref AuthApi
+            Path: /api/v1/auth/login
+            Method: post
+
+  # --- Lambda Authorizer (exportado para outros servicos) ---
+  AuthorizerFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: src/handlers/authorizer.handler
+      CodeUri: .
+      MemorySize: 256
+      Timeout: 5
+      Environment:
+        Variables:
+          JWT_SECRET: !Ref JwtSecret
+
+  # --- DynamoDB ---
+  UsuariosTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: tcc-ddd-auth-usuarios
+      BillingMode: PAY_PER_REQUEST
+      AttributeDefinitions:
+        - AttributeName: id
+          AttributeType: S
+      KeySchema:
+        - AttributeName: id
+          KeyType: HASH
+
+Outputs:
+  ApiUrl:
+    Value: !Sub "https://${AuthApi}.execute-api.${AWS::Region}.amazonaws.com/Prod"
+    Export:
+      Name: tcc-ddd-auth-api-url
+  AuthorizerFunctionArn:
+    Value: !GetAtt AuthorizerFunction.Arn
+    Export:
+      Name: tcc-ddd-auth-authorizer-arn

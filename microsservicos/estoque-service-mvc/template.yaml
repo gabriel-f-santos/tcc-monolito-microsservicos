@@ -1,6 +1,6 @@
 AWSTemplateFormatVersion: '2010-09-09'
 Transform: AWS::Serverless-2016-10-31
-Description: Estoque Service DDD — Controle de Estoque (stack independente)
+Description: Estoque Service MVC — Controle de Estoque (stack independente)
 
 Globals:
   Function:
@@ -18,7 +18,7 @@ Resources:
         DefaultAuthorizer: JwtAuthorizer
         Authorizers:
           JwtAuthorizer:
-            FunctionArn: !ImportValue tcc-ddd-auth-authorizer-arn
+            FunctionArn: !ImportValue tcc-mvc-auth-authorizer-arn
             Identity:
               Header: Authorization
               ReauthorizeEvery: 300
@@ -121,7 +121,7 @@ Resources:
   ItensEstoqueTable:
     Type: AWS::DynamoDB::Table
     Properties:
-      TableName: tcc-ddd-estoque-itens
+      TableName: tcc-mvc-estoque-itens
       BillingMode: PAY_PER_REQUEST
       AttributeDefinitions:
         - AttributeName: id
@@ -133,7 +133,7 @@ Resources:
   MovimentacoesTable:
     Type: AWS::DynamoDB::Table
     Properties:
-      TableName: tcc-ddd-estoque-movimentacoes
+      TableName: tcc-mvc-estoque-movimentacoes
       BillingMode: PAY_PER_REQUEST
       AttributeDefinitions:
         - AttributeName: id
@@ -146,13 +146,13 @@ Resources:
   EstoqueEventosQueue:
     Type: AWS::SQS::Queue
     Properties:
-      QueueName: tcc-ddd-estoque-eventos
+      QueueName: tcc-mvc-estoque-eventos
       VisibilityTimeout: 60
 
   EstoqueEventosSubscription:
     Type: AWS::SNS::Subscription
     Properties:
-      TopicArn: !ImportValue tcc-ddd-catalogo-eventos-topic-arn
+      TopicArn: !ImportValue tcc-mvc-catalogo-eventos-topic-arn
       Protocol: sqs
       Endpoint: !GetAtt EstoqueEventosQueue.Arn
 
@@ -171,4 +171,4 @@ Outputs:
   ApiUrl:
     Value: !Sub "https://${EstoqueApi}.execute-api.${AWS::Region}.amazonaws.com/Prod"
     Export:
-      Name: tcc-ddd-estoque-api-url
+      Name: tcc-mvc-estoque-api-url
