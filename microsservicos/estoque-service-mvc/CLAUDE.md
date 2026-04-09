@@ -49,7 +49,6 @@ sam deploy --no-confirm-changeset
 ### Cross-Stack References
 - `tcc-mvc-auth-authorizer-arn` — Lambda Authorizer
 - `tcc-mvc-catalogo-eventos-topic-arn` — Topic SNS
-Nenhum
 
 ## Ordem de Deploy
 
