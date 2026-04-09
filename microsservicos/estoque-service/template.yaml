@@ -1,0 +1,37 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: Estoque Service — Controle de Estoque (Microsservico independente)
+
+Globals:
+  Function:
+    Runtime: python3.13
+    MemorySize: 512
+    Timeout: 30
+    Tracing: Active
+
+Resources:
+  EstoqueApi:
+    Type: AWS::Serverless::Api
+    Properties:
+      StageName: Prod
+
+  HealthCheckFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: src/handlers/health.handler
+      CodeUri: .
+      Description: Health check do Estoque Service
+      Events:
+        HealthApi:
+          Type: Api
+          Properties:
+            RestApiId: !Ref EstoqueApi
+            Path: /health
+            Method: get
+
+Outputs:
+  ApiUrl:
+    Description: URL do API Gateway do Estoque Service
+    Value: !Sub "https://${EstoqueApi}.execute-api.${AWS::Region}.amazonaws.com/Prod"
+    Export:
+      Name: estoque-service-api-url
