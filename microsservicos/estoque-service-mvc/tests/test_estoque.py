@@ -3,7 +3,6 @@ Identicos entre DDD e MVC — mesmos payloads, mesmas respostas.
 Invoca Lambda handlers com event mockado.
 
 NOTA: Estes testes assumem que o ItemEstoque ja existe (criado via evento ou setup).
-O conftest.py deve prover um helper para criar itens de estoque para teste."""
 import json
 import uuid
 

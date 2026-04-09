@@ -53,7 +53,6 @@ sam deploy --no-confirm-changeset
 ### Cross-Stack References
 - `tcc-ddd-auth-authorizer-arn` — Lambda Authorizer
 - `tcc-ddd-catalogo-eventos-topic-arn` — Topic SNS para subscription SQS
-Nenhum
 
 ## Ordem de Deploy
 

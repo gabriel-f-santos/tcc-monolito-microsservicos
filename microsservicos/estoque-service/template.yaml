@@ -147,7 +147,7 @@ Resources:
     Type: AWS::SQS::Queue
     Properties:
       QueueName: tcc-ddd-estoque-eventos
-      VisibilityTimeout: 60
+      VisibilityTimeout: 180
 
   EstoqueEventosSubscription:
     Type: AWS::SNS::Subscription
@@ -165,6 +165,9 @@ Resources:
           - Effect: Allow
             Principal: {Service: sns.amazonaws.com}
             Action: sqs:SendMessage
+            Condition:
+              ArnEquals:
+                aws:SourceArn: !ImportValue tcc-ddd-catalogo-eventos-topic-arn
             Resource: !GetAtt EstoqueEventosQueue.Arn
 
 Outputs:
