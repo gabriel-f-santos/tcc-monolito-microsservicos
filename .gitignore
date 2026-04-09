@@ -36,7 +36,6 @@ htmlcov/
 
 # AWS SAM
 .aws-sam/
-samconfig.toml
 
 # Metrics (generated, not committed)
 **/metrics/*.json
@@ -45,6 +44,3 @@ samconfig.toml
 # OS
 .DS_Store
 Thumbs.db
-
-# pyenv
-.python-version
