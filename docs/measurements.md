@@ -128,6 +128,41 @@
 
 ---
 
+## Fase B2 — Migracao MVC para Microsservicos (Agentes Paralelos)
+
+### Migration MVC 0: Auth Service
+- **Tempo total:** 2min 26s
+- **Modo:** agente paralelo (subagent)
+- **Testes:** 6/6 auth + 2 health = 8 passando
+- **% codigo reutilizado do monolito-mvc:** 0% (reescrita completa)
+- **Observacoes:** SQLAlchemy → DynamoDB boto3 inline. Nenhuma linha copiada do monolito-mvc.
+
+### Migration MVC 1: Catalogo Service
+- **Tempo total:** 2min 11s
+- **Modo:** agente paralelo (subagent)
+- **Testes:** 14/14 catalogo + 2 health = 16 passando
+- **% codigo reutilizado do monolito-mvc:** 0% (reescrita completa)
+- **Observacoes:** Handler com roteamento por method+path. SNS publish inline.
+
+### Migration MVC 2: Estoque Service
+- **Tempo total:** 3min 41s
+- **Modo:** agente paralelo (subagent)
+- **Testes:** 11/11 estoque + 3 eventos + 2 health = 16 passando
+- **% codigo reutilizado do monolito-mvc:** 0% (reescrita completa)
+- **Observacoes:** Event consumer para SQS. Mais demorado por ter mais logica.
+
+### Totais MVC Migration
+
+| Metrica | DDD Migration | MVC Migration |
+|---------|--------------|---------------|
+| Tempo total | 18min 08s | 8min 18s |
+| Testes | 34/34 | 40/40 |
+| % reuso (linhas) | ~95% | ~0% |
+| Arquivos copiados | 34 | 0 |
+| Arquivos novos | 24 | 8 |
+
+---
+
 ## Fase C — Feature Nova: Alerta Estoque Baixo (Medicao Principal)
 
 ### Monolito + Claude Code
