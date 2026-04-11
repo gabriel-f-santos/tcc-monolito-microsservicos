@@ -163,6 +163,69 @@
 
 ---
 
+## Fase B4 — Rodada 2: Migracao com INTEGRATION-CONTRACT + moto + testes-guardiao
+
+Reexecucao da migracao apos auditoria da rodada 1 que encontrou **4 de 6
+microsservicos quebrados no deploy real** (bugs de integracao AWS que os
+testes InMemory mascaravam). Antes desta rodada, o skeleton recebeu:
+
+- `INTEGRATION-CONTRACT.md` com 6 regras obrigatorias
+- `conftest.py` generico parseando `template.yaml` e subindo moto
+- `tests/test_integration_contract.py` com 4 testes-guardiao
+- Prompts atualizados com contexto dos 4 bugs anteriores + checklist de done
+
+### Branch: `migration/v2-run1` (a partir de `skeleton-microsservicos-v2`)
+
+### Resultados (medicoes via `scripts/migration-timer.sh`)
+
+| Servico | Arq | Testes | Tempo (s) | Tempo (min) | Bugs? | Iteracoes |
+|---------|-----|--------|-----------|-------------|-------|-----------|
+| auth-service | DDD | 12/12 | 272.284 | 4.54 | 0 | 1 |
+| catalogo-service | DDD | 20/20 | 220.689 | 3.68 | 0 | 1 |
+| estoque-service | DDD | 20/20 | 262.943 | 4.38 | 0 | 1 |
+| auth-service-mvc | MVC | 12/12 | 111.635 | 1.86 | 0 | 1 |
+| catalogo-service-mvc | MVC | 20/20 | 143.149 | 2.39 | 0 | 1 |
+| estoque-service-mvc | MVC | 20/20 | 151.346 | 2.52 | 0 | 1 |
+
+### Totais
+
+| Metrica | DDD | MVC | Delta |
+|---------|-----|-----|-------|
+| Tempo somado | 755.9s (12.6min) | 406.1s (6.77min) | MVC 46% mais rapido |
+| Tempo paralelo (max) | 272.3s (4.54min) | 151.3s (2.52min) | MVC 44% mais rapido |
+| Testes passando | 52/52 | 52/52 | — |
+| 1a tentativa bem-sucedida | 3/3 | 3/3 | **100%** |
+
+### Comparacao Rodada 1 (main, sem contrato) vs Rodada 2 (com contrato)
+
+| Metrica | Rodada 1 | Rodada 2 | Delta |
+|---------|----------|----------|-------|
+| Tempo DDD (paralelo max) | 3min 54s | 4min 33s | +17% (+39s) |
+| Tempo MVC (paralelo max) | 2min 13s | 2min 31s | +14% (+18s) |
+| Testes locais verdes | 80/80 | 104/104 | +24 (guardioes) |
+| **Servicos funcionais em deploy real** | **2/6** | **(a validar)** | — |
+| Bugs graves detectados | 4 (so apos deploy) | 0 (antes do deploy) | — |
+
+**Observacoes:**
+- O contrato custou ~15% mais tempo de implementacao (esperado — mais testes, mais constraints)
+- Em troca, **zero bugs de integracao na primeira tentativa** — todos os 6 agentes entregaram codigo alinhado com o deploy real, pelos testes-guardiao
+- 24 novos testes aparecem no total: 4 testes-guardiao × 6 servicos
+- Ambos os agentes de estoque (DDD e MVC) reportaram bug de docstring em `tests/test_estoque.py` — fix aplicado por ambos. O bug estava no skeleton
+- Todos os 6 convergiram para padroes similares: `_table()` funcao lazy, env vars dentro de funcoes, zero chamada boto3 em import-time
+
+### Validacao
+
+```bash
+$ for svc in auth-service catalogo-service estoque-service \
+             auth-service-mvc catalogo-service-mvc estoque-service-mvc; do
+    cd microsservicos/$svc && .venv/bin/pytest tests/ -q
+  done
+12 passed / 20 passed / 20 passed / 12 passed / 20 passed / 20 passed
+→ 104/104 total
+```
+
+---
+
 ## Fase C — Feature Nova: Alerta Estoque Baixo (Medicao Principal)
 
 ### Monolito + Claude Code
