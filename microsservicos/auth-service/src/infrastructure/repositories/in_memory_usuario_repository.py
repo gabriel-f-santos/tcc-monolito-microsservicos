@@ -1,0 +1,25 @@
+from uuid import UUID
+
+from src.domain.entities.usuario import Usuario
+from src.domain.repositories.usuario_repository import UsuarioRepository
+
+
+class InMemoryUsuarioRepository(UsuarioRepository):
+    def __init__(self) -> None:
+        self._store: dict[UUID, Usuario] = {}
+
+    def get_by_id(self, entity_id: UUID) -> Usuario | None:
+        return self._store.get(entity_id)
+
+    def get_by_email(self, email: str) -> Usuario | None:
+        for u in self._store.values():
+            if u.email == email:
+                return u
+        return None
+
+    def save(self, entity: Usuario) -> Usuario:
+        self._store[entity.id] = entity
+        return entity
+
+    def delete(self, entity_id: UUID) -> None:
+        self._store.pop(entity_id, None)
