@@ -1,0 +1,72 @@
+/home/gabriel/Documents/tcc/project/microsservicos/estoque-service-mvc/src/__init__.py
+    LOC: 0
+    LLOC: 0
+    SLOC: 0
+    Comments: 0
+    Single comments: 0
+    Multi: 0
+    Blank: 0
+    - Comment Stats
+        (C % L): 0%
+        (C % S): 0%
+        (C + M % L): 0%
+/home/gabriel/Documents/tcc/project/microsservicos/estoque-service-mvc/src/handlers/__init__.py
+    LOC: 0
+    LLOC: 0
+    SLOC: 0
+    Comments: 0
+    Single comments: 0
+    Multi: 0
+    Blank: 0
+    - Comment Stats
+        (C % L): 0%
+        (C % S): 0%
+        (C + M % L): 0%
+/home/gabriel/Documents/tcc/project/microsservicos/estoque-service-mvc/src/handlers/event_consumer.py
+    LOC: 81
+    LLOC: 54
+    SLOC: 59
+    Comments: 1
+    Single comments: 3
+    Multi: 3
+    Blank: 16
+    - Comment Stats
+        (C % L): 1%
+        (C % S): 2%
+        (C + M % L): 5%
+/home/gabriel/Documents/tcc/project/microsservicos/estoque-service-mvc/src/handlers/health.py
+    LOC: 8
+    LLOC: 4
+    SLOC: 7
+    Comments: 0
+    Single comments: 0
+    Multi: 0
+    Blank: 1
+    - Comment Stats
+        (C % L): 0%
+        (C % S): 0%
+        (C + M % L): 0%
+/home/gabriel/Documents/tcc/project/microsservicos/estoque-service-mvc/src/handlers/estoque.py
+    LOC: 218
+    LLOC: 136
+    SLOC: 144
+    Comments: 20
+    Single comments: 20
+    Multi: 4
+    Blank: 50
+    - Comment Stats
+        (C % L): 9%
+        (C % S): 14%
+        (C + M % L): 11%
+** Total **
+    LOC: 307
+    LLOC: 194
+    SLOC: 210
+    Comments: 21
+    Single comments: 23
+    Multi: 7
+    Blank: 67
+    - Comment Stats
+        (C % L): 7%
+        (C % S): 10%
+        (C + M % L): 9%

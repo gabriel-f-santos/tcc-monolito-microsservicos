@@ -1,0 +1,120 @@
+/home/gabriel/Documents/tcc/project/monolito-mvc/routes/__init__.py
+    LOC: 0
+    LLOC: 0
+    SLOC: 0
+    Comments: 0
+    Single comments: 0
+    Multi: 0
+    Blank: 0
+    - Comment Stats
+        (C % L): 0%
+        (C % S): 0%
+        (C + M % L): 0%
+/home/gabriel/Documents/tcc/project/monolito-mvc/routes/categorias.py
+    LOC: 43
+    LLOC: 29
+    SLOC: 32
+    Comments: 0
+    Single comments: 1
+    Multi: 0
+    Blank: 10
+    - Comment Stats
+        (C % L): 0%
+        (C % S): 0%
+        (C + M % L): 0%
+/home/gabriel/Documents/tcc/project/monolito-mvc/routes/estoque.py
+    LOC: 114
+    LLOC: 61
+    SLOC: 92
+    Comments: 0
+    Single comments: 1
+    Multi: 0
+    Blank: 21
+    - Comment Stats
+        (C % L): 0%
+        (C % S): 0%
+        (C + M % L): 0%
+/home/gabriel/Documents/tcc/project/monolito-mvc/routes/auth.py
+    LOC: 62
+    LLOC: 39
+    SLOC: 45
+    Comments: 0
+    Single comments: 1
+    Multi: 0
+    Blank: 16
+    - Comment Stats
+        (C % L): 0%
+        (C % S): 0%
+        (C + M % L): 0%
+/home/gabriel/Documents/tcc/project/monolito-mvc/routes/produtos.py
+    LOC: 151
+    LLOC: 73
+    SLOC: 124
+    Comments: 3
+    Single comments: 4
+    Multi: 0
+    Blank: 23
+    - Comment Stats
+        (C % L): 2%
+        (C % S): 2%
+        (C + M % L): 2%
+/home/gabriel/Documents/tcc/project/monolito-mvc/models.py
+    LOC: 65
+    LLOC: 63
+    SLOC: 52
+    Comments: 1
+    Single comments: 1
+    Multi: 0
+    Blank: 12
+    - Comment Stats
+        (C % L): 2%
+        (C % S): 2%
+        (C + M % L): 2%
+/home/gabriel/Documents/tcc/project/monolito-mvc/app.py
+    LOC: 50
+    LLOC: 36
+    SLOC: 32
+    Comments: 3
+    Single comments: 4
+    Multi: 0
+    Blank: 14
+    - Comment Stats
+        (C % L): 6%
+        (C % S): 9%
+        (C + M % L): 6%
+/home/gabriel/Documents/tcc/project/monolito-mvc/database.py
+    LOC: 19
+    LLOC: 13
+    SLOC: 13
+    Comments: 0
+    Single comments: 0
+    Multi: 0
+    Blank: 6
+    - Comment Stats
+        (C % L): 0%
+        (C % S): 0%
+        (C + M % L): 0%
+/home/gabriel/Documents/tcc/project/monolito-mvc/schemas.py
+    LOC: 118
+    LLOC: 136
+    SLOC: 76
+    Comments: 4
+    Single comments: 5
+    Multi: 0
+    Blank: 37
+    - Comment Stats
+        (C % L): 3%
+        (C % S): 5%
+        (C + M % L): 3%
+** Total **
+    LOC: 622
+    LLOC: 450
+    SLOC: 466
+    Comments: 11
+    Single comments: 17
+    Multi: 0
+    Blank: 139
+    - Comment Stats
+        (C % L): 2%
+        (C % S): 2%
+        (C + M % L): 2%

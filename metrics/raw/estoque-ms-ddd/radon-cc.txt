@@ -1,0 +1,96 @@
+/home/gabriel/Documents/tcc/project/microsservicos/estoque-service/src/container.py
+    C 10:0 Container - A (2)
+    M 11:4 Container.__init__ - A (1)
+    M 15:4 Container.registrar_entrada_use_case - A (1)
+    M 18:4 Container.registrar_saida_use_case - A (1)
+    M 21:4 Container.buscar_item_use_case - A (1)
+    M 24:4 Container.listar_itens_use_case - A (1)
+    M 27:4 Container.listar_movimentacoes_use_case - A (1)
+/home/gabriel/Documents/tcc/project/microsservicos/estoque-service/src/handlers/event_consumer.py
+    F 13:0 handler - A (4)
+    F 30:0 _handle_produto_criado - A (2)
+    F 52:0 _handle_produto_atualizado - A (2)
+/home/gabriel/Documents/tcc/project/microsservicos/estoque-service/src/handlers/health.py
+    F 4:0 handler - A (1)
+/home/gabriel/Documents/tcc/project/microsservicos/estoque-service/src/handlers/estoque.py
+    F 49:0 handler - C (19)
+    F 22:0 _json_response - A (1)
+    F 26:0 _serialize_item - A (1)
+    F 38:0 _serialize_mov - A (1)
+/home/gabriel/Documents/tcc/project/microsservicos/estoque-service/src/domain/value_objects/tipo_movimentacao.py
+    C 4:0 TipoMovimentacao - A (1)
+/home/gabriel/Documents/tcc/project/microsservicos/estoque-service/src/domain/repositories/movimentacao_repository.py
+    C 7:0 MovimentacaoRepository - A (2)
+    M 9:4 MovimentacaoRepository.save - A (1)
+    M 13:4 MovimentacaoRepository.list_by_item - A (1)
+/home/gabriel/Documents/tcc/project/microsservicos/estoque-service/src/domain/repositories/item_estoque_repository.py
+    C 8:0 ItemEstoqueRepository - A (2)
+    M 10:4 ItemEstoqueRepository.get_by_produto_id - A (1)
+    M 14:4 ItemEstoqueRepository.list_filtered - A (1)
+/home/gabriel/Documents/tcc/project/microsservicos/estoque-service/src/domain/exceptions/estoque.py
+    C 4:0 ItemNaoEncontrado - A (2)
+    C 12:0 QuantidadeInvalida - A (2)
+    C 20:0 EstoqueInsuficiente - A (2)
+    C 28:0 ItemInativo - A (2)
+    M 5:4 ItemNaoEncontrado.__init__ - A (1)
+    M 13:4 QuantidadeInvalida.__init__ - A (1)
+    M 21:4 EstoqueInsuficiente.__init__ - A (1)
+    M 29:4 ItemInativo.__init__ - A (1)
+/home/gabriel/Documents/tcc/project/microsservicos/estoque-service/src/domain/entities/movimentacao.py
+    C 11:0 Movimentacao - A (5)
+    M 18:4 Movimentacao.__post_init__ - A (4)
+/home/gabriel/Documents/tcc/project/microsservicos/estoque-service/src/domain/entities/item_estoque.py
+    M 25:4 ItemEstoque.__post_init__ - B (6)
+    C 17:0 ItemEstoque - A (5)
+    M 38:4 ItemEstoque.registrar_entrada - A (3)
+    M 61:4 ItemEstoque.registrar_saida - A (3)
+/home/gabriel/Documents/tcc/project/microsservicos/estoque-service/src/infrastructure/repositories/inmemory_item_estoque_repository.py
+    M 27:4 InMemoryItemEstoqueRepository.list_filtered - A (4)
+    C 7:0 InMemoryItemEstoqueRepository - A (3)
+    M 21:4 InMemoryItemEstoqueRepository.get_by_produto_id - A (3)
+    M 8:4 InMemoryItemEstoqueRepository.__init__ - A (1)
+    M 11:4 InMemoryItemEstoqueRepository.get_by_id - A (1)
+    M 14:4 InMemoryItemEstoqueRepository.save - A (1)
+    M 18:4 InMemoryItemEstoqueRepository.delete - A (1)
+/home/gabriel/Documents/tcc/project/microsservicos/estoque-service/src/infrastructure/repositories/inmemory_movimentacao_repository.py
+    M 15:4 InMemoryMovimentacaoRepository.list_by_item - B (6)
+    C 7:0 InMemoryMovimentacaoRepository - A (4)
+    M 8:4 InMemoryMovimentacaoRepository.__init__ - A (1)
+    M 11:4 InMemoryMovimentacaoRepository.save - A (1)
+/home/gabriel/Documents/tcc/project/microsservicos/estoque-service/src/application/use_cases/buscar_item.py
+    C 8:0 BuscarItemUseCase - A (3)
+    M 12:4 BuscarItemUseCase.execute - A (2)
+    M 18:4 BuscarItemUseCase.execute_por_produto - A (2)
+    M 9:4 BuscarItemUseCase.__init__ - A (1)
+/home/gabriel/Documents/tcc/project/microsservicos/estoque-service/src/application/use_cases/listar_itens.py
+    C 5:0 ListarItensUseCase - A (2)
+    M 6:4 ListarItensUseCase.__init__ - A (1)
+    M 9:4 ListarItensUseCase.execute - A (1)
+/home/gabriel/Documents/tcc/project/microsservicos/estoque-service/src/application/use_cases/listar_movimentacoes.py
+    C 9:0 ListarMovimentacoesUseCase - A (3)
+    M 18:4 ListarMovimentacoesUseCase.execute - A (2)
+    M 10:4 ListarMovimentacoesUseCase.__init__ - A (1)
+/home/gabriel/Documents/tcc/project/microsservicos/estoque-service/src/application/use_cases/registrar_entrada.py
+    C 18:0 RegistrarEntradaUseCase - A (3)
+    M 27:4 RegistrarEntradaUseCase.execute - A (2)
+    C 11:0 RegistrarEntradaDTO - A (1)
+    M 19:4 RegistrarEntradaUseCase.__init__ - A (1)
+/home/gabriel/Documents/tcc/project/microsservicos/estoque-service/src/application/use_cases/registrar_saida.py
+    C 17:0 RegistrarSaidaUseCase - A (3)
+    M 26:4 RegistrarSaidaUseCase.execute - A (2)
+    C 11:0 RegistrarSaidaDTO - A (1)
+    M 18:4 RegistrarSaidaUseCase.__init__ - A (1)
+/home/gabriel/Documents/tcc/project/microsservicos/estoque-service/src/shared/domain/repositories/base.py
+    C 10:0 BaseRepository - A (2)
+    M 12:4 BaseRepository.get_by_id - A (1)
+    M 16:4 BaseRepository.save - A (1)
+    M 20:4 BaseRepository.delete - A (1)
+/home/gabriel/Documents/tcc/project/microsservicos/estoque-service/src/shared/domain/exceptions/base.py
+    C 1:0 DomainException - A (2)
+    M 2:4 DomainException.__init__ - A (1)
+/home/gabriel/Documents/tcc/project/microsservicos/estoque-service/src/shared/domain/entities/base.py
+    C 7:0 BaseEntity - A (2)
+    M 12:4 BaseEntity.__post_init__ - A (1)
+
+73 blocks (classes, functions, methods) analyzed.
+Average complexity: A (2.1232876712328768)

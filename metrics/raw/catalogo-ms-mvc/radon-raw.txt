@@ -1,0 +1,60 @@
+/home/gabriel/Documents/tcc/project/microsservicos/catalogo-service-mvc/src/__init__.py
+    LOC: 0
+    LLOC: 0
+    SLOC: 0
+    Comments: 0
+    Single comments: 0
+    Multi: 0
+    Blank: 0
+    - Comment Stats
+        (C % L): 0%
+        (C % S): 0%
+        (C + M % L): 0%
+/home/gabriel/Documents/tcc/project/microsservicos/catalogo-service-mvc/src/handlers/__init__.py
+    LOC: 0
+    LLOC: 0
+    SLOC: 0
+    Comments: 0
+    Single comments: 0
+    Multi: 0
+    Blank: 0
+    - Comment Stats
+        (C % L): 0%
+        (C % S): 0%
+        (C + M % L): 0%
+/home/gabriel/Documents/tcc/project/microsservicos/catalogo-service-mvc/src/handlers/health.py
+    LOC: 8
+    LLOC: 4
+    SLOC: 7
+    Comments: 0
+    Single comments: 0
+    Multi: 0
+    Blank: 1
+    - Comment Stats
+        (C % L): 0%
+        (C % S): 0%
+        (C + M % L): 0%
+/home/gabriel/Documents/tcc/project/microsservicos/catalogo-service-mvc/src/handlers/catalogo.py
+    LOC: 290
+    LLOC: 197
+    SLOC: 203
+    Comments: 11
+    Single comments: 12
+    Multi: 4
+    Blank: 71
+    - Comment Stats
+        (C % L): 4%
+        (C % S): 5%
+        (C + M % L): 5%
+** Total **
+    LOC: 298
+    LLOC: 201
+    SLOC: 210
+    Comments: 11
+    Single comments: 12
+    Multi: 4
+    Blank: 72
+    - Comment Stats
+        (C % L): 4%
+        (C % S): 5%
+        (C + M % L): 5%

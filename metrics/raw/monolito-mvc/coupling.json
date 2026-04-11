@@ -1,0 +1,35 @@
+{
+  "packages": [
+    {
+      "package": "routes.auth",
+      "Ca": 0,
+      "Ce": 0,
+      "I": 0.0,
+      "modules": 1
+    },
+    {
+      "package": "routes.categorias",
+      "Ca": 0,
+      "Ce": 0,
+      "I": 0.0,
+      "modules": 1
+    },
+    {
+      "package": "routes.estoque",
+      "Ca": 0,
+      "Ce": 0,
+      "I": 0.0,
+      "modules": 1
+    },
+    {
+      "package": "routes.produtos",
+      "Ca": 0,
+      "Ce": 0,
+      "I": 0.0,
+      "modules": 1
+    }
+  ],
+  "total_modules": 5,
+  "total_packages": 4,
+  "avg_instability": 0.0
+}

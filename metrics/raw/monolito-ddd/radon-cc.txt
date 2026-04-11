@@ -1,0 +1,293 @@
+/home/gabriel/Documents/tcc/project/monolito/src/estoque/container.py
+    C 16:0 EstoqueContainer - A (1)
+/home/gabriel/Documents/tcc/project/monolito/src/estoque/domain/value_objects/tipo_movimentacao.py
+    C 4:0 TipoMovimentacao - A (1)
+/home/gabriel/Documents/tcc/project/monolito/src/estoque/domain/value_objects/quantidade.py
+    C 7:0 Quantidade - A (3)
+    M 10:4 Quantidade.__post_init__ - A (2)
+/home/gabriel/Documents/tcc/project/monolito/src/estoque/domain/repositories/movimentacao_repository.py
+    C 7:0 MovimentacaoRepository - A (2)
+    M 9:4 MovimentacaoRepository.save - A (1)
+    M 13:4 MovimentacaoRepository.list_by_item - A (1)
+/home/gabriel/Documents/tcc/project/monolito/src/estoque/domain/repositories/item_estoque_repository.py
+    C 8:0 ItemEstoqueRepository - A (2)
+    M 10:4 ItemEstoqueRepository.get_by_produto_id - A (1)
+    M 14:4 ItemEstoqueRepository.list_filtered - A (1)
+/home/gabriel/Documents/tcc/project/monolito/src/estoque/domain/exceptions/estoque.py
+    C 4:0 ItemNaoEncontrado - A (2)
+    C 12:0 QuantidadeInvalida - A (2)
+    C 20:0 EstoqueInsuficiente - A (2)
+    C 28:0 ItemInativo - A (2)
+    M 5:4 ItemNaoEncontrado.__init__ - A (1)
+    M 13:4 QuantidadeInvalida.__init__ - A (1)
+    M 21:4 EstoqueInsuficiente.__init__ - A (1)
+    M 29:4 ItemInativo.__init__ - A (1)
+/home/gabriel/Documents/tcc/project/monolito/src/estoque/domain/entities/movimentacao.py
+    C 11:0 Movimentacao - A (5)
+    M 18:4 Movimentacao.__post_init__ - A (4)
+/home/gabriel/Documents/tcc/project/monolito/src/estoque/domain/entities/item_estoque.py
+    M 25:4 ItemEstoque.__post_init__ - B (6)
+    C 17:0 ItemEstoque - A (5)
+    M 38:4 ItemEstoque.registrar_entrada - A (3)
+    M 61:4 ItemEstoque.registrar_saida - A (3)
+/home/gabriel/Documents/tcc/project/monolito/src/estoque/infrastructure/repositories/sqlalchemy_movimentacao_repository.py
+    C 51:0 SQLAlchemyMovimentacaoRepository - A (3)
+    M 62:4 SQLAlchemyMovimentacaoRepository.list_by_item - A (3)
+    C 13:0 MovimentacaoModel - A (2)
+    M 25:4 MovimentacaoModel.to_domain - A (1)
+    M 38:4 MovimentacaoModel.from_domain - A (1)
+    M 52:4 SQLAlchemyMovimentacaoRepository.__init__ - A (1)
+    M 55:4 SQLAlchemyMovimentacaoRepository.save - A (1)
+/home/gabriel/Documents/tcc/project/monolito/src/estoque/infrastructure/repositories/sqlalchemy_item_estoque_repository.py
+    C 53:0 SQLAlchemyItemEstoqueRepository - A (3)
+    M 68:4 SQLAlchemyItemEstoqueRepository.list_filtered - A (3)
+    C 12:0 ItemEstoqueModel - A (2)
+    M 57:4 SQLAlchemyItemEstoqueRepository.get_by_id - A (2)
+    M 62:4 SQLAlchemyItemEstoqueRepository.get_by_produto_id - A (2)
+    M 90:4 SQLAlchemyItemEstoqueRepository.delete - A (2)
+    M 25:4 ItemEstoqueModel.to_domain - A (1)
+    M 39:4 ItemEstoqueModel.from_domain - A (1)
+    M 54:4 SQLAlchemyItemEstoqueRepository.__init__ - A (1)
+    M 83:4 SQLAlchemyItemEstoqueRepository.save - A (1)
+/home/gabriel/Documents/tcc/project/monolito/src/estoque/infrastructure/services/estoque_service_impl.py
+    C 9:0 EstoqueServiceImpl - A (2)
+    M 15:4 EstoqueServiceImpl.__init__ - A (1)
+    M 18:4 EstoqueServiceImpl.inicializar_item - A (1)
+/home/gabriel/Documents/tcc/project/monolito/src/estoque/application/use_cases/buscar_item.py
+    C 8:0 BuscarItemUseCase - A (3)
+    M 12:4 BuscarItemUseCase.execute - A (2)
+    M 18:4 BuscarItemUseCase.execute_por_produto - A (2)
+    M 9:4 BuscarItemUseCase.__init__ - A (1)
+/home/gabriel/Documents/tcc/project/monolito/src/estoque/application/use_cases/listar_itens.py
+    C 5:0 ListarItensUseCase - A (2)
+    M 6:4 ListarItensUseCase.__init__ - A (1)
+    M 9:4 ListarItensUseCase.execute - A (1)
+/home/gabriel/Documents/tcc/project/monolito/src/estoque/application/use_cases/listar_movimentacoes.py
+    C 9:0 ListarMovimentacoesUseCase - A (3)
+    M 18:4 ListarMovimentacoesUseCase.execute - A (2)
+    M 10:4 ListarMovimentacoesUseCase.__init__ - A (1)
+/home/gabriel/Documents/tcc/project/monolito/src/estoque/application/use_cases/registrar_entrada.py
+    C 18:0 RegistrarEntradaUseCase - A (3)
+    M 27:4 RegistrarEntradaUseCase.execute - A (2)
+    C 11:0 RegistrarEntradaDTO - A (1)
+    M 19:4 RegistrarEntradaUseCase.__init__ - A (1)
+/home/gabriel/Documents/tcc/project/monolito/src/estoque/application/use_cases/registrar_saida.py
+    C 17:0 RegistrarSaidaUseCase - A (3)
+    M 26:4 RegistrarSaidaUseCase.execute - A (2)
+    C 11:0 RegistrarSaidaDTO - A (1)
+    M 18:4 RegistrarSaidaUseCase.__init__ - A (1)
+/home/gabriel/Documents/tcc/project/monolito/src/estoque/presentation/routes.py
+    F 90:0 listar_itens - A (2)
+    F 122:0 listar_movimentacoes - A (2)
+    F 28:0 _build_item_response - A (1)
+    F 41:0 _build_mov_response - A (1)
+    F 55:0 registrar_entrada - A (1)
+    F 73:0 registrar_saida - A (1)
+    F 102:0 buscar_item_por_produto - A (1)
+    F 112:0 buscar_item - A (1)
+/home/gabriel/Documents/tcc/project/monolito/src/estoque/presentation/schemas.py
+    C 7:0 RegistrarEntradaRequest - A (1)
+    C 13:0 RegistrarSaidaRequest - A (1)
+    C 18:0 ItemEstoqueResponse - A (1)
+    C 31:0 MovimentacaoResponse - A (1)
+/home/gabriel/Documents/tcc/project/monolito/src/auth/container.py
+    C 12:0 AuthContainer - A (1)
+/home/gabriel/Documents/tcc/project/monolito/src/auth/domain/repositories/usuario_repository.py
+    C 7:0 UsuarioRepository - A (2)
+    M 9:4 UsuarioRepository.get_by_email - A (1)
+/home/gabriel/Documents/tcc/project/monolito/src/auth/domain/exceptions/auth.py
+    C 4:0 EmailDuplicado - A (2)
+    C 9:0 CredenciaisInvalidas - A (2)
+    C 14:0 TokenInvalido - A (2)
+    M 5:4 EmailDuplicado.__init__ - A (1)
+    M 10:4 CredenciaisInvalidas.__init__ - A (1)
+    M 15:4 TokenInvalido.__init__ - A (1)
+/home/gabriel/Documents/tcc/project/monolito/src/auth/domain/services/password_hasher.py
+    C 4:0 PasswordHasher - A (2)
+    M 6:4 PasswordHasher.hash - A (1)
+    M 10:4 PasswordHasher.verify - A (1)
+/home/gabriel/Documents/tcc/project/monolito/src/auth/domain/services/token_service.py
+    C 5:0 TokenService - A (2)
+    M 7:4 TokenService.generate_token - A (1)
+    M 11:4 TokenService.decode_token - A (1)
+/home/gabriel/Documents/tcc/project/monolito/src/auth/domain/entities/usuario.py
+    C 8:0 Usuario - B (8)
+    M 13:4 Usuario.__post_init__ - B (7)
+/home/gabriel/Documents/tcc/project/monolito/src/auth/infrastructure/repositories/sqlalchemy_usuario_repository.py
+    C 12:0 UsuarioModel - A (2)
+    C 44:0 SQLAlchemyUsuarioRepository - A (2)
+    M 48:4 SQLAlchemyUsuarioRepository.get_by_id - A (2)
+    M 53:4 SQLAlchemyUsuarioRepository.get_by_email - A (2)
+    M 66:4 SQLAlchemyUsuarioRepository.delete - A (2)
+    M 22:4 UsuarioModel.to_domain - A (1)
+    M 33:4 UsuarioModel.from_domain - A (1)
+    M 45:4 SQLAlchemyUsuarioRepository.__init__ - A (1)
+    M 59:4 SQLAlchemyUsuarioRepository.save - A (1)
+/home/gabriel/Documents/tcc/project/monolito/src/auth/infrastructure/services/bcrypt_password_hasher.py
+    C 6:0 BcryptPasswordHasher - A (2)
+    M 7:4 BcryptPasswordHasher.hash - A (1)
+    M 10:4 BcryptPasswordHasher.verify - A (1)
+/home/gabriel/Documents/tcc/project/monolito/src/auth/infrastructure/services/jose_token_service.py
+    C 10:0 JoseTokenService - A (2)
+    M 23:4 JoseTokenService.decode_token - A (2)
+    M 11:4 JoseTokenService.__init__ - A (1)
+    M 15:4 JoseTokenService.generate_token - A (1)
+/home/gabriel/Documents/tcc/project/monolito/src/auth/application/use_cases/registrar.py
+    C 18:0 RegistrarUseCase - A (3)
+    M 23:4 RegistrarUseCase.execute - A (2)
+    C 12:0 RegistrarDTO - A (1)
+    M 19:4 RegistrarUseCase.__init__ - A (1)
+/home/gabriel/Documents/tcc/project/monolito/src/auth/application/use_cases/login.py
+    C 21:0 LoginUseCase - A (3)
+    M 27:4 LoginUseCase.execute - A (3)
+    C 10:0 LoginDTO - A (1)
+    C 16:0 TokenResult - A (1)
+    M 22:4 LoginUseCase.__init__ - A (1)
+/home/gabriel/Documents/tcc/project/monolito/src/auth/presentation/routes.py
+    F 19:0 registrar - A (1)
+    F 34:0 login - A (1)
+/home/gabriel/Documents/tcc/project/monolito/src/auth/presentation/schemas.py
+    C 7:0 RegistrarRequest - A (1)
+    C 13:0 UsuarioResponse - A (1)
+    C 22:0 LoginRequest - A (1)
+    C 27:0 TokenResponse - A (1)
+/home/gabriel/Documents/tcc/project/monolito/src/auth/presentation/middleware.py
+    M 18:4 JWTMiddleware.dispatch - A (5)
+    C 13:0 JWTMiddleware - A (4)
+    M 14:4 JWTMiddleware.__init__ - A (1)
+/home/gabriel/Documents/tcc/project/monolito/src/presentation/app.py
+    F 85:0 domain_exception_handler - A (1)
+/home/gabriel/Documents/tcc/project/monolito/src/presentation/routes/health.py
+    F 7:0 health_check - A (1)
+/home/gabriel/Documents/tcc/project/monolito/src/shared/domain/repositories/base.py
+    C 10:0 BaseRepository - A (2)
+    M 12:4 BaseRepository.get_by_id - A (1)
+    M 16:4 BaseRepository.save - A (1)
+    M 20:4 BaseRepository.delete - A (1)
+/home/gabriel/Documents/tcc/project/monolito/src/shared/domain/exceptions/base.py
+    C 1:0 DomainException - A (2)
+    M 2:4 DomainException.__init__ - A (1)
+/home/gabriel/Documents/tcc/project/monolito/src/shared/domain/services/estoque_service.py
+    C 5:0 EstoqueService - A (2)
+    M 11:4 EstoqueService.inicializar_item - A (1)
+/home/gabriel/Documents/tcc/project/monolito/src/shared/domain/entities/base.py
+    C 7:0 BaseEntity - A (2)
+    M 12:4 BaseEntity.__post_init__ - A (1)
+/home/gabriel/Documents/tcc/project/monolito/src/shared/infrastructure/observability.py
+    F 12:0 setup_telemetry - A (3)
+/home/gabriel/Documents/tcc/project/monolito/src/shared/infrastructure/config/settings.py
+    C 4:0 Settings - A (1)
+/home/gabriel/Documents/tcc/project/monolito/src/shared/infrastructure/database/session.py
+    F 10:0 get_session - A (1)
+/home/gabriel/Documents/tcc/project/monolito/src/shared/infrastructure/database/base.py
+    C 4:0 Base - A (1)
+/home/gabriel/Documents/tcc/project/monolito/src/catalogo/container.py
+    C 19:0 CatalogoContainer - A (1)
+/home/gabriel/Documents/tcc/project/monolito/src/catalogo/domain/value_objects/sku.py
+    C 10:0 SKU - A (4)
+    M 13:4 SKU.__post_init__ - A (3)
+/home/gabriel/Documents/tcc/project/monolito/src/catalogo/domain/value_objects/dinheiro.py
+    C 8:0 Dinheiro - A (5)
+    M 11:4 Dinheiro.__post_init__ - A (4)
+/home/gabriel/Documents/tcc/project/monolito/src/catalogo/domain/repositories/categoria_repository.py
+    C 7:0 CategoriaRepository - A (2)
+    M 9:4 CategoriaRepository.get_by_nome - A (1)
+    M 13:4 CategoriaRepository.list_all - A (1)
+/home/gabriel/Documents/tcc/project/monolito/src/catalogo/domain/repositories/produto_repository.py
+    C 8:0 ProdutoRepository - A (2)
+    M 10:4 ProdutoRepository.get_by_sku - A (1)
+    M 14:4 ProdutoRepository.list_filtered - A (1)
+/home/gabriel/Documents/tcc/project/monolito/src/catalogo/domain/exceptions/catalogo.py
+    C 4:0 CategoriaNomeDuplicado - A (2)
+    C 9:0 CategoriaNaoEncontrada - A (2)
+    C 14:0 ProdutoSkuDuplicado - A (2)
+    C 19:0 ProdutoNaoEncontrado - A (2)
+    M 5:4 CategoriaNomeDuplicado.__init__ - A (1)
+    M 10:4 CategoriaNaoEncontrada.__init__ - A (1)
+    M 15:4 ProdutoSkuDuplicado.__init__ - A (1)
+    M 20:4 ProdutoNaoEncontrado.__init__ - A (1)
+/home/gabriel/Documents/tcc/project/monolito/src/catalogo/domain/entities/categoria.py
+    C 8:0 Categoria - B (7)
+    M 12:4 Categoria.__post_init__ - B (6)
+/home/gabriel/Documents/tcc/project/monolito/src/catalogo/domain/entities/produto.py
+    M 21:4 Produto.__post_init__ - B (9)
+    C 13:0 Produto - B (6)
+    M 35:4 Produto.atualizar - A (5)
+    M 55:4 Produto.desativar - A (1)
+/home/gabriel/Documents/tcc/project/monolito/src/catalogo/infrastructure/repositories/sqlalchemy_categoria_repository.py
+    C 12:0 CategoriaModel - A (2)
+    C 41:0 SQLAlchemyCategoriaRepository - A (2)
+    M 45:4 SQLAlchemyCategoriaRepository.get_by_id - A (2)
+    M 50:4 SQLAlchemyCategoriaRepository.get_by_nome - A (2)
+    M 56:4 SQLAlchemyCategoriaRepository.list_all - A (2)
+    M 69:4 SQLAlchemyCategoriaRepository.delete - A (2)
+    M 21:4 CategoriaModel.to_domain - A (1)
+    M 31:4 CategoriaModel.from_domain - A (1)
+    M 42:4 SQLAlchemyCategoriaRepository.__init__ - A (1)
+    M 62:4 SQLAlchemyCategoriaRepository.save - A (1)
+/home/gabriel/Documents/tcc/project/monolito/src/catalogo/infrastructure/repositories/sqlalchemy_produto_repository.py
+    M 71:4 SQLAlchemyProdutoRepository.list_filtered - A (4)
+    C 56:0 SQLAlchemyProdutoRepository - A (3)
+    C 15:0 ProdutoModel - A (2)
+    M 60:4 SQLAlchemyProdutoRepository.get_by_id - A (2)
+    M 65:4 SQLAlchemyProdutoRepository.get_by_sku - A (2)
+    M 95:4 SQLAlchemyProdutoRepository.delete - A (2)
+    M 28:4 ProdutoModel.to_domain - A (1)
+    M 42:4 ProdutoModel.from_domain - A (1)
+    M 57:4 SQLAlchemyProdutoRepository.__init__ - A (1)
+    M 88:4 SQLAlchemyProdutoRepository.save - A (1)
+/home/gabriel/Documents/tcc/project/monolito/src/catalogo/application/use_cases/listar_categorias.py
+    C 5:0 ListarCategoriasUseCase - A (2)
+    M 6:4 ListarCategoriasUseCase.__init__ - A (1)
+    M 9:4 ListarCategoriasUseCase.execute - A (1)
+/home/gabriel/Documents/tcc/project/monolito/src/catalogo/application/use_cases/criar_categoria.py
+    C 16:0 CriarCategoriaUseCase - A (3)
+    M 20:4 CriarCategoriaUseCase.execute - A (2)
+    C 11:0 CriarCategoriaDTO - A (1)
+    M 17:4 CriarCategoriaUseCase.__init__ - A (1)
+/home/gabriel/Documents/tcc/project/monolito/src/catalogo/application/use_cases/buscar_produto.py
+    C 8:0 BuscarProdutoUseCase - A (3)
+    M 12:4 BuscarProdutoUseCase.execute - A (2)
+    M 9:4 BuscarProdutoUseCase.__init__ - A (1)
+/home/gabriel/Documents/tcc/project/monolito/src/catalogo/application/use_cases/atualizar_produto.py
+    C 17:0 AtualizarProdutoUseCase - A (3)
+    M 21:4 AtualizarProdutoUseCase.execute - A (2)
+    C 11:0 AtualizarProdutoDTO - A (1)
+    M 18:4 AtualizarProdutoUseCase.__init__ - A (1)
+/home/gabriel/Documents/tcc/project/monolito/src/catalogo/application/use_cases/criar_produto.py
+    C 24:0 CriarProdutoUseCase - A (3)
+    M 35:4 CriarProdutoUseCase.execute - A (3)
+    C 16:0 CriarProdutoDTO - A (1)
+    M 25:4 CriarProdutoUseCase.__init__ - A (1)
+/home/gabriel/Documents/tcc/project/monolito/src/catalogo/application/use_cases/buscar_categoria.py
+    C 8:0 BuscarCategoriaUseCase - A (3)
+    M 12:4 BuscarCategoriaUseCase.execute - A (2)
+    M 9:4 BuscarCategoriaUseCase.__init__ - A (1)
+/home/gabriel/Documents/tcc/project/monolito/src/catalogo/application/use_cases/desativar_produto.py
+    C 8:0 DesativarProdutoUseCase - A (3)
+    M 12:4 DesativarProdutoUseCase.execute - A (2)
+    M 9:4 DesativarProdutoUseCase.__init__ - A (1)
+/home/gabriel/Documents/tcc/project/monolito/src/catalogo/application/use_cases/listar_produtos.py
+    C 7:0 ListarProdutosUseCase - A (2)
+    M 8:4 ListarProdutosUseCase.__init__ - A (1)
+    M 11:4 ListarProdutosUseCase.execute - A (1)
+/home/gabriel/Documents/tcc/project/monolito/src/catalogo/presentation/routes.py
+    F 118:0 listar_produtos - A (3)
+    F 49:0 listar_categorias - A (2)
+    F 34:0 criar_categoria - A (1)
+    F 66:0 buscar_categoria - A (1)
+    F 82:0 _build_produto_response - A (1)
+    F 98:0 criar_produto - A (1)
+    F 138:0 buscar_produto - A (1)
+    F 150:0 atualizar_produto - A (1)
+    F 166:0 desativar_produto - A (1)
+/home/gabriel/Documents/tcc/project/monolito/src/catalogo/presentation/schemas.py
+    C 8:0 CriarCategoriaRequest - A (1)
+    C 13:0 CategoriaResponse - A (1)
+    C 22:0 CategoriaNested - A (1)
+    C 27:0 CriarProdutoRequest - A (1)
+    C 35:0 AtualizarProdutoRequest - A (1)
+    C 41:0 ProdutoResponse - A (1)
+
+228 blocks (classes, functions, methods) analyzed.
+Average complexity: A (1.837719298245614)

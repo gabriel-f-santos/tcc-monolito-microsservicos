@@ -1,0 +1,65 @@
+/home/gabriel/Documents/tcc/project/microsservicos/auth-service-mvc/src/__init__.py:
+    h1: 0
+    h2: 0
+    N1: 0
+    N2: 0
+    vocabulary: 0
+    length: 0
+    calculated_length: 0
+    volume: 0
+    difficulty: 0
+    effort: 0
+    time: 0.0
+    bugs: 0.0
+/home/gabriel/Documents/tcc/project/microsservicos/auth-service-mvc/src/handlers/__init__.py:
+    h1: 0
+    h2: 0
+    N1: 0
+    N2: 0
+    vocabulary: 0
+    length: 0
+    calculated_length: 0
+    volume: 0
+    difficulty: 0
+    effort: 0
+    time: 0.0
+    bugs: 0.0
+/home/gabriel/Documents/tcc/project/microsservicos/auth-service-mvc/src/handlers/health.py:
+    h1: 0
+    h2: 0
+    N1: 0
+    N2: 0
+    vocabulary: 0
+    length: 0
+    calculated_length: 0
+    volume: 0
+    difficulty: 0
+    effort: 0
+    time: 0.0
+    bugs: 0.0
+/home/gabriel/Documents/tcc/project/microsservicos/auth-service-mvc/src/handlers/authorizer.py:
+    h1: 1
+    h2: 1
+    N1: 1
+    N2: 1
+    vocabulary: 2
+    length: 2
+    calculated_length: 0.0
+    volume: 2.0
+    difficulty: 0.5
+    effort: 1.0
+    time: 0.05555555555555555
+    bugs: 0.0006666666666666666
+/home/gabriel/Documents/tcc/project/microsservicos/auth-service-mvc/src/handlers/auth.py:
+    h1: 4
+    h2: 8
+    N1: 5
+    N2: 8
+    vocabulary: 12
+    length: 13
+    calculated_length: 32.0
+    volume: 46.604512509375034
+    difficulty: 2.0
+    effort: 93.20902501875007
+    time: 5.178279167708337
+    bugs: 0.015534837503125011
