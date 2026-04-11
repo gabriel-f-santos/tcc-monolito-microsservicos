@@ -90,18 +90,52 @@ src/handlers/
 
 - Senha: bcrypt hash, minimo 8 chars
 - JWT: python-jose, HS256, expira 24h, payload `{sub: user_id}`
-- Authorizer: wildcard ARN no Resource da policy (cache API GW)
 - Email case-insensitive (lowercase antes de salvar)
 - Resposta de registrar NUNCA contem senha_hash nem senha
+
+## Authorizer — contrato AWS especifico
+
+API Gateway espera que o Lambda Authorizer **lance uma Exception** quando
+o token e invalido, NAO retorne `{"statusCode": 401}`. Retornar um JSON
+com statusCode causa 500 no API Gateway, nao 401.
+
+```python
+def handler(event, context):
+    token = event.get("authorizationToken", "").replace("Bearer ", "")
+    try:
+        payload = jwt.decode(token, JWT_SECRET, algorithms=["HS256"])
+    except JWTError:
+        raise Exception("Unauthorized")  # EXACT string — API GW pattern-matches
+
+    return {
+        "principalId": payload["sub"],
+        "policyDocument": {
+            "Version": "2012-10-17",
+            "Statement": [{
+                "Effect": "Allow",
+                "Action": "execute-api:Invoke",
+                "Resource": "arn:aws:execute-api:*:*:*/*/*/*",  # WILDCARD — cache
+            }],
+        },
+    }
+```
+
+- Resource DEVE ser wildcard (`*/*/*/*`) para que o API Gateway faca cache
+  da policy (300s). Sem wildcard, cada rota dispara nova invocacao do authorizer.
+- A string da Exception tem que conter "Unauthorized" (case-sensitive).
 
 ## Checklist de "done"
 
 Marque como feito APENAS se TODOS os items passarem:
 
-- [ ] `pytest tests/ -v` → **11 passed** (8 comportamento + 3 contract)
+- [ ] Venv fresco: `rm -rf .venv && python3 -m venv .venv && source .venv/bin/activate && pip install -r requirements.txt -r requirements-dev.txt` → sem erros
+- [ ] Import sanity: `python -c "from src.handlers.auth import registrar_handler, login_handler; from src.handlers.authorizer import handler"` → sem ModuleNotFoundError (captura dependencias que voce usou mas esqueceu de adicionar em requirements.txt, como `dependency-injector`)
+- [ ] `pytest tests/ -v` → **12 passed** (8 comportamento + 4 contract)
 - [ ] `test_integration_contract.py` inteiramente verde — sem pulos
-- [ ] Nenhum `if os.environ.get(...): ... InMemory ... else: ...` em src/
-- [ ] `grep -r "os.environ" src/` lista SOMENTE env vars que aparecem em template.yaml
+- [ ] Nenhum `if os.environ.get(...)` ou `if os.getenv(...)` selecionando InMemory em src/
+- [ ] Nenhum `try/except KeyError: InMemory` em src/
+- [ ] `grep -rE "os\.(environ|getenv)" src/` lista SOMENTE env vars declaradas em template.yaml
 - [ ] Repositorio DynamoDB e instanciado SEM condicional em src/container.py (DDD) ou diretamente em src/handlers/auth.py (MVC)
-- [ ] Nenhuma chamada `boto3.resource(...).put_item/get_item/scan` em nivel de modulo (so dentro de funcoes)
-- [ ] Diff comparado ao monolito: DDD copiou domain/application SEM alterar logica (so import paths)
+- [ ] Authorizer LANCA `Exception("Unauthorized")` — nao retorna JSON com 401
+- [ ] Nenhuma chamada AWS em nivel de modulo (coluna 0 do arquivo). O teste `test_no_aws_calls_at_module_import_time` valida isso.
+- [ ] Diff comparado ao monolito (DDD): domain/ e application/ copiados sem alterar logica (so import paths)

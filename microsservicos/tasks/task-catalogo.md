@@ -117,10 +117,13 @@ sns.publish(TopicArn=os.environ["EVENTOS_TOPIC_ARN"], Message=json.dumps({
 
 Marque como feito APENAS se TODOS os items passarem:
 
-- [ ] `pytest tests/ -v` → **19 passed** (14 catalogo + 2 health + 3 contract)
+- [ ] Venv fresco: `rm -rf .venv && python3 -m venv .venv && source .venv/bin/activate && pip install -r requirements.txt -r requirements-dev.txt` → sem erros
+- [ ] Import sanity: `python -c "from src.handlers.catalogo import handler"` → sem ModuleNotFoundError
+- [ ] `pytest tests/ -v` → **20 passed** (14 catalogo + 2 health + 4 contract)
 - [ ] `test_integration_contract.py` inteiramente verde
-- [ ] Nenhum `if os.environ.get(...): ... InMemory ... else: ...` em src/
-- [ ] `grep -r "os.environ" src/` lista SOMENTE env vars declaradas no template
-- [ ] Ao criar produto, handler publica no SNS (moto intercepta — verificar com `boto3.client('sns').list_subscriptions()` se quiser garantir)
-- [ ] Nenhuma chamada DynamoDB/SNS em nivel de modulo (so dentro de funcoes)
-- [ ] Diff comparado ao monolito: DDD copiou domain/application SEM alterar logica (so import paths)
+- [ ] Nenhum `if os.environ.get/.getenv(...)` selecionando InMemory em src/
+- [ ] Nenhum `try/except KeyError: InMemory` em src/
+- [ ] `grep -rE "os\.(environ|getenv)" src/` lista SOMENTE env vars declaradas no template
+- [ ] Ao criar produto, handler publica no SNS
+- [ ] Nenhuma chamada AWS em nivel de modulo (teste `test_no_aws_calls_at_module_import_time` valida)
+- [ ] Diff comparado ao monolito (DDD): domain/ e application/ copiados sem alterar logica (so import paths)

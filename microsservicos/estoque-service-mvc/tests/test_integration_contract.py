@@ -89,8 +89,12 @@ def test_no_inmemory_fallback_in_production_code():
     code = _all_src_code()
     violating_patterns = [
         r"if\s+.*os\.environ[^:]*:[\s\S]{0,400}?InMemory",
-        r"_USE_DYNAMO\s*=\s*.*os\.environ",
-        r"is_aws\s*=\s*.*os\.environ",
+        r"if\s+.*os\.getenv[^:]*:[\s\S]{0,400}?InMemory",
+        r"_USE_DYNAMO\s*=\s*.*os\.(environ|getenv)",
+        r"is_aws\s*=\s*.*os\.(environ|getenv)",
+        r"except\s+KeyError[\s\S]{0,200}?InMemory",
+        r"except\s+Exception[\s\S]{0,200}?InMemory",
+        r"AWS_LAMBDA_FUNCTION_NAME[\s\S]{0,200}?InMemory",
     ]
     hits = [p for p in violating_patterns if re.search(p, code)]
     assert not hits, (
@@ -98,6 +102,51 @@ def test_no_inmemory_fallback_in_production_code():
         f"{hits}).\nRegra 2 do contrato: producao SEMPRE usa DynamoDB. "
         "Testes usam moto via conftest.py. Remova o branch InMemory de src/."
     )
+
+
+def test_no_aws_calls_at_module_import_time():
+    """Regra 5: nenhuma operacao AWS em nivel de modulo (coluna 0).
+
+    Motivacao: quando handlers cacheiam `Table(...)` ou chamam `get_item()`
+    em import-time, o pytest importa o modulo DURANTE a coleta, ANTES do
+    conftest conseguir ativar mock_aws(). Resultado: os testes quebram com
+    erro de credenciais em vez de erro de comportamento claro, e confundem
+    a IA que vai tentar "consertar" de formas erradas. Alem disso, em
+    producao com cold starts agressivos a chamada de import-time aumenta
+    init_duration.
+    """
+    for py in SERVICE_ROOT.joinpath("src").rglob("*.py"):
+        if "__pycache__" in str(py):
+            continue
+        text = py.read_text()
+        lines = text.splitlines()
+        # Heuristica: linha comecando na coluna 0 (sem indentacao) que
+        # contem uma chamada boto3/DynamoDB/SNS/SQS. Excluir import e def.
+        bad_tokens = (
+            "boto3.resource(",
+            "boto3.client(",
+            ".put_item(",
+            ".get_item(",
+            ".update_item(",
+            ".delete_item(",
+            ".scan(",
+            ".query(",
+            ".publish(",
+            ".send_message(",
+        )
+        for lineno, line in enumerate(lines, start=1):
+            if not line or line[0] in " \t":
+                continue  # indentado — dentro de funcao/classe
+            if line.startswith(("import ", "from ", "def ", "class ", "async def ", "#")):
+                continue
+            for tok in bad_tokens:
+                if tok in line:
+                    raise AssertionError(
+                        f"{py.relative_to(SERVICE_ROOT)}:{lineno} tem chamada AWS em "
+                        f"nivel de modulo: {line.strip()!r}. Regra 5: mova para dentro "
+                        f"de uma funcao. Lambdas caches de `Table(...)` podem ser feitos "
+                        f"com um singleton LAZY (funcao get_table() que cacheia em dict)."
+                    )
 
 
 def test_event_consumers_do_not_only_log():
