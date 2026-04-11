@@ -1,0 +1,134 @@
+/home/gabriel/Documents/tcc/project/microsservicos/catalogo-service/src/container.py
+    F 13:0 _build_container - A (2)
+/home/gabriel/Documents/tcc/project/microsservicos/catalogo-service/src/handlers/health.py
+    F 3:0 handler - A (1)
+/home/gabriel/Documents/tcc/project/microsservicos/catalogo-service/src/handlers/catalogo.py
+    F 39:0 handler - D (24)
+    F 32:0 _parse_body - A (2)
+    F 28:0 _response - A (1)
+    F 119:0 _categoria_to_dict - A (1)
+    F 129:0 _produto_to_dict - A (1)
+/home/gabriel/Documents/tcc/project/microsservicos/catalogo-service/src/domain/value_objects/sku.py
+    C 10:0 SKU - A (4)
+    M 13:4 SKU.__post_init__ - A (3)
+/home/gabriel/Documents/tcc/project/microsservicos/catalogo-service/src/domain/value_objects/dinheiro.py
+    C 8:0 Dinheiro - A (5)
+    M 11:4 Dinheiro.__post_init__ - A (4)
+/home/gabriel/Documents/tcc/project/microsservicos/catalogo-service/src/domain/repositories/categoria_repository.py
+    C 7:0 CategoriaRepository - A (2)
+    M 9:4 CategoriaRepository.get_by_nome - A (1)
+    M 13:4 CategoriaRepository.list_all - A (1)
+/home/gabriel/Documents/tcc/project/microsservicos/catalogo-service/src/domain/repositories/produto_repository.py
+    C 8:0 ProdutoRepository - A (2)
+    M 10:4 ProdutoRepository.get_by_sku - A (1)
+    M 14:4 ProdutoRepository.list_filtered - A (1)
+/home/gabriel/Documents/tcc/project/microsservicos/catalogo-service/src/domain/exceptions/catalogo.py
+    C 4:0 CategoriaNomeDuplicado - A (2)
+    C 9:0 CategoriaNaoEncontrada - A (2)
+    C 14:0 ProdutoSkuDuplicado - A (2)
+    C 19:0 ProdutoNaoEncontrado - A (2)
+    M 5:4 CategoriaNomeDuplicado.__init__ - A (1)
+    M 10:4 CategoriaNaoEncontrada.__init__ - A (1)
+    M 15:4 ProdutoSkuDuplicado.__init__ - A (1)
+    M 20:4 ProdutoNaoEncontrado.__init__ - A (1)
+/home/gabriel/Documents/tcc/project/microsservicos/catalogo-service/src/domain/services/event_publisher.py
+    C 4:0 EventPublisher - A (2)
+    M 6:4 EventPublisher.publish - A (1)
+/home/gabriel/Documents/tcc/project/microsservicos/catalogo-service/src/domain/entities/categoria.py
+    C 8:0 Categoria - B (7)
+    M 12:4 Categoria.__post_init__ - B (6)
+/home/gabriel/Documents/tcc/project/microsservicos/catalogo-service/src/domain/entities/produto.py
+    M 21:4 Produto.__post_init__ - B (9)
+    C 13:0 Produto - B (6)
+    M 35:4 Produto.atualizar - A (5)
+    M 53:4 Produto.desativar - A (1)
+/home/gabriel/Documents/tcc/project/microsservicos/catalogo-service/src/infrastructure/repositories/dynamodb_produto_repository.py
+    M 35:4 DynamoDBProdutoRepository.list_filtered - A (5)
+    C 14:0 DynamoDBProdutoRepository - A (3)
+    M 20:4 DynamoDBProdutoRepository.get_by_id - A (2)
+    M 27:4 DynamoDBProdutoRepository.get_by_sku - A (2)
+    M 57:4 DynamoDBProdutoRepository.save - A (2)
+    M 75:4 DynamoDBProdutoRepository._to_entity - A (2)
+    M 15:4 DynamoDBProdutoRepository.__init__ - A (1)
+    M 71:4 DynamoDBProdutoRepository.delete - A (1)
+/home/gabriel/Documents/tcc/project/microsservicos/catalogo-service/src/infrastructure/repositories/dynamodb_categoria_repository.py
+    C 11:0 DynamoDBCategoriaRepository - A (2)
+    M 17:4 DynamoDBCategoriaRepository.get_by_id - A (2)
+    M 24:4 DynamoDBCategoriaRepository.get_by_nome - A (2)
+    M 32:4 DynamoDBCategoriaRepository.list_all - A (2)
+    M 36:4 DynamoDBCategoriaRepository.save - A (2)
+    M 50:4 DynamoDBCategoriaRepository._to_entity - A (2)
+    M 12:4 DynamoDBCategoriaRepository.__init__ - A (1)
+    M 46:4 DynamoDBCategoriaRepository.delete - A (1)
+/home/gabriel/Documents/tcc/project/microsservicos/catalogo-service/src/infrastructure/repositories/in_memory_produto_repository.py
+    M 20:4 InMemoryProdutoRepository.list_filtered - B (7)
+    C 7:0 InMemoryProdutoRepository - A (3)
+    M 14:4 InMemoryProdutoRepository.get_by_sku - A (3)
+    M 8:4 InMemoryProdutoRepository.__init__ - A (1)
+    M 11:4 InMemoryProdutoRepository.get_by_id - A (1)
+    M 32:4 InMemoryProdutoRepository.save - A (1)
+    M 36:4 InMemoryProdutoRepository.delete - A (1)
+/home/gabriel/Documents/tcc/project/microsservicos/catalogo-service/src/infrastructure/repositories/in_memory_categoria_repository.py
+    M 14:4 InMemoryCategoriaRepository.get_by_nome - A (3)
+    C 7:0 InMemoryCategoriaRepository - A (2)
+    M 8:4 InMemoryCategoriaRepository.__init__ - A (1)
+    M 11:4 InMemoryCategoriaRepository.get_by_id - A (1)
+    M 20:4 InMemoryCategoriaRepository.list_all - A (1)
+    M 23:4 InMemoryCategoriaRepository.save - A (1)
+    M 27:4 InMemoryCategoriaRepository.delete - A (1)
+/home/gabriel/Documents/tcc/project/microsservicos/catalogo-service/src/infrastructure/services/sns_event_publisher.py
+    C 9:0 SnsEventPublisher - A (2)
+    M 10:4 SnsEventPublisher.__init__ - A (1)
+    M 14:4 SnsEventPublisher.publish - A (1)
+/home/gabriel/Documents/tcc/project/microsservicos/catalogo-service/src/infrastructure/services/noop_event_publisher.py
+    C 4:0 NoopEventPublisher - A (2)
+    M 5:4 NoopEventPublisher.publish - A (1)
+/home/gabriel/Documents/tcc/project/microsservicos/catalogo-service/src/application/use_cases/listar_categorias.py
+    C 5:0 ListarCategoriasUseCase - A (2)
+    M 6:4 ListarCategoriasUseCase.__init__ - A (1)
+    M 9:4 ListarCategoriasUseCase.execute - A (1)
+/home/gabriel/Documents/tcc/project/microsservicos/catalogo-service/src/application/use_cases/criar_categoria.py
+    C 16:0 CriarCategoriaUseCase - A (3)
+    M 20:4 CriarCategoriaUseCase.execute - A (2)
+    C 11:0 CriarCategoriaDTO - A (1)
+    M 17:4 CriarCategoriaUseCase.__init__ - A (1)
+/home/gabriel/Documents/tcc/project/microsservicos/catalogo-service/src/application/use_cases/buscar_produto.py
+    C 8:0 BuscarProdutoUseCase - A (3)
+    M 12:4 BuscarProdutoUseCase.execute - A (2)
+    M 9:4 BuscarProdutoUseCase.__init__ - A (1)
+/home/gabriel/Documents/tcc/project/microsservicos/catalogo-service/src/application/use_cases/atualizar_produto.py
+    C 17:0 AtualizarProdutoUseCase - A (3)
+    M 21:4 AtualizarProdutoUseCase.execute - A (2)
+    C 11:0 AtualizarProdutoDTO - A (1)
+    M 18:4 AtualizarProdutoUseCase.__init__ - A (1)
+/home/gabriel/Documents/tcc/project/microsservicos/catalogo-service/src/application/use_cases/criar_produto.py
+    C 24:0 CriarProdutoUseCase - A (3)
+    M 35:4 CriarProdutoUseCase.execute - A (3)
+    C 16:0 CriarProdutoDTO - A (1)
+    M 25:4 CriarProdutoUseCase.__init__ - A (1)
+/home/gabriel/Documents/tcc/project/microsservicos/catalogo-service/src/application/use_cases/buscar_categoria.py
+    C 8:0 BuscarCategoriaUseCase - A (3)
+    M 12:4 BuscarCategoriaUseCase.execute - A (2)
+    M 9:4 BuscarCategoriaUseCase.__init__ - A (1)
+/home/gabriel/Documents/tcc/project/microsservicos/catalogo-service/src/application/use_cases/desativar_produto.py
+    C 8:0 DesativarProdutoUseCase - A (3)
+    M 12:4 DesativarProdutoUseCase.execute - A (2)
+    M 9:4 DesativarProdutoUseCase.__init__ - A (1)
+/home/gabriel/Documents/tcc/project/microsservicos/catalogo-service/src/application/use_cases/listar_produtos.py
+    C 7:0 ListarProdutosUseCase - A (2)
+    M 8:4 ListarProdutosUseCase.__init__ - A (1)
+    M 11:4 ListarProdutosUseCase.execute - A (1)
+/home/gabriel/Documents/tcc/project/microsservicos/catalogo-service/src/shared/domain/repositories/base.py
+    C 10:0 BaseRepository - A (2)
+    M 12:4 BaseRepository.get_by_id - A (1)
+    M 16:4 BaseRepository.save - A (1)
+    M 20:4 BaseRepository.delete - A (1)
+/home/gabriel/Documents/tcc/project/microsservicos/catalogo-service/src/shared/domain/exceptions/base.py
+    C 1:0 DomainException - A (2)
+    M 2:4 DomainException.__init__ - A (1)
+/home/gabriel/Documents/tcc/project/microsservicos/catalogo-service/src/shared/domain/entities/base.py
+    C 7:0 BaseEntity - A (2)
+    M 12:4 BaseEntity.__post_init__ - A (1)
+
+103 blocks (classes, functions, methods) analyzed.
+Average complexity: A (2.233009708737864)

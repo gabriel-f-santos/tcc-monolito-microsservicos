@@ -1,0 +1,14 @@
+{
+  "packages": [
+    {
+      "package": "src.handlers",
+      "Ca": 0,
+      "Ce": 0,
+      "I": 0.0,
+      "modules": 4
+    }
+  ],
+  "total_modules": 5,
+  "total_packages": 1,
+  "avg_instability": 0.0
+}

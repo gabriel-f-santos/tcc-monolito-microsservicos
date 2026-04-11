@@ -1,0 +1,72 @@
+/home/gabriel/Documents/tcc/project/microsservicos/auth-service-mvc/src/__init__.py
+    LOC: 0
+    LLOC: 0
+    SLOC: 0
+    Comments: 0
+    Single comments: 0
+    Multi: 0
+    Blank: 0
+    - Comment Stats
+        (C % L): 0%
+        (C % S): 0%
+        (C + M % L): 0%
+/home/gabriel/Documents/tcc/project/microsservicos/auth-service-mvc/src/handlers/__init__.py
+    LOC: 0
+    LLOC: 0
+    SLOC: 0
+    Comments: 0
+    Single comments: 0
+    Multi: 0
+    Blank: 0
+    - Comment Stats
+        (C % L): 0%
+        (C % S): 0%
+        (C + M % L): 0%
+/home/gabriel/Documents/tcc/project/microsservicos/auth-service-mvc/src/handlers/health.py
+    LOC: 8
+    LLOC: 4
+    SLOC: 7
+    Comments: 0
+    Single comments: 0
+    Multi: 0
+    Blank: 1
+    - Comment Stats
+        (C % L): 0%
+        (C % S): 0%
+        (C + M % L): 0%
+/home/gabriel/Documents/tcc/project/microsservicos/auth-service-mvc/src/handlers/authorizer.py
+    LOC: 39
+    LLOC: 21
+    SLOC: 30
+    Comments: 0
+    Single comments: 1
+    Multi: 0
+    Blank: 8
+    - Comment Stats
+        (C % L): 0%
+        (C % S): 0%
+        (C + M % L): 0%
+/home/gabriel/Documents/tcc/project/microsservicos/auth-service-mvc/src/handlers/auth.py
+    LOC: 106
+    LLOC: 72
+    SLOC: 77
+    Comments: 2
+    Single comments: 3
+    Multi: 0
+    Blank: 26
+    - Comment Stats
+        (C % L): 2%
+        (C % S): 3%
+        (C + M % L): 2%
+** Total **
+    LOC: 153
+    LLOC: 97
+    SLOC: 114
+    Comments: 2
+    Single comments: 4
+    Multi: 0
+    Blank: 35
+    - Comment Stats
+        (C % L): 1%
+        (C % S): 2%
+        (C + M % L): 1%

@@ -10,6 +10,7 @@ build/
 
 # Virtual environments
 .venv/
+.venv-metrics/
 venv/
 
 # Environment files
