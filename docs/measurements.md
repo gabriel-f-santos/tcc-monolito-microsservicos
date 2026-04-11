@@ -163,6 +163,50 @@
 
 ---
 
+## Fase B3 — Migracao para 6 Microsservicos Independentes (Stacks Separadas)
+
+Reexecucao apos restruturacao arquitetural: cada servico passou a ter seu proprio
+template.yaml / SAM stack / API Gateway / DynamoDB, com cross-stack references via
+`!ImportValue`. 6 agentes paralelos (Claude Code) executaram os prompts genericos de
+`microsservicos/tasks/task-{auth,catalogo,estoque}.md` simultaneamente.
+
+### DDD
+
+| Servico | Tempo | Testes |
+|---------|-------|--------|
+| auth-service | 2min 18s | 6/6 + 2 health |
+| catalogo-service | 3min 54s | 14/14 + 2 health |
+| estoque-service | 2min 59s | 14/14 + 2 health |
+| **Total (paralelo)** | **3min 54s** (max) | 40/40 |
+| Soma sequencial equivalente | 9min 11s | — |
+
+### MVC
+
+| Servico | Tempo | Testes |
+|---------|-------|--------|
+| auth-service-mvc | 2min 13s | 6/6 + 2 health |
+| catalogo-service-mvc | 1min 38s | 14/14 + 2 health |
+| estoque-service-mvc | 1min 37s | 14/14 + 2 health |
+| **Total (paralelo)** | **2min 13s** (max) | 40/40 |
+| Soma sequencial equivalente | 5min 28s | — |
+
+### Comparacao DDD vs MVC (Fase B3)
+
+| Metrica | DDD | MVC | Delta |
+|---------|-----|-----|-------|
+| Tempo somado | 9min 11s | 5min 28s | MVC 40% mais rapido |
+| Tempo paralelo (max) | 3min 54s | 2min 13s | MVC 43% mais rapido |
+| % reuso (linhas) | ~95% (copiou domain+application) | ~0% (reescrita) | — |
+| Testes passando | 40/40 | 40/40 | — |
+
+**Observacoes:**
+- Prompts genericos identicos para ambas variantes (IA le CLAUDE.md do servico para saber arquitetura)
+- DDD demorou mais por ter que copiar/ajustar camadas domain+application do monolito
+- MVC mais rapido porque reescreve direto com boto3 inline (sem camadas)
+- Primeira rodada (Fase B + B2) usou arquitetura shared-template, substituida por stacks independentes
+
+---
+
 ## Fase C — Feature Nova: Alerta Estoque Baixo (Medicao Principal)
 
 ### Monolito + Claude Code
