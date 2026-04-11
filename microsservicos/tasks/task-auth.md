@@ -5,22 +5,56 @@
 ```
 Implemente o auth-service para que todos os testes em tests/ passem.
 
-Leia CLAUDE.md deste servico para entender a arquitetura (DDD ou MVC).
-Leia os testes em tests/test_auth.py para entender o comportamento esperado.
-Use monolito/src/auth/ (DDD) ou monolito-mvc/routes/auth.py (MVC) como referencia.
+ANTES DE CODAR:
+1. Leia microsservicos/tasks/INTEGRATION-CONTRACT.md — regras obrigatorias.
+2. Leia CLAUDE.md deste servico para entender a arquitetura (DDD ou MVC).
+3. Leia template.yaml e liste TODAS as entradas em Environment.Variables.
+   O codigo DEVE ler EXATAMENTE esses nomes (nao inventar DYNAMODB_TABLE etc).
+4. Leia os testes em tests/ para entender o comportamento esperado.
+5. Use monolito/src/auth/ (DDD) ou monolito-mvc/routes/auth.py (MVC) como referencia.
 
-O servico usa DynamoDB (tabela definida no template.yaml).
-Os handlers recebem Lambda events, NAO FastAPI requests.
-Testes invocam handlers diretamente — nao precisa de HTTP server.
+O servico usa DynamoDB. Os handlers recebem Lambda events (nao FastAPI requests).
+Testes invocam handlers diretamente, mas rodam sob mock_aws() via conftest.py
+(moto). NAO use repositorios InMemory como fallback selecionado por env var —
+em producao, sempre DynamoDB; em teste, moto intercepta.
 
-Para o DDD: copie domain/ e application/ do monolito, ajuste imports, crie infra DynamoDB.
-Para o MVC: reescreva as rotas como handlers com queries DynamoDB inline.
+Para o DDD: copie domain/ e application/ do monolito SEM MODIFICACAO (so ajustar
+imports), e implemente uma camada infrastructure com DynamoDBUsuarioRepository
+usando boto3. Container instancia SEMPRE a versao DynamoDB.
 
-Setup: cd microsservicos/XXX-service && pyenv local 3.13.7 && python3 -m venv .venv && source .venv/bin/activate && pip install -r requirements.txt && pip install pytest
-Rodar: pytest tests/ -v
+Para o MVC: reescreva como handlers com queries DynamoDB inline. Sem branch
+condicional — boto3 direto. Testes usam moto automaticamente via conftest.py.
+
+Setup:
+  cd microsservicos/XXX-service
+  pyenv local 3.13.7 && python3 -m venv .venv && source .venv/bin/activate
+  pip install -r requirements.txt -r requirements-dev.txt
+Rodar:
+  pytest tests/ -v
 ```
 
-## Testes que devem passar (6 + 2 health = 8)
+## Bugs da rodada anterior — NAO REPETIR
+
+A rodada anterior gerou codigo que passou nos testes locais mas falhou
+em producao porque:
+
+1. **Desalinhamento de env var**: o container lia `DYNAMODB_TABLE` mas
+   `template.yaml` envia `USUARIOS_TABLE`. Resultado: Lambda caia em
+   InMemoryRepository a cada cold start e login sempre retornava 401.
+
+   **Evitar**: use EXATAMENTE os nomes do template. O teste-guardiao
+   `tests/test_integration_contract.py::test_env_vars_from_template_are_read_by_src_code`
+   falha se houver divergencia.
+
+2. **Fallback condicional InMemory**: padrao `if os.environ.get(TABLE):
+   return DynamoDB() else: return InMemory()`. Tests passavam sem setar a
+   env var → caiam no InMemory.
+
+   **Evitar**: em producao, sempre DynamoDB. O conftest.py usa moto e seta
+   as env vars automaticamente. O teste-guardiao
+   `test_no_inmemory_fallback_in_production_code` falha se houver if-else.
+
+## Testes que devem passar (6 auth + 2 health + 3 contract = 11)
 
 | Teste | Comportamento |
 |-------|-------------|
@@ -30,8 +64,11 @@ Rodar: pytest tests/ -v
 | test_login_senha_errada | Senha errada → 401 |
 | test_authorizer_token_valido | Login → authorizer → Allow policy |
 | test_authorizer_token_invalido | Token lixo → Exception Unauthorized |
-| test_health_returns_200 | 200 |
+| test_health_returns_200 | GET /health → 200 |
 | test_health_body | {status: healthy, service: auth} |
+| test_env_vars_from_template_are_read_by_src_code | env vars alinhadas |
+| test_no_inmemory_fallback_in_production_code | sem branch InMemory |
+| test_event_consumers_do_not_only_log | n/a (sem event consumer) |
 
 ## Handlers a implementar
 
@@ -42,22 +79,29 @@ src/handlers/
 └── authorizer.py    # handler(event, context) → IAM policy com wildcard ARN
 ```
 
-## DynamoDB
+## DynamoDB (ver template.yaml)
 
-- Tabela: ver template.yaml (campo TableName)
-- PK: `id` (string/UUID)
+- Tabela: `UsuariosTable` com PK `id` (string/UUID)
+- Env var: `USUARIOS_TABLE`
 - Buscar por email: Scan com FilterExpression
+- Outra env var: `JWT_SECRET` (com default em Parameters)
 
-## Regras
+## Regras de negocio
 
 - Senha: bcrypt hash, minimo 8 chars
-- JWT: python-jose, HS256, expira 24h, payload {sub: user_id}
+- JWT: python-jose, HS256, expira 24h, payload `{sub: user_id}`
 - Authorizer: wildcard ARN no Resource da policy (cache API GW)
 - Email case-insensitive (lowercase antes de salvar)
-- Resposta de registrar NUNCA contem senha_hash
+- Resposta de registrar NUNCA contem senha_hash nem senha
 
-## Criterio de pronto
+## Checklist de "done"
 
-- [ ] `pytest tests/ -v` → 8 passed
-- [ ] Handlers usam DynamoDB (boto3)
-- [ ] Authorizer retorna wildcard ARN
+Marque como feito APENAS se TODOS os items passarem:
+
+- [ ] `pytest tests/ -v` → **11 passed** (8 comportamento + 3 contract)
+- [ ] `test_integration_contract.py` inteiramente verde — sem pulos
+- [ ] Nenhum `if os.environ.get(...): ... InMemory ... else: ...` em src/
+- [ ] `grep -r "os.environ" src/` lista SOMENTE env vars que aparecem em template.yaml
+- [ ] Repositorio DynamoDB e instanciado SEM condicional em src/container.py (DDD) ou diretamente em src/handlers/auth.py (MVC)
+- [ ] Nenhuma chamada `boto3.resource(...).put_item/get_item/scan` em nivel de modulo (so dentro de funcoes)
+- [ ] Diff comparado ao monolito: DDD copiou domain/application SEM alterar logica (so import paths)
