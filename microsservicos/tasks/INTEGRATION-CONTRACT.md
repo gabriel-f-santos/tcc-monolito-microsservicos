@@ -105,3 +105,24 @@ ele ja parseia `template.yaml` e cria tudo. Basta copiar pra cada servico.
 - [ ] Nao ha branch condicional selecionando InMemory em prod
 - [ ] Todo POST/evento tem teste que verifica persistencia via boto3
 - [ ] Event consumers gravam no DynamoDB
+
+---
+
+## Cronometragem obrigatoria
+
+Quando este prompt e executado por um agente (via orquestrador), o agente DEVE:
+
+1. **Como PRIMEIRA acao** (antes de ler qualquer arquivo):
+   ```bash
+   bash ../../scripts/migration-timer.sh start <service-name>
+   ```
+   Onde `<service-name>` e um dos: `auth-ddd`, `catalogo-ddd`, `estoque-ddd`,
+   `auth-mvc`, `catalogo-mvc`, `estoque-mvc`.
+
+2. **Como ULTIMA acao** (apos todos os testes passarem):
+   ```bash
+   bash ../../scripts/migration-timer.sh end <service-name>
+   ```
+
+O script grava start/end timestamps em `metrics/migration-times/` e calcula
+o delta em `summary.csv`. Sem essa etapa, a medicao do TCC e perdida.
