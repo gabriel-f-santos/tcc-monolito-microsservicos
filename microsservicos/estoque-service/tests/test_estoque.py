@@ -3,6 +3,7 @@ Identicos entre DDD e MVC — mesmos payloads, mesmas respostas.
 Invoca Lambda handlers com event mockado.
 
 NOTA: Estes testes assumem que o ItemEstoque ja existe (criado via evento ou setup).
+"""
 import json
 import uuid
 

@@ -1,5 +1,30 @@
-def handler(event, context):
-    raise Exception("Unauthorized")
+"""Lambda Authorizer — valida JWT e retorna IAM policy."""
+import os
 
-def _generate_policy(principal_id, effect, resource):
-    return {"principalId": principal_id, "policyDocument": {"Version": "2012-10-17", "Statement": [{"Action": "execute-api:Invoke", "Effect": effect, "Resource": resource}]}}
+from jose import jwt, JWTError
+
+
+def handler(event, context):
+    token = event.get("authorizationToken", "").replace("Bearer ", "")
+    try:
+        payload = jwt.decode(
+            token,
+            os.environ["JWT_SECRET"],
+            algorithms=["HS256"],
+        )
+    except JWTError:
+        raise Exception("Unauthorized")
+
+    return {
+        "principalId": payload["sub"],
+        "policyDocument": {
+            "Version": "2012-10-17",
+            "Statement": [
+                {
+                    "Effect": "Allow",
+                    "Action": "execute-api:Invoke",
+                    "Resource": "arn:aws:execute-api:*:*:*/*/*/*",
+                }
+            ],
+        },
+    }
