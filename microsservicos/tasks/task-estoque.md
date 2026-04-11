@@ -133,6 +133,26 @@ src/handlers/
 - SQS: `EstoqueEventosQueue` — subscription automatica no topico SNS do catalogo
 - Buscar por produto_id: Scan com FilterExpression
 
+### Envelope SNS → SQS (importante!)
+
+O event_consumer recebe mensagens SQS que foram entregues via subscription SNS.
+O `event` do Lambda tem formato `{"Records": [{"body": "..."}]}`, onde o `body`
+e uma string JSON que contem um wrapper SNS com o payload real dentro de
+`"Message"` — **duas camadas de json.loads**:
+
+```python
+def handler(event, context):
+    for record in event["Records"]:            # ITERAR — mesmo com BatchSize=1
+        sqs_body = json.loads(record["body"])  # camada 1: wrapper SNS
+        message = json.loads(sqs_body["Message"])  # camada 2: payload real
+        evento = message["evento"]             # ex: "ProdutoCriado"
+        dados = message["dados"]               # {produto_id, sku, nome, ...}
+        # ... criar/atualizar ItemEstoque no DynamoDB
+```
+
+**Atencao**: itere `for record in event["Records"]` mesmo sabendo que
+`BatchSize: 1`. Lambda pode entregar multiplos records em cenarios de retry.
+
 ## Regras de negocio
 
 - Quantidade > 0 (senao 422)
@@ -145,12 +165,17 @@ src/handlers/
 
 Marque como feito APENAS se TODOS os items passarem:
 
-- [ ] `pytest tests/ -v` → **19 passed** (14 estoque + 2 health + 3 contract)
-- [ ] `test_integration_contract.py` inteiramente verde — **incluindo** `test_event_consumers_do_not_only_log`
-- [ ] `src/handlers/event_consumer.py` contem `put_item` ou `.save(`
-- [ ] Nenhum `if os.environ.get(...): ... InMemory`, nenhum `_USE_DYNAMO`, nenhum `is_aws`
-- [ ] `grep -r "os.environ" src/` lista SOMENTE `ITENS_ESTOQUE_TABLE` e `MOVIMENTACOES_TABLE`
+- [ ] Venv fresco: `rm -rf .venv && python3 -m venv .venv && source .venv/bin/activate && pip install -r requirements.txt -r requirements-dev.txt` → sem erros
+- [ ] Import sanity: `python -c "from src.handlers.estoque import handler; from src.handlers.event_consumer import handler as event_handler"` → sem ModuleNotFoundError
+- [ ] `pytest tests/ -v` → **20 passed** (14 estoque + 2 health + 4 contract)
+- [ ] `test_integration_contract.py` inteiramente verde — **incluindo** `test_event_consumers_do_not_only_log` e `test_no_aws_calls_at_module_import_time`
+- [ ] `src/handlers/event_consumer.py` persiste via `put_item` / `update_item` / `.save(` — nao apenas loga
+- [ ] event_consumer itera `for record in event["Records"]` mesmo com BatchSize=1
+- [ ] event_consumer faz **dois** `json.loads` (body → Message → payload)
+- [ ] Nenhum `if os.environ.get/.getenv(...)` selecionando InMemory, nenhum `_USE_DYNAMO`, nenhum `is_aws`
+- [ ] Nenhum `try/except KeyError: InMemory`
+- [ ] `grep -rE "os\.(environ|getenv)" src/` lista SOMENTE `ITENS_ESTOQUE_TABLE` e `MOVIMENTACOES_TABLE`
 - [ ] Arquivos `src/infrastructure/repositories/dynamodb_*.py` EXISTEM e sao usados pelo container (DDD)
-- [ ] Teste `test_evento_produto_criado_cria_item` verifica persistencia via boto3.Table(...).scan() ou get_item()
-- [ ] Nenhuma chamada DynamoDB em nivel de modulo
-- [ ] Diff comparado ao monolito: DDD copiou domain/application SEM alterar logica (so import paths)
+- [ ] Teste `test_evento_produto_criado_cria_item` verifica persistencia via `boto3.resource("dynamodb").Table(...).scan()` ou `get_item()`
+- [ ] Nenhuma chamada AWS em nivel de modulo
+- [ ] Diff comparado ao monolito (DDD): domain/ e application/ copiados sem alterar logica (so import paths)
