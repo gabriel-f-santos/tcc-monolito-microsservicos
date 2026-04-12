@@ -1,0 +1,120 @@
+File: /home/gabriel/Documents/tcc/project/microsservicos/estoque-service/src/__init__.py
+File: /home/gabriel/Documents/tcc/project/microsservicos/estoque-service/src/handlers/__init__.py
+File: /home/gabriel/Documents/tcc/project/microsservicos/estoque-service/src/handlers/event_consumer.py
+File: /home/gabriel/Documents/tcc/project/microsservicos/estoque-service/src/handlers/health.py
+File: /home/gabriel/Documents/tcc/project/microsservicos/estoque-service/src/handlers/estoque.py
+File: /home/gabriel/Documents/tcc/project/microsservicos/estoque-service/src/domain/__init__.py
+File: /home/gabriel/Documents/tcc/project/microsservicos/estoque-service/src/domain/value_objects/__init__.py
+File: /home/gabriel/Documents/tcc/project/microsservicos/estoque-service/src/domain/value_objects/tipo_movimentacao.py
+  Class: TipoMovimentacao (4:0)
+    Total: 0.0%
+File: /home/gabriel/Documents/tcc/project/microsservicos/estoque-service/src/domain/repositories/movimentacao_repository.py
+  Class: MovimentacaoRepository (7:0)
+    Function: save 0/0 0.00%
+    Function: list_by_item 0/0 0.00%
+    Total: 0.0%
+File: /home/gabriel/Documents/tcc/project/microsservicos/estoque-service/src/domain/repositories/__init__.py
+File: /home/gabriel/Documents/tcc/project/microsservicos/estoque-service/src/domain/repositories/item_estoque_repository.py
+  Class: ItemEstoqueRepository (8:0)
+    Function: get_by_produto_id 0/0 0.00%
+    Function: list_filtered 0/0 0.00%
+    Total: 0.0%
+File: /home/gabriel/Documents/tcc/project/microsservicos/estoque-service/src/domain/exceptions/__init__.py
+File: /home/gabriel/Documents/tcc/project/microsservicos/estoque-service/src/domain/exceptions/estoque.py
+  Class: ItemNaoEncontrado (4:0)
+    Function: __init__ 0/0 0.00%
+    Total: 0.0%
+  Class: QuantidadeInvalida (12:0)
+    Function: __init__ 0/0 0.00%
+    Total: 0.0%
+  Class: EstoqueInsuficiente (20:0)
+    Function: __init__ 0/0 0.00%
+    Total: 0.0%
+  Class: ItemInativo (28:0)
+    Function: __init__ 0/0 0.00%
+    Total: 0.0%
+File: /home/gabriel/Documents/tcc/project/microsservicos/estoque-service/src/domain/entities/movimentacao.py
+  Class: Movimentacao (11:0)
+    Function: __post_init__ 3/3 100.00%
+    Total: 100.0%
+File: /home/gabriel/Documents/tcc/project/microsservicos/estoque-service/src/domain/entities/__init__.py
+File: /home/gabriel/Documents/tcc/project/microsservicos/estoque-service/src/domain/entities/item_estoque.py
+  Class: ItemEstoque (17:0)
+    Function: __post_init__ 5/8 62.50%
+    Function: registrar_entrada 4/8 50.00%
+    Function: registrar_saida 3/8 37.50%
+    Total: 50.0%
+File: /home/gabriel/Documents/tcc/project/microsservicos/estoque-service/src/infrastructure/__init__.py
+File: /home/gabriel/Documents/tcc/project/microsservicos/estoque-service/src/infrastructure/repositories/__init__.py
+File: /home/gabriel/Documents/tcc/project/microsservicos/estoque-service/src/infrastructure/repositories/dynamodb_item_estoque_repository.py
+  Class: DynamoDBItemEstoqueRepository (13:0)
+    Function: __init__ 1/2 50.00%
+    Function: _table 1/2 50.00%
+    Function: _to_item 0/2 0.00%
+    Function: _to_row 0/2 0.00%
+    Function: get_by_id 1/2 50.00%
+    Function: get_by_produto_id 1/2 50.00%
+    Function: list_filtered 1/2 50.00%
+    Function: save 1/2 50.00%
+    Function: delete 1/2 50.00%
+    Total: 38.89%
+File: /home/gabriel/Documents/tcc/project/microsservicos/estoque-service/src/infrastructure/repositories/dynamodb_movimentacao_repository.py
+  Class: DynamoDBMovimentacaoRepository (14:0)
+    Function: __init__ 1/2 50.00%
+    Function: _table 1/2 50.00%
+    Function: _to_entity 0/2 0.00%
+    Function: _to_row 0/2 0.00%
+    Function: save 1/2 50.00%
+    Function: list_by_item 1/2 50.00%
+    Total: 33.33%
+File: /home/gabriel/Documents/tcc/project/microsservicos/estoque-service/src/application/__init__.py
+File: /home/gabriel/Documents/tcc/project/microsservicos/estoque-service/src/application/use_cases/__init__.py
+File: /home/gabriel/Documents/tcc/project/microsservicos/estoque-service/src/application/use_cases/buscar_item.py
+  Class: BuscarItemUseCase (8:0)
+    Function: __init__ 1/1 100.00%
+    Function: execute 1/1 100.00%
+    Function: execute_por_produto 1/1 100.00%
+    Total: 100.0%
+File: /home/gabriel/Documents/tcc/project/microsservicos/estoque-service/src/application/use_cases/listar_itens.py
+  Class: ListarItensUseCase (5:0)
+    Function: __init__ 1/1 100.00%
+    Function: execute 1/1 100.00%
+    Total: 100.0%
+File: /home/gabriel/Documents/tcc/project/microsservicos/estoque-service/src/application/use_cases/listar_movimentacoes.py
+  Class: ListarMovimentacoesUseCase (9:0)
+    Function: __init__ 2/2 100.00%
+    Function: execute 2/2 100.00%
+    Total: 100.0%
+File: /home/gabriel/Documents/tcc/project/microsservicos/estoque-service/src/application/use_cases/registrar_entrada.py
+  Class: RegistrarEntradaDTO (11:0)
+    Total: 0.0%
+  Class: RegistrarEntradaUseCase (18:0)
+    Function: __init__ 2/2 100.00%
+    Function: execute 2/2 100.00%
+    Total: 100.0%
+File: /home/gabriel/Documents/tcc/project/microsservicos/estoque-service/src/application/use_cases/registrar_saida.py
+  Class: RegistrarSaidaDTO (11:0)
+    Total: 0.0%
+  Class: RegistrarSaidaUseCase (17:0)
+    Function: __init__ 2/2 100.00%
+    Function: execute 2/2 100.00%
+    Total: 100.0%
+File: /home/gabriel/Documents/tcc/project/microsservicos/estoque-service/src/shared/__init__.py
+File: /home/gabriel/Documents/tcc/project/microsservicos/estoque-service/src/shared/domain/__init__.py
+File: /home/gabriel/Documents/tcc/project/microsservicos/estoque-service/src/shared/domain/repositories/__init__.py
+File: /home/gabriel/Documents/tcc/project/microsservicos/estoque-service/src/shared/domain/repositories/base.py
+  Class: BaseRepository (10:0)
+    Function: get_by_id 0/0 0.00%
+    Function: save 0/0 0.00%
+    Function: delete 0/0 0.00%
+    Total: 0.0%
+File: /home/gabriel/Documents/tcc/project/microsservicos/estoque-service/src/shared/domain/exceptions/__init__.py
+File: /home/gabriel/Documents/tcc/project/microsservicos/estoque-service/src/shared/domain/exceptions/base.py
+  Class: DomainException (1:0)
+    Function: __init__ 2/2 100.00%
+    Total: 100.0%
+File: /home/gabriel/Documents/tcc/project/microsservicos/estoque-service/src/shared/domain/entities/__init__.py
+File: /home/gabriel/Documents/tcc/project/microsservicos/estoque-service/src/shared/domain/entities/base.py
+  Class: BaseEntity (7:0)
+    Function: __post_init__ 0/0 0.00%
+    Total: 0.0%

@@ -1,0 +1,2 @@
+exit=1
+ERROR:xenon:block "/home/gabriel/Documents/tcc/project/microsservicos/catalogo-service/src/handlers/catalogo.py:123 handler" has a rank of D

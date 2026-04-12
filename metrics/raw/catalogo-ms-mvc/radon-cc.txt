@@ -1,0 +1,25 @@
+/home/gabriel/Documents/tcc/project/microsservicos/catalogo-service-mvc/src/handlers/health.py
+    F 3:0 handler - A (1)
+/home/gabriel/Documents/tcc/project/microsservicos/catalogo-service-mvc/src/handlers/catalogo.py
+    F 269:0 handler - C (17)
+    F 137:0 _criar_produto - C (12)
+    F 202:0 _listar_produtos - B (9)
+    F 226:0 _atualizar_produto - B (9)
+    F 25:0 _json_default - A (4)
+    F 35:0 _parse_body - A (4)
+    F 94:0 _criar_categoria - A (4)
+    F 63:0 _to_decimal - A (2)
+    F 69:0 _produto_to_response - A (2)
+    F 118:0 _listar_categorias - A (2)
+    F 123:0 _buscar_categoria - A (2)
+    F 218:0 _buscar_produto - A (2)
+    F 250:0 _desativar_produto - A (2)
+    F 17:0 _response - A (1)
+    F 47:0 _now_iso - A (1)
+    F 51:0 _categorias_table - A (1)
+    F 55:0 _produtos_table - A (1)
+    F 59:0 _sns_client - A (1)
+    F 82:0 _categoria_to_response - A (1)
+
+20 blocks (classes, functions, methods) analyzed.
+Average complexity: A (3.9)

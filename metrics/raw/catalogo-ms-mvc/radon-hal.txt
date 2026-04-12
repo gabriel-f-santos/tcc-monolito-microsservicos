@@ -1,0 +1,52 @@
+/home/gabriel/Documents/tcc/project/microsservicos/catalogo-service-mvc/src/__init__.py:
+    h1: 0
+    h2: 0
+    N1: 0
+    N2: 0
+    vocabulary: 0
+    length: 0
+    calculated_length: 0
+    volume: 0
+    difficulty: 0
+    effort: 0
+    time: 0.0
+    bugs: 0.0
+/home/gabriel/Documents/tcc/project/microsservicos/catalogo-service-mvc/src/handlers/__init__.py:
+    h1: 0
+    h2: 0
+    N1: 0
+    N2: 0
+    vocabulary: 0
+    length: 0
+    calculated_length: 0
+    volume: 0
+    difficulty: 0
+    effort: 0
+    time: 0.0
+    bugs: 0.0
+/home/gabriel/Documents/tcc/project/microsservicos/catalogo-service-mvc/src/handlers/health.py:
+    h1: 0
+    h2: 0
+    N1: 0
+    N2: 0
+    vocabulary: 0
+    length: 0
+    calculated_length: 0
+    volume: 0
+    difficulty: 0
+    effort: 0
+    time: 0.0
+    bugs: 0.0
+/home/gabriel/Documents/tcc/project/microsservicos/catalogo-service-mvc/src/handlers/catalogo.py:
+    h1: 8
+    h2: 59
+    N1: 44
+    N2: 77
+    vocabulary: 67
+    length: 121
+    calculated_length: 371.07593991234864
+    volume: 733.9967920453904
+    difficulty: 5.220338983050848
+    effort: 3831.712066948818
+    time: 212.87289260826768
+    bugs: 0.24466559734846346

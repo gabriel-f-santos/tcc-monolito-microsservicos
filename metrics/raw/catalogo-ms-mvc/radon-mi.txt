@@ -1,0 +1,4 @@
+/home/gabriel/Documents/tcc/project/microsservicos/catalogo-service-mvc/src/__init__.py - A (100.00)
+/home/gabriel/Documents/tcc/project/microsservicos/catalogo-service-mvc/src/handlers/__init__.py - A (100.00)
+/home/gabriel/Documents/tcc/project/microsservicos/catalogo-service-mvc/src/handlers/health.py - A (100.00)
+/home/gabriel/Documents/tcc/project/microsservicos/catalogo-service-mvc/src/handlers/catalogo.py - A (32.53)

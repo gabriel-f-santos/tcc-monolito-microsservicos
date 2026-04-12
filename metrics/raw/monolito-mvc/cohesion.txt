@@ -1,0 +1,5 @@
+File: /home/gabriel/Documents/tcc/project/monolito-mvc/routes/__init__.py
+File: /home/gabriel/Documents/tcc/project/monolito-mvc/routes/categorias.py
+File: /home/gabriel/Documents/tcc/project/monolito-mvc/routes/estoque.py
+File: /home/gabriel/Documents/tcc/project/monolito-mvc/routes/auth.py
+File: /home/gabriel/Documents/tcc/project/monolito-mvc/routes/produtos.py

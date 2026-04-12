@@ -1,0 +1,134 @@
+File: /home/gabriel/Documents/tcc/project/microsservicos/catalogo-service/src/__init__.py
+File: /home/gabriel/Documents/tcc/project/microsservicos/catalogo-service/src/handlers/__init__.py
+File: /home/gabriel/Documents/tcc/project/microsservicos/catalogo-service/src/handlers/health.py
+File: /home/gabriel/Documents/tcc/project/microsservicos/catalogo-service/src/handlers/catalogo.py
+File: /home/gabriel/Documents/tcc/project/microsservicos/catalogo-service/src/domain/__init__.py
+File: /home/gabriel/Documents/tcc/project/microsservicos/catalogo-service/src/domain/repositories.py
+  Class: CategoriaRepository (8:0)
+    Function: get_by_nome 0/0 0.00%
+    Function: list_all 0/0 0.00%
+    Total: 0.0%
+  Class: ProdutoRepository (18:0)
+    Function: get_by_sku 0/0 0.00%
+    Function: list_filtered 0/0 0.00%
+    Total: 0.0%
+File: /home/gabriel/Documents/tcc/project/microsservicos/catalogo-service/src/domain/entities.py
+  Class: Categoria (12:0)
+    Function: __post_init__ 2/2 100.00%
+    Total: 100.0%
+  Class: Produto (34:0)
+    Function: __post_init__ 5/7 71.43%
+    Function: atualizar 5/7 71.43%
+    Function: desativar 2/7 28.57%
+    Total: 57.14%
+File: /home/gabriel/Documents/tcc/project/microsservicos/catalogo-service/src/domain/services.py
+  Class: EventPublisher (5:0)
+    Function: publicar_produto_criado 0/0 0.00%
+    Total: 0.0%
+File: /home/gabriel/Documents/tcc/project/microsservicos/catalogo-service/src/domain/value_objects.py
+  Class: SKU (11:0)
+    Function: __post_init__ 1/1 100.00%
+    Total: 100.0%
+  Class: Dinheiro (23:0)
+    Function: __post_init__ 1/1 100.00%
+    Total: 100.0%
+File: /home/gabriel/Documents/tcc/project/microsservicos/catalogo-service/src/domain/exceptions.py
+  Class: CategoriaNomeDuplicado (4:0)
+    Function: __init__ 0/0 0.00%
+    Total: 0.0%
+  Class: CategoriaNaoEncontrada (11:0)
+    Function: __init__ 0/0 0.00%
+    Total: 0.0%
+  Class: ProdutoSkuDuplicado (18:0)
+    Function: __init__ 0/0 0.00%
+    Total: 0.0%
+  Class: ProdutoNaoEncontrado (23:0)
+    Function: __init__ 0/0 0.00%
+    Total: 0.0%
+File: /home/gabriel/Documents/tcc/project/microsservicos/catalogo-service/src/infrastructure/__init__.py
+File: /home/gabriel/Documents/tcc/project/microsservicos/catalogo-service/src/infrastructure/sns_event_publisher.py
+  Class: SnsEventPublisher (9:0)
+    Function: __init__ 2/2 100.00%
+    Function: _get_client 1/2 50.00%
+    Function: publicar_produto_criado 1/2 50.00%
+    Total: 66.67%
+File: /home/gabriel/Documents/tcc/project/microsservicos/catalogo-service/src/infrastructure/dynamodb_produto_repository.py
+  Class: DynamoDBProdutoRepository (13:0)
+    Function: __init__ 2/2 100.00%
+    Function: _get_table 2/2 100.00%
+    Function: _to_item staticmethod
+    Function: _from_item staticmethod
+    Function: get_by_id 0/2 0.00%
+    Function: get_by_sku 0/2 0.00%
+    Function: list_filtered 0/2 0.00%
+    Function: save 0/2 0.00%
+    Function: delete 0/2 0.00%
+    Total: 22.22%
+File: /home/gabriel/Documents/tcc/project/microsservicos/catalogo-service/src/infrastructure/dynamodb_categoria_repository.py
+  Class: DynamoDBCategoriaRepository (10:0)
+    Function: __init__ 2/2 100.00%
+    Function: _get_table 2/2 100.00%
+    Function: _to_item staticmethod
+    Function: _from_item staticmethod
+    Function: get_by_id 0/2 0.00%
+    Function: get_by_nome 0/2 0.00%
+    Function: list_all 0/2 0.00%
+    Function: save 0/2 0.00%
+    Function: delete 0/2 0.00%
+    Total: 22.22%
+File: /home/gabriel/Documents/tcc/project/microsservicos/catalogo-service/src/application/__init__.py
+File: /home/gabriel/Documents/tcc/project/microsservicos/catalogo-service/src/application/use_cases.py
+  Class: CriarCategoriaUseCase (24:0)
+    Function: __init__ 1/1 100.00%
+    Function: execute 1/1 100.00%
+    Total: 100.0%
+  Class: ListarCategoriasUseCase (42:0)
+    Function: __init__ 1/1 100.00%
+    Function: execute 1/1 100.00%
+    Total: 100.0%
+  Class: BuscarCategoriaUseCase (50:0)
+    Function: __init__ 1/1 100.00%
+    Function: execute 1/1 100.00%
+    Total: 100.0%
+  Class: CriarProdutoUseCase (64:0)
+    Function: __init__ 3/3 100.00%
+    Function: execute 3/3 100.00%
+    Total: 100.0%
+  Class: ListarProdutosUseCase (107:0)
+    Function: __init__ 1/1 100.00%
+    Function: execute 1/1 100.00%
+    Total: 100.0%
+  Class: BuscarProdutoUseCase (123:0)
+    Function: __init__ 1/1 100.00%
+    Function: execute 1/1 100.00%
+    Total: 100.0%
+  Class: AtualizarProdutoUseCase (134:0)
+    Function: __init__ 1/1 100.00%
+    Function: execute 1/1 100.00%
+    Total: 100.0%
+  Class: DesativarProdutoUseCase (148:0)
+    Function: __init__ 1/1 100.00%
+    Function: execute 1/1 100.00%
+    Total: 100.0%
+File: /home/gabriel/Documents/tcc/project/microsservicos/catalogo-service/src/application/dtos.py
+  Class: CriarCategoriaDTO (7:0)
+    Total: 0.0%
+  Class: CriarProdutoDTO (13:0)
+    Total: 0.0%
+  Class: AtualizarProdutoDTO (22:0)
+    Total: 0.0%
+File: /home/gabriel/Documents/tcc/project/microsservicos/catalogo-service/src/shared/__init__.py
+File: /home/gabriel/Documents/tcc/project/microsservicos/catalogo-service/src/shared/repositories.py
+  Class: BaseRepository (10:0)
+    Function: get_by_id 0/0 0.00%
+    Function: save 0/0 0.00%
+    Function: delete 0/0 0.00%
+    Total: 0.0%
+File: /home/gabriel/Documents/tcc/project/microsservicos/catalogo-service/src/shared/entities.py
+  Class: BaseEntity (7:0)
+    Function: __post_init__ 0/0 0.00%
+    Total: 0.0%
+File: /home/gabriel/Documents/tcc/project/microsservicos/catalogo-service/src/shared/exceptions.py
+  Class: DomainException (1:0)
+    Function: __init__ 2/2 100.00%
+    Total: 100.0%
