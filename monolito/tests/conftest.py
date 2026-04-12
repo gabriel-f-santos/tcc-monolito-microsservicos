@@ -9,6 +9,7 @@ from src.presentation.app import app
 import src.auth.infrastructure.repositories.sqlalchemy_usuario_repository  # noqa: F401
 import src.catalogo.infrastructure.repositories.sqlalchemy_categoria_repository  # noqa: F401
 import src.catalogo.infrastructure.repositories.sqlalchemy_produto_repository  # noqa: F401
+import src.estoque.infrastructure.repositories.sqlalchemy_alerta_estoque_repository  # noqa: F401
 import src.estoque.infrastructure.repositories.sqlalchemy_item_estoque_repository  # noqa: F401
 import src.estoque.infrastructure.repositories.sqlalchemy_movimentacao_repository  # noqa: F401
 

@@ -4,6 +4,7 @@ from uuid import UUID, uuid4
 
 from src.shared.domain.entities.base import BaseEntity
 from src.shared.domain.exceptions.base import DomainException
+from src.estoque.domain.entities.alerta_estoque import AlertaEstoque
 from src.estoque.domain.entities.movimentacao import Movimentacao
 from src.estoque.domain.exceptions.estoque import (
     EstoqueInsuficiente,
@@ -21,6 +22,7 @@ class ItemEstoque(BaseEntity):
     categoria_nome: str | None = None
     saldo: int = 0
     ativo: bool = True
+    estoque_minimo: int = 0
 
     def __post_init__(self) -> None:
         super().__post_init__()
@@ -60,7 +62,7 @@ class ItemEstoque(BaseEntity):
 
     def registrar_saida(
         self, quantidade: int, motivo: str | None = None
-    ) -> Movimentacao:
+    ) -> tuple[Movimentacao, AlertaEstoque | None]:
         if quantidade <= 0:
             raise QuantidadeInvalida()
         if self.saldo < quantidade:
@@ -70,7 +72,7 @@ class ItemEstoque(BaseEntity):
         self.atualizado_em = datetime.now(timezone.utc)
 
         now = datetime.now(timezone.utc)
-        return Movimentacao(
+        movimentacao = Movimentacao(
             id=uuid4(),
             item_estoque_id=self.id,
             tipo=TipoMovimentacao.SAIDA,
@@ -79,3 +81,17 @@ class ItemEstoque(BaseEntity):
             criado_em=now,
             atualizado_em=now,
         )
+
+        alerta = None
+        if self.estoque_minimo > 0 and self.saldo < self.estoque_minimo:
+            alerta = AlertaEstoque(
+                id=uuid4(),
+                item_estoque_id=self.id,
+                tipo="ESTOQUE_BAIXO",
+                saldo_atual=self.saldo,
+                estoque_minimo=self.estoque_minimo,
+                criado_em=now,
+                atualizado_em=now,
+            )
+
+        return movimentacao, alerta

@@ -19,6 +19,7 @@ class ItemEstoqueModel(Base):
     categoria_nome = Column(String(100), nullable=False)
     saldo = Column(Integer, nullable=False, default=0)
     ativo = Column(Boolean, nullable=False, default=True)
+    estoque_minimo = Column(Integer, nullable=False, default=0, server_default="0")
     criado_em = Column(DateTime(timezone=True), nullable=False)
     atualizado_em = Column(DateTime(timezone=True), nullable=False)
 
@@ -31,6 +32,7 @@ class ItemEstoqueModel(Base):
             categoria_nome=self.categoria_nome,
             saldo=self.saldo,
             ativo=self.ativo,
+            estoque_minimo=self.estoque_minimo,
             criado_em=self.criado_em,
             atualizado_em=self.atualizado_em,
         )
@@ -45,6 +47,7 @@ class ItemEstoqueModel(Base):
             categoria_nome=item.categoria_nome,
             saldo=item.saldo,
             ativo=item.ativo,
+            estoque_minimo=item.estoque_minimo,
             criado_em=item.criado_em,
             atualizado_em=item.atualizado_em,
         )

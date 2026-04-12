@@ -113,6 +113,22 @@ class ItemEstoqueResponse(BaseModel):
     categoria_nome: str
     saldo: int
     ativo: bool
+    estoque_minimo: int = 0
+    criado_em: datetime
+
+    model_config = {"from_attributes": True}
+
+
+class ConfigurarAlertaRequest(BaseModel):
+    estoque_minimo: int = Field(..., ge=0)
+
+
+class AlertaResponse(BaseModel):
+    id: UUID
+    item_estoque_id: UUID
+    tipo: str
+    saldo_atual: int
+    estoque_minimo: int
     criado_em: datetime
 
     model_config = {"from_attributes": True}

@@ -6,6 +6,10 @@ import re
 from uuid import UUID
 
 from src.application.use_cases.buscar_item import BuscarItemUseCase
+from src.application.use_cases.configurar_alerta import (
+    ConfigurarAlertaDTO,
+    ConfigurarAlertaUseCase,
+)
 from src.application.use_cases.listar_itens import ListarItensUseCase
 from src.application.use_cases.listar_movimentacoes import ListarMovimentacoesUseCase
 from src.application.use_cases.registrar_entrada import (
@@ -16,6 +20,7 @@ from src.application.use_cases.registrar_saida import (
     RegistrarSaidaDTO,
     RegistrarSaidaUseCase,
 )
+from src.domain.entities.alerta_estoque import AlertaEstoque
 from src.domain.entities.item_estoque import ItemEstoque
 from src.domain.entities.movimentacao import Movimentacao
 from src.domain.exceptions.estoque import (
@@ -23,6 +28,9 @@ from src.domain.exceptions.estoque import (
     ItemInativo,
     ItemNaoEncontrado,
     QuantidadeInvalida,
+)
+from src.infrastructure.repositories.dynamodb_alerta_estoque_repository import (
+    DynamoDBAlertaEstoqueRepository,
 )
 from src.infrastructure.repositories.dynamodb_item_estoque_repository import (
     DynamoDBItemEstoqueRepository,
@@ -49,6 +57,10 @@ def _mov_repo() -> DynamoDBMovimentacaoRepository:
     return DynamoDBMovimentacaoRepository(os.environ["MOVIMENTACOES_TABLE"])
 
 
+def _alerta_repo() -> DynamoDBAlertaEstoqueRepository:
+    return DynamoDBAlertaEstoqueRepository(os.environ["ALERTAS_TABLE"])
+
+
 def _serialize_item(item: ItemEstoque) -> dict:
     return {
         "id": str(item.id),
@@ -58,6 +70,7 @@ def _serialize_item(item: ItemEstoque) -> dict:
         "categoria_nome": item.categoria_nome,
         "saldo": int(item.saldo),
         "ativo": bool(item.ativo),
+        "estoque_minimo": int(item.estoque_minimo),
         "criado_em": item.criado_em.isoformat(),
         "atualizado_em": item.atualizado_em.isoformat(),
     }
@@ -93,6 +106,8 @@ UUID_RE = r"[0-9a-fA-F\-]{36}"
 RE_ENTRADA = re.compile(rf"^/api/v1/estoque/(?P<id>{UUID_RE})/entrada$")
 RE_SAIDA = re.compile(rf"^/api/v1/estoque/(?P<id>{UUID_RE})/saida$")
 RE_MOVS = re.compile(rf"^/api/v1/estoque/(?P<id>{UUID_RE})/movimentacoes$")
+RE_CONFIGURAR_ALERTA = re.compile(rf"^/api/v1/estoque/(?P<id>{UUID_RE})/configurar-alerta$")
+RE_ALERTAS = re.compile(rf"^/api/v1/estoque/(?P<id>{UUID_RE})/alertas$")
 RE_POR_PRODUTO = re.compile(rf"^/api/v1/estoque/produto/(?P<pid>{UUID_RE})$")
 RE_BY_ID = re.compile(rf"^/api/v1/estoque/(?P<id>{UUID_RE})$")
 RE_LIST = re.compile(r"^/api/v1/estoque/?$")
@@ -112,6 +127,12 @@ def handler(event, context):
                 return _handle_saida(UUID(m.group("id")), _parse_body(event))
             return _response(404, {"message": "Rota nao encontrada"})
 
+        if method == "PATCH":
+            m = RE_CONFIGURAR_ALERTA.match(path)
+            if m:
+                return _handle_configurar_alerta(UUID(m.group("id")), _parse_body(event))
+            return _response(404, {"message": "Rota nao encontrada"})
+
         if method == "GET":
             m = RE_POR_PRODUTO.match(path)
             if m:
@@ -119,6 +140,9 @@ def handler(event, context):
             m = RE_MOVS.match(path)
             if m:
                 return _handle_movimentacoes(UUID(m.group("id")))
+            m = RE_ALERTAS.match(path)
+            if m:
+                return _handle_listar_alertas(UUID(m.group("id")))
             m = RE_BY_ID.match(path)
             if m:
                 return _handle_buscar(UUID(m.group("id")))
@@ -161,7 +185,7 @@ def _handle_saida(item_id: UUID, body: dict) -> dict:
     quantidade = body.get("quantidade")
     if quantidade is None or not isinstance(quantidade, int) or quantidade <= 0:
         raise QuantidadeInvalida()
-    uc = RegistrarSaidaUseCase(_item_repo(), _mov_repo())
+    uc = RegistrarSaidaUseCase(_item_repo(), _mov_repo(), _alerta_repo())
     mov = uc.execute(
         RegistrarSaidaDTO(
             item_estoque_id=item_id,
@@ -202,3 +226,34 @@ def _handle_movimentacoes(item_id: UUID) -> dict:
     uc = ListarMovimentacoesUseCase(_item_repo(), _mov_repo())
     movs = uc.execute(item_estoque_id=item_id)
     return _response(200, [_serialize_mov(m) for m in movs])
+
+
+def _handle_configurar_alerta(item_id: UUID, body: dict) -> dict:
+    estoque_minimo = body.get("estoque_minimo")
+    if estoque_minimo is None:
+        raise ValueError("estoque_minimo e obrigatorio")
+    uc = ConfigurarAlertaUseCase(_item_repo())
+    item = uc.execute(ConfigurarAlertaDTO(
+        item_estoque_id=item_id,
+        estoque_minimo=int(estoque_minimo),
+    ))
+    return _response(200, _serialize_item(item))
+
+
+def _handle_listar_alertas(item_id: UUID) -> dict:
+    # Verify item exists
+    item = _item_repo().get_by_id(item_id)
+    if item is None:
+        raise ItemNaoEncontrado()
+    alertas = _alerta_repo().list_by_item(item_id)
+    return _response(200, [
+        {
+            "id": str(a.id),
+            "item_estoque_id": str(a.item_estoque_id),
+            "tipo": a.tipo,
+            "saldo_atual": int(a.saldo_atual),
+            "estoque_minimo": int(a.estoque_minimo),
+            "criado_em": a.criado_em.isoformat(),
+        }
+        for a in alertas
+    ])

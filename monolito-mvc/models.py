@@ -49,8 +49,19 @@ class ItemEstoque(Base):
     categoria_nome = Column(String(100), nullable=False)
     saldo = Column(Integer, default=0)
     ativo = Column(Boolean, default=True)
+    estoque_minimo = Column(Integer, default=0)
     criado_em = Column(DateTime(timezone=True), default=lambda: datetime.now(timezone.utc))
     atualizado_em = Column(DateTime(timezone=True), default=lambda: datetime.now(timezone.utc))
+
+
+class AlertaEstoque(Base):
+    __tablename__ = "alertas_estoque"
+    id = Column(PG_UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    item_estoque_id = Column(PG_UUID(as_uuid=True), ForeignKey("itens_estoque.id"), nullable=False)
+    tipo = Column(String(50), nullable=False, default="ESTOQUE_BAIXO")
+    saldo_atual = Column(Integer, nullable=False)
+    estoque_minimo = Column(Integer, nullable=False)
+    criado_em = Column(DateTime(timezone=True), default=lambda: datetime.now(timezone.utc))
 
 
 class Movimentacao(Base):

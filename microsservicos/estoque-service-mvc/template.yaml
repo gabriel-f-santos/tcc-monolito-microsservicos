@@ -53,10 +53,12 @@ Resources:
               Resource:
                 - !GetAtt ItensEstoqueTable.Arn
                 - !GetAtt MovimentacoesTable.Arn
+                - !GetAtt AlertasTable.Arn
       Environment:
         Variables:
           ITENS_ESTOQUE_TABLE: !Ref ItensEstoqueTable
           MOVIMENTACOES_TABLE: !Ref MovimentacoesTable
+          ALERTAS_TABLE: !Ref AlertasTable
       Events:
         Estoque:
           Type: Api
@@ -93,6 +95,18 @@ Resources:
           Properties:
             RestApiId: !Ref EstoqueApi
             Path: /api/v1/estoque/{id}/movimentacoes
+            Method: GET
+        ConfigurarAlerta:
+          Type: Api
+          Properties:
+            RestApiId: !Ref EstoqueApi
+            Path: /api/v1/estoque/{id}/configurar-alerta
+            Method: PATCH
+        ListarAlertas:
+          Type: Api
+          Properties:
+            RestApiId: !Ref EstoqueApi
+            Path: /api/v1/estoque/{id}/alertas
             Method: GET
 
   # --- Event Consumer (SQS) ---
@@ -134,6 +148,18 @@ Resources:
     Type: AWS::DynamoDB::Table
     Properties:
       TableName: tcc-mvc-estoque-movimentacoes
+      BillingMode: PAY_PER_REQUEST
+      AttributeDefinitions:
+        - AttributeName: id
+          AttributeType: S
+      KeySchema:
+        - AttributeName: id
+          KeyType: HASH
+
+  AlertasTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: tcc-mvc-estoque-alertas
       BillingMode: PAY_PER_REQUEST
       AttributeDefinitions:
         - AttributeName: id
