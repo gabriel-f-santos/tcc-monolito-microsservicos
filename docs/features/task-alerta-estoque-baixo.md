@@ -10,6 +10,19 @@ Leia `docs/features/spec-alerta-estoque-baixo.md` para entender a feature comple
 Implemente a feature "Alerta de Estoque Baixo" para que os 4 testes em
 test_alerta_estoque.py passem.
 
+=== CRONOMETRAGEM OBRIGATORIA ===
+PRIMEIRA ACAO (antes de ler qualquer arquivo):
+  cd /home/gabriel/Documents/tcc/project
+  bash scripts/migration-timer.sh start <TIMER_NAME>
+
+ULTIMA ACAO (apos todos os testes passarem):
+  cd /home/gabriel/Documents/tcc/project
+  bash scripts/migration-timer.sh end <TIMER_NAME>
+
+Substitua <TIMER_NAME> pelo valor da variante (ver secao abaixo).
+Se voce nao executar o timer, a medicao do TCC e perdida.
+===
+
 ANTES DE CODAR:
 1. Leia docs/features/spec-alerta-estoque-baixo.md — spec completa.
 2. Leia os testes em test_alerta_estoque.py — comportamento esperado.
@@ -19,13 +32,15 @@ A feature adiciona:
 - Campo `estoque_minimo` no ItemEstoque (default 0)
 - Endpoint PATCH /{id}/configurar-alerta → seta estoque_minimo
 - Endpoint GET /{id}/alertas → lista alertas
-- Logica: ao registrar saida, se saldo < estoque_minimo → cria alerta automaticamente
+- Logica: ao registrar saida, se saldo < estoque_minimo ��� cria alerta automaticamente
 - Alerta tem: id, item_estoque_id, tipo="ESTOQUE_BAIXO", saldo_atual, estoque_minimo, criado_em
 
 NAO quebre testes existentes. Os testes anteriores devem continuar passando.
 
 Setup: ativar venv existente e rodar pytest
 Rodar: pytest tests/ -v
+
+NAO faca git commit — o orquestrador cuida.
 ```
 
 ## Testes que devem passar (4 novos por variante)
