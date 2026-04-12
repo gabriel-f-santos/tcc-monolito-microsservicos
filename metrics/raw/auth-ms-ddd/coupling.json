@@ -1,0 +1,49 @@
+{
+  "packages": [
+    {
+      "package": "src.application",
+      "Ca": 2,
+      "Ce": 1,
+      "I": 0.333,
+      "modules": 4
+    },
+    {
+      "package": "src.container",
+      "Ca": 1,
+      "Ce": 2,
+      "I": 0.667,
+      "modules": 1
+    },
+    {
+      "package": "src.domain",
+      "Ca": 3,
+      "Ce": 1,
+      "I": 0.25,
+      "modules": 10
+    },
+    {
+      "package": "src.handlers",
+      "Ca": 0,
+      "Ce": 3,
+      "I": 1.0,
+      "modules": 4
+    },
+    {
+      "package": "src.infrastructure",
+      "Ca": 1,
+      "Ce": 1,
+      "I": 0.5,
+      "modules": 6
+    },
+    {
+      "package": "src.shared",
+      "Ca": 1,
+      "Ce": 0,
+      "I": 0.0,
+      "modules": 8
+    }
+  ],
+  "total_modules": 34,
+  "total_packages": 6,
+  "avg_instability": 0.458
+}

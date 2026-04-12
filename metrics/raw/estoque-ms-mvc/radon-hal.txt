@@ -1,0 +1,65 @@
+/home/gabriel/Documents/tcc/project/microsservicos/estoque-service-mvc/src/__init__.py:
+    h1: 0
+    h2: 0
+    N1: 0
+    N2: 0
+    vocabulary: 0
+    length: 0
+    calculated_length: 0
+    volume: 0
+    difficulty: 0
+    effort: 0
+    time: 0.0
+    bugs: 0.0
+/home/gabriel/Documents/tcc/project/microsservicos/estoque-service-mvc/src/handlers/__init__.py:
+    h1: 0
+    h2: 0
+    N1: 0
+    N2: 0
+    vocabulary: 0
+    length: 0
+    calculated_length: 0
+    volume: 0
+    difficulty: 0
+    effort: 0
+    time: 0.0
+    bugs: 0.0
+/home/gabriel/Documents/tcc/project/microsservicos/estoque-service-mvc/src/handlers/event_consumer.py:
+    h1: 4
+    h2: 13
+    N1: 8
+    N2: 13
+    vocabulary: 17
+    length: 21
+    calculated_length: 56.105716335834195
+    volume: 85.83671966625714
+    difficulty: 2.0
+    effort: 171.67343933251428
+    time: 9.537413296250794
+    bugs: 0.02861223988875238
+/home/gabriel/Documents/tcc/project/microsservicos/estoque-service-mvc/src/handlers/health.py:
+    h1: 0
+    h2: 0
+    N1: 0
+    N2: 0
+    vocabulary: 0
+    length: 0
+    calculated_length: 0
+    volume: 0
+    difficulty: 0
+    effort: 0
+    time: 0.0
+    bugs: 0.0
+/home/gabriel/Documents/tcc/project/microsservicos/estoque-service-mvc/src/handlers/estoque.py:
+    h1: 7
+    h2: 28
+    N1: 20
+    N2: 33
+    vocabulary: 35
+    length: 53
+    calculated_length: 154.25742227201613
+    volume: 271.8519998980832
+    difficulty: 4.125
+    effort: 1121.3894995795931
+    time: 62.29941664331073
+    bugs: 0.09061733329936106

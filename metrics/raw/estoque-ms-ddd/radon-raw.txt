@@ -1,0 +1,432 @@
+/home/gabriel/Documents/tcc/project/microsservicos/estoque-service/src/__init__.py
+    LOC: 0
+    LLOC: 0
+    SLOC: 0
+    Comments: 0
+    Single comments: 0
+    Multi: 0
+    Blank: 0
+    - Comment Stats
+        (C % L): 0%
+        (C % S): 0%
+        (C + M % L): 0%
+/home/gabriel/Documents/tcc/project/microsservicos/estoque-service/src/handlers/__init__.py
+    LOC: 0
+    LLOC: 0
+    SLOC: 0
+    Comments: 0
+    Single comments: 0
+    Multi: 0
+    Blank: 0
+    - Comment Stats
+        (C % L): 0%
+        (C % S): 0%
+        (C + M % L): 0%
+/home/gabriel/Documents/tcc/project/microsservicos/estoque-service/src/handlers/event_consumer.py
+    LOC: 104
+    LLOC: 64
+    SLOC: 78
+    Comments: 6
+    Single comments: 4
+    Multi: 4
+    Blank: 18
+    - Comment Stats
+        (C % L): 6%
+        (C % S): 8%
+        (C + M % L): 10%
+/home/gabriel/Documents/tcc/project/microsservicos/estoque-service/src/handlers/health.py
+    LOC: 9
+    LLOC: 4
+    SLOC: 7
+    Comments: 0
+    Single comments: 0
+    Multi: 0
+    Blank: 2
+    - Comment Stats
+        (C % L): 0%
+        (C % S): 0%
+        (C + M % L): 0%
+/home/gabriel/Documents/tcc/project/microsservicos/estoque-service/src/handlers/estoque.py
+    LOC: 204
+    LLOC: 121
+    SLOC: 166
+    Comments: 2
+    Single comments: 2
+    Multi: 0
+    Blank: 36
+    - Comment Stats
+        (C % L): 1%
+        (C % S): 1%
+        (C + M % L): 1%
+/home/gabriel/Documents/tcc/project/microsservicos/estoque-service/src/domain/__init__.py
+    LOC: 0
+    LLOC: 0
+    SLOC: 0
+    Comments: 0
+    Single comments: 0
+    Multi: 0
+    Blank: 0
+    - Comment Stats
+        (C % L): 0%
+        (C % S): 0%
+        (C + M % L): 0%
+/home/gabriel/Documents/tcc/project/microsservicos/estoque-service/src/domain/value_objects/__init__.py
+    LOC: 0
+    LLOC: 0
+    SLOC: 0
+    Comments: 0
+    Single comments: 0
+    Multi: 0
+    Blank: 0
+    - Comment Stats
+        (C % L): 0%
+        (C % S): 0%
+        (C + M % L): 0%
+/home/gabriel/Documents/tcc/project/microsservicos/estoque-service/src/domain/value_objects/tipo_movimentacao.py
+    LOC: 6
+    LLOC: 4
+    SLOC: 4
+    Comments: 0
+    Single comments: 0
+    Multi: 0
+    Blank: 2
+    - Comment Stats
+        (C % L): 0%
+        (C % S): 0%
+        (C + M % L): 0%
+/home/gabriel/Documents/tcc/project/microsservicos/estoque-service/src/domain/repositories/movimentacao_repository.py
+    LOC: 20
+    LLOC: 10
+    SLOC: 16
+    Comments: 0
+    Single comments: 0
+    Multi: 0
+    Blank: 4
+    - Comment Stats
+        (C % L): 0%
+        (C % S): 0%
+        (C + M % L): 0%
+/home/gabriel/Documents/tcc/project/microsservicos/estoque-service/src/domain/repositories/__init__.py
+    LOC: 0
+    LLOC: 0
+    SLOC: 0
+    Comments: 0
+    Single comments: 0
+    Multi: 0
+    Blank: 0
+    - Comment Stats
+        (C % L): 0%
+        (C % S): 0%
+        (C + M % L): 0%
+/home/gabriel/Documents/tcc/project/microsservicos/estoque-service/src/domain/repositories/item_estoque_repository.py
+    LOC: 20
+    LLOC: 11
+    SLOC: 16
+    Comments: 0
+    Single comments: 0
+    Multi: 0
+    Blank: 4
+    - Comment Stats
+        (C % L): 0%
+        (C % S): 0%
+        (C + M % L): 0%
+/home/gabriel/Documents/tcc/project/microsservicos/estoque-service/src/domain/exceptions/__init__.py
+    LOC: 0
+    LLOC: 0
+    SLOC: 0
+    Comments: 0
+    Single comments: 0
+    Multi: 0
+    Blank: 0
+    - Comment Stats
+        (C % L): 0%
+        (C % S): 0%
+        (C + M % L): 0%
+/home/gabriel/Documents/tcc/project/microsservicos/estoque-service/src/domain/exceptions/estoque.py
+    LOC: 33
+    LLOC: 13
+    SLOC: 25
+    Comments: 0
+    Single comments: 0
+    Multi: 0
+    Blank: 8
+    - Comment Stats
+        (C % L): 0%
+        (C % S): 0%
+        (C + M % L): 0%
+/home/gabriel/Documents/tcc/project/microsservicos/estoque-service/src/domain/entities/movimentacao.py
+    LOC: 31
+    LLOC: 26
+    SLOC: 27
+    Comments: 0
+    Single comments: 0
+    Multi: 0
+    Blank: 4
+    - Comment Stats
+        (C % L): 0%
+        (C % S): 0%
+        (C + M % L): 0%
+/home/gabriel/Documents/tcc/project/microsservicos/estoque-service/src/domain/entities/__init__.py
+    LOC: 0
+    LLOC: 0
+    SLOC: 0
+    Comments: 0
+    Single comments: 0
+    Multi: 0
+    Blank: 0
+    - Comment Stats
+        (C % L): 0%
+        (C % S): 0%
+        (C + M % L): 0%
+/home/gabriel/Documents/tcc/project/microsservicos/estoque-service/src/domain/entities/item_estoque.py
+    LOC: 81
+    LLOC: 52
+    SLOC: 71
+    Comments: 0
+    Single comments: 0
+    Multi: 0
+    Blank: 10
+    - Comment Stats
+        (C % L): 0%
+        (C % S): 0%
+        (C + M % L): 0%
+/home/gabriel/Documents/tcc/project/microsservicos/estoque-service/src/infrastructure/__init__.py
+    LOC: 0
+    LLOC: 0
+    SLOC: 0
+    Comments: 0
+    Single comments: 0
+    Multi: 0
+    Blank: 0
+    - Comment Stats
+        (C % L): 0%
+        (C % S): 0%
+        (C + M % L): 0%
+/home/gabriel/Documents/tcc/project/microsservicos/estoque-service/src/infrastructure/repositories/__init__.py
+    LOC: 0
+    LLOC: 0
+    SLOC: 0
+    Comments: 0
+    Single comments: 0
+    Multi: 0
+    Blank: 0
+    - Comment Stats
+        (C % L): 0%
+        (C % S): 0%
+        (C + M % L): 0%
+/home/gabriel/Documents/tcc/project/microsservicos/estoque-service/src/infrastructure/repositories/dynamodb_item_estoque_repository.py
+    LOC: 83
+    LLOC: 47
+    SLOC: 70
+    Comments: 0
+    Single comments: 0
+    Multi: 0
+    Blank: 13
+    - Comment Stats
+        (C % L): 0%
+        (C % S): 0%
+        (C + M % L): 0%
+/home/gabriel/Documents/tcc/project/microsservicos/estoque-service/src/infrastructure/repositories/dynamodb_movimentacao_repository.py
+    LOC: 65
+    LLOC: 34
+    SLOC: 55
+    Comments: 0
+    Single comments: 0
+    Multi: 0
+    Blank: 10
+    - Comment Stats
+        (C % L): 0%
+        (C % S): 0%
+        (C + M % L): 0%
+/home/gabriel/Documents/tcc/project/microsservicos/estoque-service/src/application/__init__.py
+    LOC: 0
+    LLOC: 0
+    SLOC: 0
+    Comments: 0
+    Single comments: 0
+    Multi: 0
+    Blank: 0
+    - Comment Stats
+        (C % L): 0%
+        (C % S): 0%
+        (C + M % L): 0%
+/home/gabriel/Documents/tcc/project/microsservicos/estoque-service/src/application/use_cases/__init__.py
+    LOC: 0
+    LLOC: 0
+    SLOC: 0
+    Comments: 0
+    Single comments: 0
+    Multi: 0
+    Blank: 0
+    - Comment Stats
+        (C % L): 0%
+        (C % S): 0%
+        (C + M % L): 0%
+/home/gabriel/Documents/tcc/project/microsservicos/estoque-service/src/application/use_cases/buscar_item.py
+    LOC: 22
+    LLOC: 17
+    SLOC: 17
+    Comments: 0
+    Single comments: 0
+    Multi: 0
+    Blank: 5
+    - Comment Stats
+        (C % L): 0%
+        (C % S): 0%
+        (C + M % L): 0%
+/home/gabriel/Documents/tcc/project/microsservicos/estoque-service/src/application/use_cases/listar_itens.py
+    LOC: 15
+    LLOC: 7
+    SLOC: 12
+    Comments: 0
+    Single comments: 0
+    Multi: 0
+    Blank: 3
+    - Comment Stats
+        (C % L): 0%
+        (C % S): 0%
+        (C + M % L): 0%
+/home/gabriel/Documents/tcc/project/microsservicos/estoque-service/src/application/use_cases/listar_movimentacoes.py
+    LOC: 34
+    LLOC: 14
+    SLOC: 29
+    Comments: 0
+    Single comments: 0
+    Multi: 0
+    Blank: 5
+    - Comment Stats
+        (C % L): 0%
+        (C % S): 0%
+        (C + M % L): 0%
+/home/gabriel/Documents/tcc/project/microsservicos/estoque-service/src/application/use_cases/registrar_entrada.py
+    LOC: 41
+    LLOC: 28
+    SLOC: 32
+    Comments: 0
+    Single comments: 0
+    Multi: 0
+    Blank: 9
+    - Comment Stats
+        (C % L): 0%
+        (C % S): 0%
+        (C + M % L): 0%
+/home/gabriel/Documents/tcc/project/microsservicos/estoque-service/src/application/use_cases/registrar_saida.py
+    LOC: 39
+    LLOC: 26
+    SLOC: 30
+    Comments: 0
+    Single comments: 0
+    Multi: 0
+    Blank: 9
+    - Comment Stats
+        (C % L): 0%
+        (C % S): 0%
+        (C + M % L): 0%
+/home/gabriel/Documents/tcc/project/microsservicos/estoque-service/src/shared/__init__.py
+    LOC: 0
+    LLOC: 0
+    SLOC: 0
+    Comments: 0
+    Single comments: 0
+    Multi: 0
+    Blank: 0
+    - Comment Stats
+        (C % L): 0%
+        (C % S): 0%
+        (C + M % L): 0%
+/home/gabriel/Documents/tcc/project/microsservicos/estoque-service/src/shared/domain/__init__.py
+    LOC: 0
+    LLOC: 0
+    SLOC: 0
+    Comments: 0
+    Single comments: 0
+    Multi: 0
+    Blank: 0
+    - Comment Stats
+        (C % L): 0%
+        (C % S): 0%
+        (C + M % L): 0%
+/home/gabriel/Documents/tcc/project/microsservicos/estoque-service/src/shared/domain/repositories/__init__.py
+    LOC: 0
+    LLOC: 0
+    SLOC: 0
+    Comments: 0
+    Single comments: 0
+    Multi: 0
+    Blank: 0
+    - Comment Stats
+        (C % L): 0%
+        (C % S): 0%
+        (C + M % L): 0%
+/home/gabriel/Documents/tcc/project/microsservicos/estoque-service/src/shared/domain/repositories/base.py
+    LOC: 21
+    LLOC: 15
+    SLOC: 15
+    Comments: 0
+    Single comments: 0
+    Multi: 0
+    Blank: 6
+    - Comment Stats
+        (C % L): 0%
+        (C % S): 0%
+        (C + M % L): 0%
+/home/gabriel/Documents/tcc/project/microsservicos/estoque-service/src/shared/domain/exceptions/__init__.py
+    LOC: 0
+    LLOC: 0
+    SLOC: 0
+    Comments: 0
+    Single comments: 0
+    Multi: 0
+    Blank: 0
+    - Comment Stats
+        (C % L): 0%
+        (C % S): 0%
+        (C + M % L): 0%
+/home/gabriel/Documents/tcc/project/microsservicos/estoque-service/src/shared/domain/exceptions/base.py
+    LOC: 5
+    LLOC: 5
+    SLOC: 5
+    Comments: 0
+    Single comments: 0
+    Multi: 0
+    Blank: 0
+    - Comment Stats
+        (C % L): 0%
+        (C % S): 0%
+        (C + M % L): 0%
+/home/gabriel/Documents/tcc/project/microsservicos/estoque-service/src/shared/domain/entities/__init__.py
+    LOC: 0
+    LLOC: 0
+    SLOC: 0
+    Comments: 0
+    Single comments: 0
+    Multi: 0
+    Blank: 0
+    - Comment Stats
+        (C % L): 0%
+        (C % S): 0%
+        (C + M % L): 0%
+/home/gabriel/Documents/tcc/project/microsservicos/estoque-service/src/shared/domain/entities/base.py
+    LOC: 14
+    LLOC: 14
+    SLOC: 10
+    Comments: 0
+    Single comments: 1
+    Multi: 0
+    Blank: 3
+    - Comment Stats
+        (C % L): 0%
+        (C % S): 0%
+        (C + M % L): 0%
+** Total **
+    LOC: 847
+    LLOC: 512
+    SLOC: 685
+    Comments: 8
+    Single comments: 7
+    Multi: 4
+    Blank: 151
+    - Comment Stats
+        (C % L): 1%
+        (C % S): 1%
+        (C + M % L): 1%

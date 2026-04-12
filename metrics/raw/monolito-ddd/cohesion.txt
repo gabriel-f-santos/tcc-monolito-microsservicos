@@ -1,0 +1,412 @@
+File: /home/gabriel/Documents/tcc/project/monolito/src/__init__.py
+File: /home/gabriel/Documents/tcc/project/monolito/src/estoque/__init__.py
+File: /home/gabriel/Documents/tcc/project/monolito/src/estoque/container.py
+  Class: EstoqueContainer (16:0)
+    Total: 0.0%
+File: /home/gabriel/Documents/tcc/project/monolito/src/estoque/domain/__init__.py
+File: /home/gabriel/Documents/tcc/project/monolito/src/estoque/domain/value_objects/__init__.py
+File: /home/gabriel/Documents/tcc/project/monolito/src/estoque/domain/value_objects/tipo_movimentacao.py
+  Class: TipoMovimentacao (4:0)
+    Total: 0.0%
+File: /home/gabriel/Documents/tcc/project/monolito/src/estoque/domain/value_objects/quantidade.py
+  Class: Quantidade (7:0)
+    Function: __post_init__ 1/1 100.00%
+    Total: 100.0%
+File: /home/gabriel/Documents/tcc/project/monolito/src/estoque/domain/repositories/movimentacao_repository.py
+  Class: MovimentacaoRepository (7:0)
+    Function: save 0/0 0.00%
+    Function: list_by_item 0/0 0.00%
+    Total: 0.0%
+File: /home/gabriel/Documents/tcc/project/monolito/src/estoque/domain/repositories/__init__.py
+File: /home/gabriel/Documents/tcc/project/monolito/src/estoque/domain/repositories/item_estoque_repository.py
+  Class: ItemEstoqueRepository (8:0)
+    Function: get_by_produto_id 0/0 0.00%
+    Function: list_filtered 0/0 0.00%
+    Total: 0.0%
+File: /home/gabriel/Documents/tcc/project/monolito/src/estoque/domain/exceptions/__init__.py
+File: /home/gabriel/Documents/tcc/project/monolito/src/estoque/domain/exceptions/estoque.py
+  Class: ItemNaoEncontrado (4:0)
+    Function: __init__ 0/0 0.00%
+    Total: 0.0%
+  Class: QuantidadeInvalida (12:0)
+    Function: __init__ 0/0 0.00%
+    Total: 0.0%
+  Class: EstoqueInsuficiente (20:0)
+    Function: __init__ 0/0 0.00%
+    Total: 0.0%
+  Class: ItemInativo (28:0)
+    Function: __init__ 0/0 0.00%
+    Total: 0.0%
+File: /home/gabriel/Documents/tcc/project/monolito/src/estoque/domain/events/__init__.py
+File: /home/gabriel/Documents/tcc/project/monolito/src/estoque/domain/entities/movimentacao.py
+  Class: Movimentacao (11:0)
+    Function: __post_init__ 3/3 100.00%
+    Total: 100.0%
+File: /home/gabriel/Documents/tcc/project/monolito/src/estoque/domain/entities/__init__.py
+File: /home/gabriel/Documents/tcc/project/monolito/src/estoque/domain/entities/item_estoque.py
+  Class: ItemEstoque (17:0)
+    Function: __post_init__ 5/8 62.50%
+    Function: registrar_entrada 4/8 50.00%
+    Function: registrar_saida 3/8 37.50%
+    Total: 50.0%
+File: /home/gabriel/Documents/tcc/project/monolito/src/estoque/infrastructure/__init__.py
+File: /home/gabriel/Documents/tcc/project/monolito/src/estoque/infrastructure/repositories/__init__.py
+File: /home/gabriel/Documents/tcc/project/monolito/src/estoque/infrastructure/repositories/sqlalchemy_movimentacao_repository.py
+  Class: MovimentacaoModel (13:0)
+    Function: to_domain 8/9 88.89%
+    Function: from_domain classmethod
+    Total: 44.44%
+  Class: SQLAlchemyMovimentacaoRepository (51:0)
+    Function: __init__ 1/0 0.00%
+    Function: save 0/0 0.00%
+    Function: list_by_item 0/0 0.00%
+    Total: 0.0%
+File: /home/gabriel/Documents/tcc/project/monolito/src/estoque/infrastructure/repositories/sqlalchemy_item_estoque_repository.py
+  Class: ItemEstoqueModel (12:0)
+    Function: to_domain 9/10 90.00%
+    Function: from_domain classmethod
+    Total: 45.0%
+  Class: SQLAlchemyItemEstoqueRepository (53:0)
+    Function: __init__ 1/0 0.00%
+    Function: get_by_id 0/0 0.00%
+    Function: get_by_produto_id 0/0 0.00%
+    Function: list_filtered 0/0 0.00%
+    Function: save 0/0 0.00%
+    Function: delete 0/0 0.00%
+    Total: 0.0%
+File: /home/gabriel/Documents/tcc/project/monolito/src/estoque/infrastructure/services/__init__.py
+File: /home/gabriel/Documents/tcc/project/monolito/src/estoque/infrastructure/services/estoque_service_impl.py
+  Class: EstoqueServiceImpl (9:0)
+    Function: __init__ 1/1 100.00%
+    Function: inicializar_item 1/1 100.00%
+    Total: 100.0%
+File: /home/gabriel/Documents/tcc/project/monolito/src/estoque/application/__init__.py
+File: /home/gabriel/Documents/tcc/project/monolito/src/estoque/application/dtos/__init__.py
+File: /home/gabriel/Documents/tcc/project/monolito/src/estoque/application/use_cases/__init__.py
+File: /home/gabriel/Documents/tcc/project/monolito/src/estoque/application/use_cases/buscar_item.py
+  Class: BuscarItemUseCase (8:0)
+    Function: __init__ 1/1 100.00%
+    Function: execute 1/1 100.00%
+    Function: execute_por_produto 1/1 100.00%
+    Total: 100.0%
+File: /home/gabriel/Documents/tcc/project/monolito/src/estoque/application/use_cases/listar_itens.py
+  Class: ListarItensUseCase (5:0)
+    Function: __init__ 1/1 100.00%
+    Function: execute 1/1 100.00%
+    Total: 100.0%
+File: /home/gabriel/Documents/tcc/project/monolito/src/estoque/application/use_cases/listar_movimentacoes.py
+  Class: ListarMovimentacoesUseCase (9:0)
+    Function: __init__ 2/2 100.00%
+    Function: execute 2/2 100.00%
+    Total: 100.0%
+File: /home/gabriel/Documents/tcc/project/monolito/src/estoque/application/use_cases/registrar_entrada.py
+  Class: RegistrarEntradaDTO (11:0)
+    Total: 0.0%
+  Class: RegistrarEntradaUseCase (18:0)
+    Function: __init__ 2/2 100.00%
+    Function: execute 2/2 100.00%
+    Total: 100.0%
+File: /home/gabriel/Documents/tcc/project/monolito/src/estoque/application/use_cases/registrar_saida.py
+  Class: RegistrarSaidaDTO (11:0)
+    Total: 0.0%
+  Class: RegistrarSaidaUseCase (17:0)
+    Function: __init__ 2/2 100.00%
+    Function: execute 2/2 100.00%
+    Total: 100.0%
+File: /home/gabriel/Documents/tcc/project/monolito/src/estoque/presentation/__init__.py
+File: /home/gabriel/Documents/tcc/project/monolito/src/estoque/presentation/routes.py
+File: /home/gabriel/Documents/tcc/project/monolito/src/estoque/presentation/schemas.py
+  Class: RegistrarEntradaRequest (7:0)
+    Total: 0.0%
+  Class: RegistrarSaidaRequest (13:0)
+    Total: 0.0%
+  Class: ItemEstoqueResponse (18:0)
+    Total: 0.0%
+  Class: MovimentacaoResponse (31:0)
+    Total: 0.0%
+File: /home/gabriel/Documents/tcc/project/monolito/src/infrastructure/__init__.py
+File: /home/gabriel/Documents/tcc/project/monolito/src/infrastructure/__pycache__/__init__.py
+File: /home/gabriel/Documents/tcc/project/monolito/src/auth/__init__.py
+File: /home/gabriel/Documents/tcc/project/monolito/src/auth/container.py
+  Class: AuthContainer (12:0)
+    Total: 0.0%
+File: /home/gabriel/Documents/tcc/project/monolito/src/auth/domain/__init__.py
+File: /home/gabriel/Documents/tcc/project/monolito/src/auth/domain/repositories/__init__.py
+File: /home/gabriel/Documents/tcc/project/monolito/src/auth/domain/repositories/usuario_repository.py
+  Class: UsuarioRepository (7:0)
+    Function: get_by_email 0/0 0.00%
+    Total: 0.0%
+File: /home/gabriel/Documents/tcc/project/monolito/src/auth/domain/exceptions/__init__.py
+File: /home/gabriel/Documents/tcc/project/monolito/src/auth/domain/exceptions/auth.py
+  Class: EmailDuplicado (4:0)
+    Function: __init__ 0/0 0.00%
+    Total: 0.0%
+  Class: CredenciaisInvalidas (9:0)
+    Function: __init__ 0/0 0.00%
+    Total: 0.0%
+  Class: TokenInvalido (14:0)
+    Function: __init__ 0/0 0.00%
+    Total: 0.0%
+File: /home/gabriel/Documents/tcc/project/monolito/src/auth/domain/services/password_hasher.py
+  Class: PasswordHasher (4:0)
+    Function: hash 0/0 0.00%
+    Function: verify 0/0 0.00%
+    Total: 0.0%
+File: /home/gabriel/Documents/tcc/project/monolito/src/auth/domain/services/__init__.py
+File: /home/gabriel/Documents/tcc/project/monolito/src/auth/domain/services/token_service.py
+  Class: TokenService (5:0)
+    Function: generate_token 0/0 0.00%
+    Function: decode_token 0/0 0.00%
+    Total: 0.0%
+File: /home/gabriel/Documents/tcc/project/monolito/src/auth/domain/entities/__init__.py
+File: /home/gabriel/Documents/tcc/project/monolito/src/auth/domain/entities/usuario.py
+  Class: Usuario (8:0)
+    Function: __post_init__ 3/3 100.00%
+    Total: 100.0%
+File: /home/gabriel/Documents/tcc/project/monolito/src/auth/infrastructure/__init__.py
+File: /home/gabriel/Documents/tcc/project/monolito/src/auth/infrastructure/repositories/__init__.py
+File: /home/gabriel/Documents/tcc/project/monolito/src/auth/infrastructure/repositories/sqlalchemy_usuario_repository.py
+  Class: UsuarioModel (12:0)
+    Function: to_domain 6/7 85.71%
+    Function: from_domain classmethod
+    Total: 42.86%
+  Class: SQLAlchemyUsuarioRepository (44:0)
+    Function: __init__ 1/0 0.00%
+    Function: get_by_id 0/0 0.00%
+    Function: get_by_email 0/0 0.00%
+    Function: save 0/0 0.00%
+    Function: delete 0/0 0.00%
+    Total: 0.0%
+File: /home/gabriel/Documents/tcc/project/monolito/src/auth/infrastructure/services/__init__.py
+File: /home/gabriel/Documents/tcc/project/monolito/src/auth/infrastructure/services/bcrypt_password_hasher.py
+  Class: BcryptPasswordHasher (6:0)
+    Function: hash 0/0 0.00%
+    Function: verify 0/0 0.00%
+    Total: 0.0%
+File: /home/gabriel/Documents/tcc/project/monolito/src/auth/infrastructure/services/jose_token_service.py
+  Class: JoseTokenService (10:0)
+    Function: __init__ 2/2 100.00%
+    Function: generate_token 2/2 100.00%
+    Function: decode_token 1/2 50.00%
+    Total: 83.33%
+File: /home/gabriel/Documents/tcc/project/monolito/src/auth/application/__init__.py
+File: /home/gabriel/Documents/tcc/project/monolito/src/auth/application/use_cases/__init__.py
+File: /home/gabriel/Documents/tcc/project/monolito/src/auth/application/use_cases/registrar.py
+  Class: RegistrarDTO (12:0)
+    Total: 0.0%
+  Class: RegistrarUseCase (18:0)
+    Function: __init__ 2/2 100.00%
+    Function: execute 2/2 100.00%
+    Total: 100.0%
+File: /home/gabriel/Documents/tcc/project/monolito/src/auth/application/use_cases/login.py
+  Class: LoginDTO (10:0)
+    Total: 0.0%
+  Class: TokenResult (16:0)
+    Total: 0.0%
+  Class: LoginUseCase (21:0)
+    Function: __init__ 3/3 100.00%
+    Function: execute 3/3 100.00%
+    Total: 100.0%
+File: /home/gabriel/Documents/tcc/project/monolito/src/auth/presentation/__init__.py
+File: /home/gabriel/Documents/tcc/project/monolito/src/auth/presentation/routes.py
+File: /home/gabriel/Documents/tcc/project/monolito/src/auth/presentation/schemas.py
+  Class: RegistrarRequest (7:0)
+    Total: 0.0%
+  Class: UsuarioResponse (13:0)
+    Total: 0.0%
+  Class: LoginRequest (22:0)
+    Total: 0.0%
+  Class: TokenResponse (27:0)
+    Total: 0.0%
+File: /home/gabriel/Documents/tcc/project/monolito/src/auth/presentation/middleware.py
+  Class: JWTMiddleware (13:0)
+    Function: __init__ 1/1 100.00%
+    Total: 100.0%
+File: /home/gabriel/Documents/tcc/project/monolito/src/presentation/app.py
+File: /home/gabriel/Documents/tcc/project/monolito/src/presentation/__init__.py
+File: /home/gabriel/Documents/tcc/project/monolito/src/presentation/__pycache__/__init__.py
+File: /home/gabriel/Documents/tcc/project/monolito/src/presentation/schemas/__init__.py
+File: /home/gabriel/Documents/tcc/project/monolito/src/presentation/routes/__init__.py
+File: /home/gabriel/Documents/tcc/project/monolito/src/presentation/routes/health.py
+File: /home/gabriel/Documents/tcc/project/monolito/src/presentation/routes/__pycache__/__init__.py
+File: /home/gabriel/Documents/tcc/project/monolito/src/__pycache__/__init__.py
+File: /home/gabriel/Documents/tcc/project/monolito/src/shared/__init__.py
+File: /home/gabriel/Documents/tcc/project/monolito/src/shared/domain/__init__.py
+File: /home/gabriel/Documents/tcc/project/monolito/src/shared/domain/repositories/__init__.py
+File: /home/gabriel/Documents/tcc/project/monolito/src/shared/domain/repositories/base.py
+  Class: BaseRepository (10:0)
+    Function: get_by_id 0/0 0.00%
+    Function: save 0/0 0.00%
+    Function: delete 0/0 0.00%
+    Total: 0.0%
+File: /home/gabriel/Documents/tcc/project/monolito/src/shared/domain/exceptions/__init__.py
+File: /home/gabriel/Documents/tcc/project/monolito/src/shared/domain/exceptions/base.py
+  Class: DomainException (1:0)
+    Function: __init__ 2/2 100.00%
+    Total: 100.0%
+File: /home/gabriel/Documents/tcc/project/monolito/src/shared/domain/services/estoque_service.py
+  Class: EstoqueService (5:0)
+    Function: inicializar_item 0/0 0.00%
+    Total: 0.0%
+File: /home/gabriel/Documents/tcc/project/monolito/src/shared/domain/services/__init__.py
+File: /home/gabriel/Documents/tcc/project/monolito/src/shared/domain/entities/__init__.py
+File: /home/gabriel/Documents/tcc/project/monolito/src/shared/domain/entities/base.py
+  Class: BaseEntity (7:0)
+    Function: __post_init__ 0/0 0.00%
+    Total: 0.0%
+File: /home/gabriel/Documents/tcc/project/monolito/src/shared/infrastructure/__init__.py
+File: /home/gabriel/Documents/tcc/project/monolito/src/shared/infrastructure/observability.py
+File: /home/gabriel/Documents/tcc/project/monolito/src/shared/infrastructure/config/__init__.py
+File: /home/gabriel/Documents/tcc/project/monolito/src/shared/infrastructure/config/settings.py
+  Class: Settings (4:0)
+    Total: 0.0%
+File: /home/gabriel/Documents/tcc/project/monolito/src/shared/infrastructure/database/session.py
+File: /home/gabriel/Documents/tcc/project/monolito/src/shared/infrastructure/database/__init__.py
+File: /home/gabriel/Documents/tcc/project/monolito/src/shared/infrastructure/database/base.py
+  Class: Base (4:0)
+    Total: 0.0%
+File: /home/gabriel/Documents/tcc/project/monolito/src/catalogo/__init__.py
+File: /home/gabriel/Documents/tcc/project/monolito/src/catalogo/container.py
+  Class: CatalogoContainer (19:0)
+    Total: 0.0%
+File: /home/gabriel/Documents/tcc/project/monolito/src/catalogo/domain/__init__.py
+File: /home/gabriel/Documents/tcc/project/monolito/src/catalogo/domain/value_objects/__init__.py
+File: /home/gabriel/Documents/tcc/project/monolito/src/catalogo/domain/value_objects/sku.py
+  Class: SKU (10:0)
+    Function: __post_init__ 1/1 100.00%
+    Total: 100.0%
+File: /home/gabriel/Documents/tcc/project/monolito/src/catalogo/domain/value_objects/dinheiro.py
+  Class: Dinheiro (8:0)
+    Function: __post_init__ 1/1 100.00%
+    Total: 100.0%
+File: /home/gabriel/Documents/tcc/project/monolito/src/catalogo/domain/repositories/categoria_repository.py
+  Class: CategoriaRepository (7:0)
+    Function: get_by_nome 0/0 0.00%
+    Function: list_all 0/0 0.00%
+    Total: 0.0%
+File: /home/gabriel/Documents/tcc/project/monolito/src/catalogo/domain/repositories/__init__.py
+File: /home/gabriel/Documents/tcc/project/monolito/src/catalogo/domain/repositories/produto_repository.py
+  Class: ProdutoRepository (8:0)
+    Function: get_by_sku 0/0 0.00%
+    Function: list_filtered 0/0 0.00%
+    Total: 0.0%
+File: /home/gabriel/Documents/tcc/project/monolito/src/catalogo/domain/exceptions/__init__.py
+File: /home/gabriel/Documents/tcc/project/monolito/src/catalogo/domain/exceptions/catalogo.py
+  Class: CategoriaNomeDuplicado (4:0)
+    Function: __init__ 0/0 0.00%
+    Total: 0.0%
+  Class: CategoriaNaoEncontrada (9:0)
+    Function: __init__ 0/0 0.00%
+    Total: 0.0%
+  Class: ProdutoSkuDuplicado (14:0)
+    Function: __init__ 0/0 0.00%
+    Total: 0.0%
+  Class: ProdutoNaoEncontrado (19:0)
+    Function: __init__ 0/0 0.00%
+    Total: 0.0%
+File: /home/gabriel/Documents/tcc/project/monolito/src/catalogo/domain/events/__init__.py
+File: /home/gabriel/Documents/tcc/project/monolito/src/catalogo/domain/services/__init__.py
+File: /home/gabriel/Documents/tcc/project/monolito/src/catalogo/domain/entities/__init__.py
+File: /home/gabriel/Documents/tcc/project/monolito/src/catalogo/domain/entities/categoria.py
+  Class: Categoria (8:0)
+    Function: __post_init__ 2/2 100.00%
+    Total: 100.0%
+File: /home/gabriel/Documents/tcc/project/monolito/src/catalogo/domain/entities/produto.py
+  Class: Produto (13:0)
+    Function: __post_init__ 5/7 71.43%
+    Function: atualizar 5/7 71.43%
+    Function: desativar 2/7 28.57%
+    Total: 57.14%
+File: /home/gabriel/Documents/tcc/project/monolito/src/catalogo/infrastructure/__init__.py
+File: /home/gabriel/Documents/tcc/project/monolito/src/catalogo/infrastructure/repositories/__init__.py
+File: /home/gabriel/Documents/tcc/project/monolito/src/catalogo/infrastructure/repositories/sqlalchemy_categoria_repository.py
+  Class: CategoriaModel (12:0)
+    Function: to_domain 5/6 83.33%
+    Function: from_domain classmethod
+    Total: 41.67%
+  Class: SQLAlchemyCategoriaRepository (41:0)
+    Function: __init__ 1/0 0.00%
+    Function: get_by_id 0/0 0.00%
+    Function: get_by_nome 0/0 0.00%
+    Function: list_all 0/0 0.00%
+    Function: save 0/0 0.00%
+    Function: delete 0/0 0.00%
+    Total: 0.0%
+File: /home/gabriel/Documents/tcc/project/monolito/src/catalogo/infrastructure/repositories/sqlalchemy_produto_repository.py
+  Class: ProdutoModel (15:0)
+    Function: to_domain 9/10 90.00%
+    Function: from_domain classmethod
+    Total: 45.0%
+  Class: SQLAlchemyProdutoRepository (56:0)
+    Function: __init__ 1/0 0.00%
+    Function: get_by_id 0/0 0.00%
+    Function: get_by_sku 0/0 0.00%
+    Function: list_filtered 0/0 0.00%
+    Function: save 0/0 0.00%
+    Function: delete 0/0 0.00%
+    Total: 0.0%
+File: /home/gabriel/Documents/tcc/project/monolito/src/catalogo/infrastructure/services/__init__.py
+File: /home/gabriel/Documents/tcc/project/monolito/src/catalogo/application/__init__.py
+File: /home/gabriel/Documents/tcc/project/monolito/src/catalogo/application/dtos/__init__.py
+File: /home/gabriel/Documents/tcc/project/monolito/src/catalogo/application/use_cases/listar_categorias.py
+  Class: ListarCategoriasUseCase (5:0)
+    Function: __init__ 1/1 100.00%
+    Function: execute 1/1 100.00%
+    Total: 100.0%
+File: /home/gabriel/Documents/tcc/project/monolito/src/catalogo/application/use_cases/__init__.py
+File: /home/gabriel/Documents/tcc/project/monolito/src/catalogo/application/use_cases/criar_categoria.py
+  Class: CriarCategoriaDTO (11:0)
+    Total: 0.0%
+  Class: CriarCategoriaUseCase (16:0)
+    Function: __init__ 1/1 100.00%
+    Function: execute 1/1 100.00%
+    Total: 100.0%
+File: /home/gabriel/Documents/tcc/project/monolito/src/catalogo/application/use_cases/buscar_produto.py
+  Class: BuscarProdutoUseCase (8:0)
+    Function: __init__ 1/1 100.00%
+    Function: execute 1/1 100.00%
+    Total: 100.0%
+File: /home/gabriel/Documents/tcc/project/monolito/src/catalogo/application/use_cases/atualizar_produto.py
+  Class: AtualizarProdutoDTO (11:0)
+    Total: 0.0%
+  Class: AtualizarProdutoUseCase (17:0)
+    Function: __init__ 1/1 100.00%
+    Function: execute 1/1 100.00%
+    Total: 100.0%
+File: /home/gabriel/Documents/tcc/project/monolito/src/catalogo/application/use_cases/criar_produto.py
+  Class: CriarProdutoDTO (16:0)
+    Total: 0.0%
+  Class: CriarProdutoUseCase (24:0)
+    Function: __init__ 3/3 100.00%
+    Function: execute 3/3 100.00%
+    Total: 100.0%
+File: /home/gabriel/Documents/tcc/project/monolito/src/catalogo/application/use_cases/buscar_categoria.py
+  Class: BuscarCategoriaUseCase (8:0)
+    Function: __init__ 1/1 100.00%
+    Function: execute 1/1 100.00%
+    Total: 100.0%
+File: /home/gabriel/Documents/tcc/project/monolito/src/catalogo/application/use_cases/desativar_produto.py
+  Class: DesativarProdutoUseCase (8:0)
+    Function: __init__ 1/1 100.00%
+    Function: execute 1/1 100.00%
+    Total: 100.0%
+File: /home/gabriel/Documents/tcc/project/monolito/src/catalogo/application/use_cases/listar_produtos.py
+  Class: ListarProdutosUseCase (7:0)
+    Function: __init__ 1/1 100.00%
+    Function: execute 1/1 100.00%
+    Total: 100.0%
+File: /home/gabriel/Documents/tcc/project/monolito/src/catalogo/presentation/__init__.py
+File: /home/gabriel/Documents/tcc/project/monolito/src/catalogo/presentation/routes.py
+File: /home/gabriel/Documents/tcc/project/monolito/src/catalogo/presentation/schemas.py
+  Class: CriarCategoriaRequest (8:0)
+    Total: 0.0%
+  Class: CategoriaResponse (13:0)
+    Total: 0.0%
+  Class: CategoriaNested (22:0)
+    Total: 0.0%
+  Class: CriarProdutoRequest (27:0)
+    Total: 0.0%
+  Class: AtualizarProdutoRequest (35:0)
+    Total: 0.0%
+  Class: ProdutoResponse (41:0)
+    Total: 0.0%

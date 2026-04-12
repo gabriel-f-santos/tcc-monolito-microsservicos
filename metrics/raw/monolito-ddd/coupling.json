@@ -1,0 +1,49 @@
+{
+  "packages": [
+    {
+      "package": "src.auth",
+      "Ca": 1,
+      "Ce": 1,
+      "I": 0.5,
+      "modules": 26
+    },
+    {
+      "package": "src.catalogo",
+      "Ca": 1,
+      "Ce": 1,
+      "I": 0.5,
+      "modules": 35
+    },
+    {
+      "package": "src.estoque",
+      "Ca": 1,
+      "Ce": 1,
+      "I": 0.5,
+      "modules": 32
+    },
+    {
+      "package": "src.infrastructure",
+      "Ca": 0,
+      "Ce": 0,
+      "I": 0.0,
+      "modules": 1
+    },
+    {
+      "package": "src.presentation",
+      "Ca": 0,
+      "Ce": 4,
+      "I": 1.0,
+      "modules": 5
+    },
+    {
+      "package": "src.shared",
+      "Ca": 4,
+      "Ce": 0,
+      "I": 0.0,
+      "modules": 17
+    }
+  ],
+  "total_modules": 117,
+  "total_packages": 6,
+  "avg_instability": 0.417
+}

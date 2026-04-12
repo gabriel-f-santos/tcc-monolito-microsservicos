@@ -1,0 +1,54 @@
+/home/gabriel/Documents/tcc/project/monolito-mvc/routes/categorias.py
+    F 16:0 criar_categoria - A (2)
+    F 31:0 listar_categorias - A (2)
+    F 37:0 buscar_categoria - A (2)
+/home/gabriel/Documents/tcc/project/monolito-mvc/routes/estoque.py
+    F 43:0 listar_movimentacoes - A (3)
+    F 56:0 registrar_entrada - A (3)
+    F 87:0 registrar_saida - A (3)
+    F 17:0 listar_itens - A (2)
+    F 23:0 buscar_item - A (2)
+    F 33:0 buscar_por_produto - A (2)
+/home/gabriel/Documents/tcc/project/monolito-mvc/routes/auth.py
+    F 54:0 login - A (3)
+    F 35:0 registrar - A (2)
+    F 21:0 _hash_password - A (1)
+    F 25:0 _verify_password - A (1)
+    F 29:0 _create_token - A (1)
+/home/gabriel/Documents/tcc/project/monolito-mvc/routes/produtos.py
+    F 111:0 atualizar_produto - A (5)
+    F 76:0 listar_produtos - A (4)
+    F 35:0 criar_produto - A (3)
+    F 98:0 buscar_produto - A (2)
+    F 138:0 desativar_produto - A (2)
+    F 21:0 _build_produto_response - A (1)
+/home/gabriel/Documents/tcc/project/monolito-mvc/models.py
+    C 11:0 Usuario - A (1)
+    C 21:0 Categoria - A (1)
+    C 30:0 Produto - A (1)
+    C 43:0 ItemEstoque - A (1)
+    C 56:0 Movimentacao - A (1)
+/home/gabriel/Documents/tcc/project/monolito-mvc/app.py
+    C 14:0 JWTMiddleware - B (7)
+    M 15:4 JWTMiddleware.dispatch - B (6)
+    F 49:0 health - A (1)
+/home/gabriel/Documents/tcc/project/monolito-mvc/database.py
+    F 14:0 get_session - A (1)
+    C 10:0 Base - A (1)
+/home/gabriel/Documents/tcc/project/monolito-mvc/schemas.py
+    C 11:0 RegistrarRequest - A (1)
+    C 17:0 UsuarioResponse - A (1)
+    C 26:0 LoginRequest - A (1)
+    C 31:0 TokenResponse - A (1)
+    C 38:0 CriarCategoriaRequest - A (1)
+    C 43:0 CategoriaResponse - A (1)
+    C 54:0 CriarProdutoRequest - A (1)
+    C 62:0 AtualizarProdutoRequest - A (1)
+    C 68:0 CategoriaEmProdutoResponse - A (1)
+    C 75:0 ProdutoResponse - A (1)
+    C 90:0 MovimentacaoRequest - A (1)
+    C 96:0 MovimentacaoResponse - A (1)
+    C 108:0 ItemEstoqueResponse - A (1)
+
+43 blocks (classes, functions, methods) analyzed.
+Average complexity: A (1.8604651162790697)

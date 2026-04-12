@@ -1,0 +1,264 @@
+/home/gabriel/Documents/tcc/project/microsservicos/catalogo-service/src/__init__.py
+    LOC: 0
+    LLOC: 0
+    SLOC: 0
+    Comments: 0
+    Single comments: 0
+    Multi: 0
+    Blank: 0
+    - Comment Stats
+        (C % L): 0%
+        (C % S): 0%
+        (C + M % L): 0%
+/home/gabriel/Documents/tcc/project/microsservicos/catalogo-service/src/handlers/__init__.py
+    LOC: 0
+    LLOC: 0
+    SLOC: 0
+    Comments: 0
+    Single comments: 0
+    Multi: 0
+    Blank: 0
+    - Comment Stats
+        (C % L): 0%
+        (C % S): 0%
+        (C + M % L): 0%
+/home/gabriel/Documents/tcc/project/microsservicos/catalogo-service/src/handlers/health.py
+    LOC: 8
+    LLOC: 4
+    SLOC: 7
+    Comments: 0
+    Single comments: 0
+    Multi: 0
+    Blank: 1
+    - Comment Stats
+        (C % L): 0%
+        (C % S): 0%
+        (C + M % L): 0%
+/home/gabriel/Documents/tcc/project/microsservicos/catalogo-service/src/handlers/catalogo.py
+    LOC: 226
+    LLOC: 123
+    SLOC: 181
+    Comments: 7
+    Single comments: 6
+    Multi: 5
+    Blank: 34
+    - Comment Stats
+        (C % L): 3%
+        (C % S): 4%
+        (C + M % L): 5%
+/home/gabriel/Documents/tcc/project/microsservicos/catalogo-service/src/domain/__init__.py
+    LOC: 0
+    LLOC: 0
+    SLOC: 0
+    Comments: 0
+    Single comments: 0
+    Multi: 0
+    Blank: 0
+    - Comment Stats
+        (C % L): 0%
+        (C % S): 0%
+        (C + M % L): 0%
+/home/gabriel/Documents/tcc/project/microsservicos/catalogo-service/src/domain/repositories.py
+    LOC: 31
+    LLOC: 18
+    SLOC: 24
+    Comments: 0
+    Single comments: 0
+    Multi: 0
+    Blank: 7
+    - Comment Stats
+        (C % L): 0%
+        (C % S): 0%
+        (C + M % L): 0%
+/home/gabriel/Documents/tcc/project/microsservicos/catalogo-service/src/domain/entities.py
+    LOC: 85
+    LLOC: 62
+    SLOC: 76
+    Comments: 0
+    Single comments: 0
+    Multi: 0
+    Blank: 9
+    - Comment Stats
+        (C % L): 0%
+        (C % S): 0%
+        (C + M % L): 0%
+/home/gabriel/Documents/tcc/project/microsservicos/catalogo-service/src/domain/services.py
+    LOC: 17
+    LLOC: 7
+    SLOC: 12
+    Comments: 0
+    Single comments: 0
+    Multi: 2
+    Blank: 3
+    - Comment Stats
+        (C % L): 0%
+        (C % S): 0%
+        (C + M % L): 12%
+/home/gabriel/Documents/tcc/project/microsservicos/catalogo-service/src/domain/value_objects.py
+    LOC: 33
+    LLOC: 24
+    SLOC: 25
+    Comments: 0
+    Single comments: 0
+    Multi: 0
+    Blank: 8
+    - Comment Stats
+        (C % L): 0%
+        (C % S): 0%
+        (C + M % L): 0%
+/home/gabriel/Documents/tcc/project/microsservicos/catalogo-service/src/domain/exceptions.py
+    LOC: 27
+    LLOC: 13
+    SLOC: 19
+    Comments: 0
+    Single comments: 0
+    Multi: 0
+    Blank: 8
+    - Comment Stats
+        (C % L): 0%
+        (C % S): 0%
+        (C + M % L): 0%
+/home/gabriel/Documents/tcc/project/microsservicos/catalogo-service/src/infrastructure/__init__.py
+    LOC: 0
+    LLOC: 0
+    SLOC: 0
+    Comments: 0
+    Single comments: 0
+    Multi: 0
+    Blank: 0
+    - Comment Stats
+        (C % L): 0%
+        (C % S): 0%
+        (C + M % L): 0%
+/home/gabriel/Documents/tcc/project/microsservicos/catalogo-service/src/infrastructure/sns_event_publisher.py
+    LOC: 38
+    LLOC: 16
+    SLOC: 32
+    Comments: 0
+    Single comments: 0
+    Multi: 0
+    Blank: 6
+    - Comment Stats
+        (C % L): 0%
+        (C % S): 0%
+        (C + M % L): 0%
+/home/gabriel/Documents/tcc/project/microsservicos/catalogo-service/src/infrastructure/dynamodb_produto_repository.py
+    LOC: 89
+    LLOC: 54
+    SLOC: 77
+    Comments: 0
+    Single comments: 0
+    Multi: 0
+    Blank: 12
+    - Comment Stats
+        (C % L): 0%
+        (C % S): 0%
+        (C + M % L): 0%
+/home/gabriel/Documents/tcc/project/microsservicos/catalogo-service/src/infrastructure/dynamodb_categoria_repository.py
+    LOC: 63
+    LLOC: 39
+    SLOC: 51
+    Comments: 0
+    Single comments: 0
+    Multi: 0
+    Blank: 12
+    - Comment Stats
+        (C % L): 0%
+        (C % S): 0%
+        (C + M % L): 0%
+/home/gabriel/Documents/tcc/project/microsservicos/catalogo-service/src/application/__init__.py
+    LOC: 0
+    LLOC: 0
+    SLOC: 0
+    Comments: 0
+    Single comments: 0
+    Multi: 0
+    Blank: 0
+    - Comment Stats
+        (C % L): 0%
+        (C % S): 0%
+        (C + M % L): 0%
+/home/gabriel/Documents/tcc/project/microsservicos/catalogo-service/src/application/use_cases.py
+    LOC: 157
+    LLOC: 78
+    SLOC: 123
+    Comments: 2
+    Single comments: 2
+    Multi: 0
+    Blank: 32
+    - Comment Stats
+        (C % L): 1%
+        (C % S): 2%
+        (C + M % L): 1%
+/home/gabriel/Documents/tcc/project/microsservicos/catalogo-service/src/application/dtos.py
+    LOC: 25
+    LLOC: 29
+    SLOC: 19
+    Comments: 0
+    Single comments: 0
+    Multi: 0
+    Blank: 6
+    - Comment Stats
+        (C % L): 0%
+        (C % S): 0%
+        (C + M % L): 0%
+/home/gabriel/Documents/tcc/project/microsservicos/catalogo-service/src/shared/__init__.py
+    LOC: 0
+    LLOC: 0
+    SLOC: 0
+    Comments: 0
+    Single comments: 0
+    Multi: 0
+    Blank: 0
+    - Comment Stats
+        (C % L): 0%
+        (C % S): 0%
+        (C + M % L): 0%
+/home/gabriel/Documents/tcc/project/microsservicos/catalogo-service/src/shared/repositories.py
+    LOC: 21
+    LLOC: 15
+    SLOC: 15
+    Comments: 0
+    Single comments: 0
+    Multi: 0
+    Blank: 6
+    - Comment Stats
+        (C % L): 0%
+        (C % S): 0%
+        (C + M % L): 0%
+/home/gabriel/Documents/tcc/project/microsservicos/catalogo-service/src/shared/entities.py
+    LOC: 14
+    LLOC: 14
+    SLOC: 10
+    Comments: 0
+    Single comments: 1
+    Multi: 0
+    Blank: 3
+    - Comment Stats
+        (C % L): 0%
+        (C % S): 0%
+        (C + M % L): 0%
+/home/gabriel/Documents/tcc/project/microsservicos/catalogo-service/src/shared/exceptions.py
+    LOC: 5
+    LLOC: 5
+    SLOC: 5
+    Comments: 0
+    Single comments: 0
+    Multi: 0
+    Blank: 0
+    - Comment Stats
+        (C % L): 0%
+        (C % S): 0%
+        (C + M % L): 0%
+** Total **
+    LOC: 839
+    LLOC: 501
+    SLOC: 676
+    Comments: 9
+    Single comments: 9
+    Multi: 7
+    Blank: 147
+    - Comment Stats
+        (C % L): 1%
+        (C % S): 1%
+        (C + M % L): 2%

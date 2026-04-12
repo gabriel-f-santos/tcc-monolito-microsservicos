@@ -1,0 +1,5 @@
+/home/gabriel/Documents/tcc/project/microsservicos/estoque-service-mvc/src/__init__.py - A (100.00)
+/home/gabriel/Documents/tcc/project/microsservicos/estoque-service-mvc/src/handlers/__init__.py - A (100.00)
+/home/gabriel/Documents/tcc/project/microsservicos/estoque-service-mvc/src/handlers/event_consumer.py - A (65.78)
+/home/gabriel/Documents/tcc/project/microsservicos/estoque-service-mvc/src/handlers/health.py - A (100.00)
+/home/gabriel/Documents/tcc/project/microsservicos/estoque-service-mvc/src/handlers/estoque.py - A (36.91)

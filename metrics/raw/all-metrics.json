@@ -1,0 +1,485 @@
+[
+  {
+    "codebase": "monolito-ddd",
+    "label": "Monolito DDD",
+    "arch": "DDD",
+    "kind": "monolito",
+    "raw": {
+      "loc": 2316,
+      "lloc": 1381,
+      "sloc": 1821,
+      "comments": 36,
+      "single_comments": 32,
+      "multi": 21,
+      "blank": 442
+    },
+    "cc": {
+      "blocks": 228,
+      "avg_cc": 1.837719298245614
+    },
+    "mi": {
+      "mi_avg": 90.28,
+      "files": 121
+    },
+    "xenon_pass": true,
+    "cohesion": {
+      "classes": 87,
+      "cohesion_avg": 32.29
+    },
+    "coupling": {
+      "packages": [
+        {
+          "package": "src.auth",
+          "Ca": 1,
+          "Ce": 1,
+          "I": 0.5,
+          "modules": 26
+        },
+        {
+          "package": "src.catalogo",
+          "Ca": 1,
+          "Ce": 1,
+          "I": 0.5,
+          "modules": 35
+        },
+        {
+          "package": "src.estoque",
+          "Ca": 1,
+          "Ce": 1,
+          "I": 0.5,
+          "modules": 32
+        },
+        {
+          "package": "src.infrastructure",
+          "Ca": 0,
+          "Ce": 0,
+          "I": 0.0,
+          "modules": 1
+        },
+        {
+          "package": "src.presentation",
+          "Ca": 0,
+          "Ce": 4,
+          "I": 1.0,
+          "modules": 5
+        },
+        {
+          "package": "src.shared",
+          "Ca": 4,
+          "Ce": 0,
+          "I": 0.0,
+          "modules": 17
+        }
+      ],
+      "total_modules": 117,
+      "total_packages": 6,
+      "avg_instability": 0.417
+    }
+  },
+  {
+    "codebase": "monolito-mvc",
+    "label": "Monolito MVC",
+    "arch": "MVC",
+    "kind": "monolito",
+    "raw": {
+      "loc": 622,
+      "lloc": 450,
+      "sloc": 466,
+      "comments": 11,
+      "single_comments": 17,
+      "multi": 0,
+      "blank": 139
+    },
+    "cc": {
+      "blocks": 43,
+      "avg_cc": 1.8604651162790697
+    },
+    "mi": {
+      "mi_avg": 75.04,
+      "files": 9
+    },
+    "xenon_pass": true,
+    "cohesion": {
+      "classes": 0,
+      "cohesion_avg": 0.0
+    },
+    "coupling": {
+      "packages": [
+        {
+          "package": "routes.auth",
+          "Ca": 0,
+          "Ce": 0,
+          "I": 0.0,
+          "modules": 1
+        },
+        {
+          "package": "routes.categorias",
+          "Ca": 0,
+          "Ce": 0,
+          "I": 0.0,
+          "modules": 1
+        },
+        {
+          "package": "routes.estoque",
+          "Ca": 0,
+          "Ce": 0,
+          "I": 0.0,
+          "modules": 1
+        },
+        {
+          "package": "routes.produtos",
+          "Ca": 0,
+          "Ce": 0,
+          "I": 0.0,
+          "modules": 1
+        }
+      ],
+      "total_modules": 5,
+      "total_packages": 4,
+      "avg_instability": 0.0
+    }
+  },
+  {
+    "codebase": "auth-ms-ddd",
+    "label": "Microsservico Auth (DDD)",
+    "arch": "DDD",
+    "kind": "microsservico",
+    "raw": {
+      "loc": 465,
+      "lloc": 295,
+      "sloc": 344,
+      "comments": 1,
+      "single_comments": 2,
+      "multi": 16,
+      "blank": 103
+    },
+    "cc": {
+      "blocks": 62,
+      "avg_cc": 1.7258064516129032
+    },
+    "mi": {
+      "mi_avg": 93.25,
+      "files": 34
+    },
+    "xenon_pass": true,
+    "cohesion": {
+      "classes": 18,
+      "cohesion_avg": 28.24
+    },
+    "coupling": {
+      "packages": [
+        {
+          "package": "src.application",
+          "Ca": 2,
+          "Ce": 1,
+          "I": 0.333,
+          "modules": 4
+        },
+        {
+          "package": "src.container",
+          "Ca": 1,
+          "Ce": 2,
+          "I": 0.667,
+          "modules": 1
+        },
+        {
+          "package": "src.domain",
+          "Ca": 3,
+          "Ce": 1,
+          "I": 0.25,
+          "modules": 10
+        },
+        {
+          "package": "src.handlers",
+          "Ca": 0,
+          "Ce": 3,
+          "I": 1.0,
+          "modules": 4
+        },
+        {
+          "package": "src.infrastructure",
+          "Ca": 1,
+          "Ce": 1,
+          "I": 0.5,
+          "modules": 6
+        },
+        {
+          "package": "src.shared",
+          "Ca": 1,
+          "Ce": 0,
+          "I": 0.0,
+          "modules": 8
+        }
+      ],
+      "total_modules": 34,
+      "total_packages": 6,
+      "avg_instability": 0.458
+    }
+  },
+  {
+    "codebase": "catalogo-ms-ddd",
+    "label": "Microsservico Catalogo (DDD)",
+    "arch": "DDD",
+    "kind": "microsservico",
+    "raw": {
+      "loc": 839,
+      "lloc": 501,
+      "sloc": 676,
+      "comments": 9,
+      "single_comments": 9,
+      "multi": 7,
+      "blank": 147
+    },
+    "cc": {
+      "blocks": 94,
+      "avg_cc": 2.3085106382978724
+    },
+    "mi": {
+      "mi_avg": 81.89,
+      "files": 21
+    },
+    "xenon_pass": false,
+    "cohesion": {
+      "classes": 28,
+      "cohesion_avg": 48.87
+    },
+    "coupling": {
+      "packages": [
+        {
+          "package": "src.application",
+          "Ca": 1,
+          "Ce": 1,
+          "I": 0.5,
+          "modules": 3
+        },
+        {
+          "package": "src.domain",
+          "Ca": 3,
+          "Ce": 1,
+          "I": 0.25,
+          "modules": 6
+        },
+        {
+          "package": "src.handlers",
+          "Ca": 0,
+          "Ce": 4,
+          "I": 1.0,
+          "modules": 3
+        },
+        {
+          "package": "src.infrastructure",
+          "Ca": 1,
+          "Ce": 1,
+          "I": 0.5,
+          "modules": 4
+        },
+        {
+          "package": "src.shared",
+          "Ca": 2,
+          "Ce": 0,
+          "I": 0.0,
+          "modules": 4
+        }
+      ],
+      "total_modules": 21,
+      "total_packages": 5,
+      "avg_instability": 0.45
+    }
+  },
+  {
+    "codebase": "estoque-ms-ddd",
+    "label": "Microsservico Estoque (DDD)",
+    "arch": "DDD",
+    "kind": "microsservico",
+    "raw": {
+      "loc": 847,
+      "lloc": 512,
+      "sloc": 685,
+      "comments": 8,
+      "single_comments": 7,
+      "multi": 4,
+      "blank": 151
+    },
+    "cc": {
+      "blocks": 83,
+      "avg_cc": 2.216867469879518
+    },
+    "mi": {
+      "mi_avg": 87.28,
+      "files": 35
+    },
+    "xenon_pass": true,
+    "cohesion": {
+      "classes": 21,
+      "cohesion_avg": 39.15
+    },
+    "coupling": {
+      "packages": [
+        {
+          "package": "src.application",
+          "Ca": 1,
+          "Ce": 1,
+          "I": 0.5,
+          "modules": 7
+        },
+        {
+          "package": "src.domain",
+          "Ca": 3,
+          "Ce": 1,
+          "I": 0.25,
+          "modules": 11
+        },
+        {
+          "package": "src.handlers",
+          "Ca": 0,
+          "Ce": 4,
+          "I": 1.0,
+          "modules": 4
+        },
+        {
+          "package": "src.infrastructure",
+          "Ca": 1,
+          "Ce": 1,
+          "I": 0.5,
+          "modules": 4
+        },
+        {
+          "package": "src.shared",
+          "Ca": 2,
+          "Ce": 0,
+          "I": 0.0,
+          "modules": 8
+        }
+      ],
+      "total_modules": 35,
+      "total_packages": 5,
+      "avg_instability": 0.45
+    }
+  },
+  {
+    "codebase": "auth-ms-mvc",
+    "label": "Microsservico Auth (MVC)",
+    "arch": "MVC",
+    "kind": "microsservico",
+    "raw": {
+      "loc": 135,
+      "lloc": 75,
+      "sloc": 103,
+      "comments": 0,
+      "single_comments": 3,
+      "multi": 0,
+      "blank": 29
+    },
+    "cc": {
+      "blocks": 10,
+      "avg_cc": 2.5
+    },
+    "mi": {
+      "mi_avg": 88.66,
+      "files": 5
+    },
+    "xenon_pass": true,
+    "cohesion": {
+      "classes": 0,
+      "cohesion_avg": 0.0
+    },
+    "coupling": {
+      "packages": [
+        {
+          "package": "src.handlers",
+          "Ca": 0,
+          "Ce": 0,
+          "I": 0.0,
+          "modules": 4
+        }
+      ],
+      "total_modules": 5,
+      "total_packages": 1,
+      "avg_instability": 0.0
+    }
+  },
+  {
+    "codebase": "catalogo-ms-mvc",
+    "label": "Microsservico Catalogo (MVC)",
+    "arch": "MVC",
+    "kind": "microsservico",
+    "raw": {
+      "loc": 322,
+      "lloc": 223,
+      "sloc": 240,
+      "comments": 9,
+      "single_comments": 10,
+      "multi": 0,
+      "blank": 72
+    },
+    "cc": {
+      "blocks": 20,
+      "avg_cc": 3.9
+    },
+    "mi": {
+      "mi_avg": 83.13,
+      "files": 4
+    },
+    "xenon_pass": true,
+    "cohesion": {
+      "classes": 0,
+      "cohesion_avg": 0.0
+    },
+    "coupling": {
+      "packages": [
+        {
+          "package": "src.handlers",
+          "Ca": 0,
+          "Ce": 0,
+          "I": 0.0,
+          "modules": 3
+        }
+      ],
+      "total_modules": 4,
+      "total_packages": 1,
+      "avg_instability": 0.0
+    }
+  },
+  {
+    "codebase": "estoque-ms-mvc",
+    "label": "Microsservico Estoque (MVC)",
+    "arch": "MVC",
+    "kind": "microsservico",
+    "raw": {
+      "loc": 331,
+      "lloc": 198,
+      "sloc": 257,
+      "comments": 5,
+      "single_comments": 4,
+      "multi": 6,
+      "blank": 64
+    },
+    "cc": {
+      "blocks": 22,
+      "avg_cc": 2.8181818181818183
+    },
+    "mi": {
+      "mi_avg": 80.54,
+      "files": 5
+    },
+    "xenon_pass": true,
+    "cohesion": {
+      "classes": 0,
+      "cohesion_avg": 0.0
+    },
+    "coupling": {
+      "packages": [
+        {
+          "package": "src.handlers",
+          "Ca": 0,
+          "Ce": 0,
+          "I": 0.0,
+          "modules": 4
+        }
+      ],
+      "total_modules": 5,
+      "total_packages": 1,
+      "avg_instability": 0.0
+    }
+  }
+]

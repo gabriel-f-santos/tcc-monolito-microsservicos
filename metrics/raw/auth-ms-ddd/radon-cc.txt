@@ -1,0 +1,82 @@
+/home/gabriel/Documents/tcc/project/microsservicos/auth-service/src/container.py
+    F 17:0 _usuarios_table_name - A (1)
+    F 21:0 _jwt_secret - A (1)
+    F 25:0 build_usuario_repository - A (1)
+    F 29:0 build_password_hasher - A (1)
+    F 33:0 build_token_service - A (1)
+    F 37:0 build_registrar_use_case - A (1)
+    F 44:0 build_login_use_case - A (1)
+/home/gabriel/Documents/tcc/project/microsservicos/auth-service/src/handlers/health.py
+    F 3:0 handler - A (1)
+/home/gabriel/Documents/tcc/project/microsservicos/auth-service/src/handlers/authorizer.py
+    F 13:0 handler - A (5)
+/home/gabriel/Documents/tcc/project/microsservicos/auth-service/src/handlers/auth.py
+    F 22:0 _parse_body - A (4)
+    F 31:0 registrar_handler - A (3)
+    F 57:0 login_handler - A (2)
+    F 14:0 _response - A (1)
+/home/gabriel/Documents/tcc/project/microsservicos/auth-service/src/domain/repositories/usuario_repository.py
+    C 7:0 UsuarioRepository - A (2)
+    M 9:4 UsuarioRepository.get_by_email - A (1)
+/home/gabriel/Documents/tcc/project/microsservicos/auth-service/src/domain/exceptions/auth.py
+    C 4:0 EmailDuplicado - A (2)
+    C 9:0 CredenciaisInvalidas - A (2)
+    C 14:0 TokenInvalido - A (2)
+    M 5:4 EmailDuplicado.__init__ - A (1)
+    M 10:4 CredenciaisInvalidas.__init__ - A (1)
+    M 15:4 TokenInvalido.__init__ - A (1)
+/home/gabriel/Documents/tcc/project/microsservicos/auth-service/src/domain/services/password_hasher.py
+    C 4:0 PasswordHasher - A (2)
+    M 6:4 PasswordHasher.hash - A (1)
+    M 10:4 PasswordHasher.verify - A (1)
+/home/gabriel/Documents/tcc/project/microsservicos/auth-service/src/domain/services/token_service.py
+    C 5:0 TokenService - A (2)
+    M 7:4 TokenService.generate_token - A (1)
+    M 11:4 TokenService.decode_token - A (1)
+/home/gabriel/Documents/tcc/project/microsservicos/auth-service/src/domain/entities/usuario.py
+    C 8:0 Usuario - B (8)
+    M 13:4 Usuario.__post_init__ - B (7)
+/home/gabriel/Documents/tcc/project/microsservicos/auth-service/src/infrastructure/repositories/dynamodb_usuario_repository.py
+    C 11:0 DynamoDBUsuarioRepository - A (2)
+    M 44:4 DynamoDBUsuarioRepository.get_by_id - A (2)
+    M 51:4 DynamoDBUsuarioRepository.get_by_email - A (2)
+    M 12:4 DynamoDBUsuarioRepository.__init__ - A (1)
+    M 16:4 DynamoDBUsuarioRepository._table - A (1)
+    M 23:4 DynamoDBUsuarioRepository._to_item - A (1)
+    M 34:4 DynamoDBUsuarioRepository._from_item - A (1)
+    M 60:4 DynamoDBUsuarioRepository.save - A (1)
+    M 65:4 DynamoDBUsuarioRepository.delete - A (1)
+/home/gabriel/Documents/tcc/project/microsservicos/auth-service/src/infrastructure/services/bcrypt_password_hasher.py
+    C 6:0 BcryptPasswordHasher - A (2)
+    M 7:4 BcryptPasswordHasher.hash - A (1)
+    M 10:4 BcryptPasswordHasher.verify - A (1)
+/home/gabriel/Documents/tcc/project/microsservicos/auth-service/src/infrastructure/services/jose_token_service.py
+    C 10:0 JoseTokenService - A (2)
+    M 23:4 JoseTokenService.decode_token - A (2)
+    M 11:4 JoseTokenService.__init__ - A (1)
+    M 15:4 JoseTokenService.generate_token - A (1)
+/home/gabriel/Documents/tcc/project/microsservicos/auth-service/src/application/use_cases/registrar.py
+    C 18:0 RegistrarUseCase - A (3)
+    M 23:4 RegistrarUseCase.execute - A (2)
+    C 12:0 RegistrarDTO - A (1)
+    M 19:4 RegistrarUseCase.__init__ - A (1)
+/home/gabriel/Documents/tcc/project/microsservicos/auth-service/src/application/use_cases/login.py
+    C 21:0 LoginUseCase - A (3)
+    M 32:4 LoginUseCase.execute - A (3)
+    C 10:0 LoginDTO - A (1)
+    C 16:0 TokenResult - A (1)
+    M 22:4 LoginUseCase.__init__ - A (1)
+/home/gabriel/Documents/tcc/project/microsservicos/auth-service/src/shared/domain/repositories/base.py
+    C 10:0 BaseRepository - A (2)
+    M 12:4 BaseRepository.get_by_id - A (1)
+    M 16:4 BaseRepository.save - A (1)
+    M 20:4 BaseRepository.delete - A (1)
+/home/gabriel/Documents/tcc/project/microsservicos/auth-service/src/shared/domain/exceptions/base.py
+    C 1:0 DomainException - A (2)
+    M 2:4 DomainException.__init__ - A (1)
+/home/gabriel/Documents/tcc/project/microsservicos/auth-service/src/shared/domain/entities/base.py
+    C 7:0 BaseEntity - A (2)
+    M 12:4 BaseEntity.__post_init__ - A (1)
+
+62 blocks (classes, functions, methods) analyzed.
+Average complexity: A (1.7258064516129032)

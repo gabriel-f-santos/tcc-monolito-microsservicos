@@ -1,0 +1,5 @@
+File: /home/gabriel/Documents/tcc/project/microsservicos/estoque-service-mvc/src/__init__.py
+File: /home/gabriel/Documents/tcc/project/microsservicos/estoque-service-mvc/src/handlers/__init__.py
+File: /home/gabriel/Documents/tcc/project/microsservicos/estoque-service-mvc/src/handlers/event_consumer.py
+File: /home/gabriel/Documents/tcc/project/microsservicos/estoque-service-mvc/src/handlers/health.py
+File: /home/gabriel/Documents/tcc/project/microsservicos/estoque-service-mvc/src/handlers/estoque.py

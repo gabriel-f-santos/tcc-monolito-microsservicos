@@ -1,0 +1,16 @@
+/home/gabriel/Documents/tcc/project/microsservicos/auth-service-mvc/src/handlers/health.py
+    F 3:0 handler - A (1)
+/home/gabriel/Documents/tcc/project/microsservicos/auth-service-mvc/src/handlers/authorizer.py
+    F 7:0 handler - A (2)
+/home/gabriel/Documents/tcc/project/microsservicos/auth-service-mvc/src/handlers/auth.py
+    F 56:0 registrar_handler - B (8)
+    F 87:0 login_handler - B (6)
+    F 33:0 _verify_password - A (2)
+    F 49:0 _find_by_email - A (2)
+    F 16:0 _table - A (1)
+    F 21:0 _response - A (1)
+    F 29:0 _hash_password - A (1)
+    F 40:0 _create_token - A (1)
+
+10 blocks (classes, functions, methods) analyzed.
+Average complexity: A (2.5)
