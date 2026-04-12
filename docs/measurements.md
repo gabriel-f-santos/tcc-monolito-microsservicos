@@ -84,144 +84,52 @@
 
 ---
 
-## Fase B — Migracao para Microsservicos (Claude Code)
+## Fase B — Migracao para 6 Microsservicos (Claude Code, agentes paralelos)
 
-### Migration 0: Auth Service
-- **Inicio:** 2026-04-07 20:53
-- **Fim:** 2026-04-07 20:58
-- **Tempo total:** 4min 47s
-- **Modo:** dangerously-skip-permissions
-- **Tokens:** 
-- **Iteracoes:** 1
-- **Arquivos copiados (domain+app):** 7/7 (4 identicos, 3 so import paths)
-- **Arquivos novos (infra+presentation+container):** 8
-- **% codigo reutilizado:** 46% arquivos, ~95% linhas (diffs sao so import paths)
-- **Testes:** 6/6 auth + 2 health = 8 passando
-- **Observacoes:** Lógica 100% identica ao monolito. Domain e Application copiados. Infra services (bcrypt, jose) copiados. Novos: DynamoDB repo, Lambda handlers, authorizer, container.
+6 agentes Claude Code em paralelo migraram os monolitos para microsservicos
+serverless (Lambda + DynamoDB + SNS/SQS). Cada servico tem sua propria stack
+CloudFormation, API Gateway e tabelas DynamoDB.
 
-### Migration 1: Catalogo Service
-- **Inicio:** 2026-04-07 21:00
-- **Fim:** 2026-04-07 21:07
-- **Tempo total:** 6min 57s
-- **Modo:** dangerously-skip-permissions
-- **Tokens:** 
-- **Iteracoes:** 1
-- **Arquivos copiados (domain+app):** 15 (4 identicos, 11 import-path-only)
-- **Arquivos novos (infra+presentation+container):** 6 (2 DynamoDB repos, SNS service, handler, settings, container)
-- **% codigo reutilizado:** 71% arquivos, ~95% linhas
-- **Testes:** 14/14 catalogo + 2 health = 16 passando
-- **Observacoes:** Maior BC — 8 use cases, 2 VOs, 2 repos. SNS EstoqueService substitui in-process. Handler com roteamento por method+path.
+### Resultados por servico
 
-### Migration 2: Estoque Service (inclui eventos)
-- **Inicio:** 2026-04-07 ~21:10
-- **Fim:** 2026-04-07 ~21:17
-- **Tempo total:** 6min 24s (segunda tentativa — primeira falhou e entrou em modo planejamento)
-- **Modo:** dangerously-skip-permissions
-- **Tokens:** 
-- **Iteracoes:** 2 (primeira falhou)
-- **Arquivos copiados (domain+app):** 14
-- **Arquivos novos (infra+presentation+eventos+container):** 6
-- **% codigo reutilizado:** 70% arquivos, ~95% linhas
-- **Testes:** 14/14 estoque + 3 eventos + 1 consumer = 18 passando
-- **Observacoes:** Primeira tentativa entrou em modo planejamento — git clean e reiniciou. Inclui event consumer para SQS (ProdutoCriado, ProdutoAtualizado, ProdutoDesativado).
-- **Observacoes:** 
+| Servico | Arq | Testes | Tempo | Deploy | E2E |
+|---------|-----|--------|-------|--------|-----|
+| auth-service | DDD | 12/12 | 4min 33s | OK | OK |
+| catalogo-service | DDD | 20/20 | 3min 41s | OK | OK |
+| estoque-service | DDD | 20/20 | 4min 23s | OK | OK |
+| auth-service-mvc | MVC | 12/12 | 1min 52s | — | — |
+| catalogo-service-mvc | MVC | 20/20 | 2min 23s | — | — |
+| estoque-service-mvc | MVC | 20/20 | 2min 31s | — | — |
 
----
-
-## Fase B2 — Migracao MVC para Microsservicos (Agentes Paralelos)
-
-### Migration MVC 0: Auth Service
-- **Tempo total:** 2min 26s
-- **Modo:** agente paralelo (subagent)
-- **Testes:** 6/6 auth + 2 health = 8 passando
-- **% codigo reutilizado do monolito-mvc:** 0% (reescrita completa)
-- **Observacoes:** SQLAlchemy → DynamoDB boto3 inline. Nenhuma linha copiada do monolito-mvc.
-
-### Migration MVC 1: Catalogo Service
-- **Tempo total:** 2min 11s
-- **Modo:** agente paralelo (subagent)
-- **Testes:** 14/14 catalogo + 2 health = 16 passando
-- **% codigo reutilizado do monolito-mvc:** 0% (reescrita completa)
-- **Observacoes:** Handler com roteamento por method+path. SNS publish inline.
-
-### Migration MVC 2: Estoque Service
-- **Tempo total:** 3min 41s
-- **Modo:** agente paralelo (subagent)
-- **Testes:** 11/11 estoque + 3 eventos + 2 health = 16 passando
-- **% codigo reutilizado do monolito-mvc:** 0% (reescrita completa)
-- **Observacoes:** Event consumer para SQS. Mais demorado por ter mais logica.
-
-### Totais MVC Migration
-
-| Metrica | DDD Migration | MVC Migration |
-|---------|--------------|---------------|
-| Tempo total | 18min 08s | 8min 18s |
-| Testes | 34/34 | 40/40 |
-| % reuso (linhas) | ~95% | ~0% |
-| Arquivos copiados | 34 | 0 |
-| Arquivos novos | 24 | 8 |
-
----
-
-## Fase B4 — Rodada 2: Migracao com INTEGRATION-CONTRACT + moto + testes-guardiao
-
-Reexecucao da migracao apos auditoria da rodada 1 que encontrou **4 de 6
-microsservicos quebrados no deploy real** (bugs de integracao AWS que os
-testes InMemory mascaravam). Antes desta rodada, o skeleton recebeu:
-
-- `INTEGRATION-CONTRACT.md` com 6 regras obrigatorias
-- `conftest.py` generico parseando `template.yaml` e subindo moto
-- `tests/test_integration_contract.py` com 4 testes-guardiao
-- Prompts atualizados com contexto dos 4 bugs anteriores + checklist de done
-
-### Branch: `migration/v2-run1` (a partir de `skeleton-microsservicos-v2`)
-
-### Resultados (medicoes via `scripts/migration-timer.sh`)
-
-| Servico | Arq | Testes | Tempo (s) | Tempo (min) | Bugs? | Iteracoes |
-|---------|-----|--------|-----------|-------------|-------|-----------|
-| auth-service | DDD | 12/12 | 272.284 | 4.54 | 0 | 1 |
-| catalogo-service | DDD | 20/20 | 220.689 | 3.68 | 0 | 1 |
-| estoque-service | DDD | 20/20 | 262.943 | 4.38 | 0 | 1 |
-| auth-service-mvc | MVC | 12/12 | 111.635 | 1.86 | 0 | 1 |
-| catalogo-service-mvc | MVC | 20/20 | 143.149 | 2.39 | 0 | 1 |
-| estoque-service-mvc | MVC | 20/20 | 151.346 | 2.52 | 0 | 1 |
-
-### Totais
+### Totais DDD vs MVC
 
 | Metrica | DDD | MVC | Delta |
 |---------|-----|-----|-------|
-| Tempo somado | 755.9s (12.6min) | 406.1s (6.77min) | MVC 46% mais rapido |
-| Tempo paralelo (max) | 272.3s (4.54min) | 151.3s (2.52min) | MVC 44% mais rapido |
+| Tempo somado | 12min 36s | 6min 46s | MVC 46% mais rapido |
+| Tempo paralelo (max) | 4min 33s | 2min 31s | MVC 44% mais rapido |
 | Testes passando | 52/52 | 52/52 | — |
-| 1a tentativa bem-sucedida | 3/3 | 3/3 | **100%** |
+| Iteracoes | 1 cada | 1 cada | — |
+| Deploy + E2E validado | 3/3 | (nao deployado) | — |
 
-### Comparacao Rodada 1 (main, sem contrato) vs Rodada 2 (com contrato)
+### Metricas de qualidade (radon/grimp/cohesion)
 
-| Metrica | Rodada 1 | Rodada 2 | Delta |
-|---------|----------|----------|-------|
-| Tempo DDD (paralelo max) | 3min 54s | 4min 33s | +17% (+39s) |
-| Tempo MVC (paralelo max) | 2min 13s | 2min 31s | +14% (+18s) |
-| Testes locais verdes | 80/80 | 104/104 | +24 (guardioes) |
-| **Servicos funcionais em deploy real** | **2/6** | **(a validar)** | — |
-| Bugs graves detectados | 4 (so apos deploy) | 0 (antes do deploy) | — |
+| Codebase | SLOC | CC medio | MI medio | Pacotes | Instab. media |
+|----------|------|----------|----------|---------|---------------|
+| Monolito DDD | 1821 | 1.84 | 90.28 | 6 | 0.417 |
+| Monolito MVC | 466 | 1.86 | 75.04 | 4 | 0.000 |
+| Auth DDD | 344 | 1.73 | 93.25 | 6 | 0.458 |
+| Catalogo DDD | 676 | 2.31 | 81.89 | 5 | 0.450 |
+| Estoque DDD | 685 | 2.22 | 87.28 | 5 | 0.450 |
+| Auth MVC | 103 | 2.50 | 88.66 | 1 | 0.000 |
+| Catalogo MVC | 240 | 3.90 | 83.13 | 1 | 0.000 |
+| Estoque MVC | 257 | 2.82 | 80.54 | 1 | 0.000 |
 
-**Observacoes:**
-- O contrato custou ~15% mais tempo de implementacao (esperado — mais testes, mais constraints)
-- Em troca, **zero bugs de integracao na primeira tentativa** — todos os 6 agentes entregaram codigo alinhado com o deploy real, pelos testes-guardiao
-- 24 novos testes aparecem no total: 4 testes-guardiao × 6 servicos
-- Ambos os agentes de estoque (DDD e MVC) reportaram bug de docstring em `tests/test_estoque.py` — fix aplicado por ambos. O bug estava no skeleton
-- Todos os 6 convergiram para padroes similares: `_table()` funcao lazy, env vars dentro de funcoes, zero chamada boto3 em import-time
+### Validacao E2E em producao (DDD)
 
-### Validacao
-
-```bash
-$ for svc in auth-service catalogo-service estoque-service \
-             auth-service-mvc catalogo-service-mvc estoque-service-mvc; do
-    cd microsservicos/$svc && .venv/bin/pytest tests/ -q
-  done
-12 passed / 20 passed / 20 passed / 12 passed / 20 passed / 20 passed
-→ 104/104 total
+```
+registrar → 201  |  login → 200 + JWT  |  criar categoria → 201
+criar produto → 201 + SNS  |  (8s) SNS→SQS→estoque → item saldo=0
+entrada 100 → 201  |  saida 30 → 201  |  buscar → saldo=70  |  movimentacoes → 2
 ```
 
 ---
