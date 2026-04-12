@@ -134,74 +134,35 @@ entrada 100 → 201  |  saida 30 → 201  |  buscar → saldo=70  |  movimentaco
 
 ---
 
-## Fase C — Feature Nova: Alerta Estoque Baixo (Medicao Principal)
+## Fase C — Feature Nova: Alerta Estoque Baixo
 
-### Monolito + Claude Code
-- **Inicio:** 
-- **Fim:** 
-- **Tempo total:** 
-- **Tokens:** 
-- **Iteracoes:** 
-- **Diff:** 
-- **CC antes:** 
-- **CC depois:** 
-- **MI antes:** 
-- **MI depois:** 
-- **Testes:** /3
-- **Observacoes:** 
+4 agentes em paralelo implementaram a mesma feature em 4 variantes.
+Testes pre-escritos (4 por variante). Spec: `docs/features/spec-alerta-estoque-baixo.md`.
 
-### Monolito + Codex
-- **Inicio:** 
-- **Fim:** 
-- **Tempo total:** 
-- **Tokens:** 
-- **Iteracoes:** 
-- **Diff:** 
-- **CC antes:** 
-- **CC depois:** 
-- **MI antes:** 
-- **MI depois:** 
-- **Testes:** /3
-- **Observacoes:** 
+### Resultados por variante
 
-### Microsservicos + Claude Code
-- **Inicio:** 
-- **Fim:** 
-- **Tempo total:** 
-- **Tokens:** 
-- **Iteracoes:** 
-- **Diff:** 
-- **CC antes:** 
-- **CC depois:** 
-- **MI antes:** 
-- **MI depois:** 
-- **Testes:** /3
-- **Observacoes:** 
+| Variante | Tempo | Testes (novos/total) | CC antes | CC depois | MI antes | MI depois | Iteracoes |
+|----------|-------|---------------------|----------|-----------|----------|-----------|-----------|
+| Monolito DDD | 3min 31s | 4/40 | 1.84 | 1.86 | 90.28 | 89.39 | 1 |
+| Monolito MVC | 1min 53s | 4/37 | 1.86 | 1.88 | 75.04 | 75.08 | 1 |
+| Microsservico DDD | 3min 01s | 4/24 | 2.22 | 2.17 | 87.28 | 85.51 | 1 |
+| Microsservico MVC | 1min 35s | 4/24 | 2.82 | 3.12 | 80.54 | 79.53 | 1 |
 
-### Microsservicos + Codex
-- **Inicio:** 
-- **Fim:** 
-- **Tempo total:** 
-- **Tokens:** 
-- **Iteracoes:** 
-- **Diff:** 
-- **CC antes:** 
-- **CC depois:** 
-- **MI antes:** 
-- **MI depois:** 
-- **Testes:** /3
-- **Observacoes:** 
+### Comparacao DDD vs MVC
 
----
+| Metrica | DDD (monolito) | MVC (monolito) | DDD (micro) | MVC (micro) |
+|---------|---------------|---------------|-------------|-------------|
+| Tempo | 3min 31s | **1min 53s** | 3min 01s | **1min 35s** |
+| Delta CC | +0.02 | +0.02 | **-0.05** | +0.30 |
+| Delta MI | -0.89 | +0.04 | -1.77 | -1.01 |
+| Arqs novos | 5 | 0 | 4 | 0 |
+| Arqs modificados | 7 | 3 | 5 | 2 |
 
-## Fase D — Feature Transversal
+### Observacoes
 
-### Feature 6: Filtro por Categoria
-- **Inicio:** 
-- **Fim:** 
-- **Tempo total:** 
-- **Tokens:** 
-- **Iteracoes:** 
-- **Diff:** 
-- **Testes:** /2
-- **Observacoes:** 
+- MVC ~47% mais rapido que DDD (mesmo padrao da migracao)
+- DDD toca mais arquivos (novas entidades, repos, use cases, rotas) vs MVC (tudo inline em 2-3 arquivos)
+- CC praticamente estavel em todas as variantes (+/- 0.3 pontos) — feature pequena nao altera complexidade significativamente
+- MI com leve queda no DDD microsservico (-1.77) pela adicao de novos arquivos de infra (repo DynamoDB)
+- DDD microsservico precisou adicionar tabela `AlertasTable` no template.yaml + env var `ALERTAS_TABLE` — conftest.py auto-criou no moto sem intervencao
+- Todos os 4 convergiram na primeira tentativa, zero testes quebrados

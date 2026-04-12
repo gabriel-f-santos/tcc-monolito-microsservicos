@@ -27,6 +27,7 @@ class DynamoDBItemEstoqueRepository(ItemEstoqueRepository):
             categoria_nome=row["categoria_nome"],
             saldo=int(row.get("saldo", 0)),
             ativo=bool(row.get("ativo", True)),
+            estoque_minimo=int(row.get("estoque_minimo", 0)),
             criado_em=datetime.fromisoformat(row["criado_em"]),
             atualizado_em=datetime.fromisoformat(row["atualizado_em"]),
         )
@@ -40,6 +41,7 @@ class DynamoDBItemEstoqueRepository(ItemEstoqueRepository):
             "categoria_nome": entity.categoria_nome,
             "saldo": int(entity.saldo),
             "ativo": bool(entity.ativo),
+            "estoque_minimo": int(entity.estoque_minimo),
             "criado_em": entity.criado_em.isoformat(),
             "atualizado_em": entity.atualizado_em.isoformat(),
         }

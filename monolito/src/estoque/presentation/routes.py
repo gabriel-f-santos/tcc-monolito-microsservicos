@@ -14,8 +14,15 @@ from src.estoque.application.use_cases.registrar_saida import (
     RegistrarSaidaDTO,
     RegistrarSaidaUseCase,
 )
+from src.estoque.application.use_cases.configurar_alerta import (
+    ConfigurarAlertaDTO,
+    ConfigurarAlertaUseCase,
+)
+from src.estoque.application.use_cases.listar_alertas import ListarAlertasUseCase
 from src.estoque.container import EstoqueContainer
 from src.estoque.presentation.schemas import (
+    AlertaEstoqueResponse,
+    ConfigurarAlertaRequest,
     ItemEstoqueResponse,
     MovimentacaoResponse,
     RegistrarEntradaRequest,
@@ -34,6 +41,7 @@ def _build_item_response(item) -> ItemEstoqueResponse:
         categoria_nome=item.categoria_nome,
         saldo=item.saldo,
         ativo=item.ativo,
+        estoque_minimo=item.estoque_minimo,
         criado_em=item.criado_em,
     )
 
@@ -115,6 +123,39 @@ def buscar_item(
 ):
     item = use_case.execute(item_id)
     return _build_item_response(item)
+
+
+@router.patch("/api/v1/estoque/{item_id}/configurar-alerta", response_model=ItemEstoqueResponse)
+@inject
+def configurar_alerta(
+    item_id: UUID,
+    body: ConfigurarAlertaRequest,
+    use_case: ConfigurarAlertaUseCase = Depends(Provide[EstoqueContainer.configurar_alerta]),
+):
+    item = use_case.execute(
+        ConfigurarAlertaDTO(item_estoque_id=item_id, estoque_minimo=body.estoque_minimo)
+    )
+    return _build_item_response(item)
+
+
+@router.get("/api/v1/estoque/{item_id}/alertas", response_model=list[AlertaEstoqueResponse])
+@inject
+def listar_alertas(
+    item_id: UUID,
+    use_case: ListarAlertasUseCase = Depends(Provide[EstoqueContainer.listar_alertas]),
+):
+    alertas = use_case.execute(item_estoque_id=item_id)
+    return [
+        AlertaEstoqueResponse(
+            id=a.id,
+            item_estoque_id=a.item_estoque_id,
+            tipo=a.tipo,
+            saldo_atual=a.saldo_atual,
+            estoque_minimo=a.estoque_minimo,
+            criado_em=a.criado_em,
+        )
+        for a in alertas
+    ]
 
 
 @router.get("/api/v1/estoque/{item_id}/movimentacoes", response_model=list[MovimentacaoResponse])

@@ -21,6 +21,7 @@ class ItemEstoque(BaseEntity):
     categoria_nome: str | None = None
     saldo: int = 0
     ativo: bool = True
+    estoque_minimo: int = 0
 
     def __post_init__(self) -> None:
         super().__post_init__()

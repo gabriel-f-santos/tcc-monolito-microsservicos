@@ -7,8 +7,11 @@ from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from database import get_session
-from models import ItemEstoque, Movimentacao
-from schemas import ItemEstoqueResponse, MovimentacaoRequest, MovimentacaoResponse
+from models import ItemEstoque, Movimentacao, AlertaEstoque
+from schemas import (
+    ItemEstoqueResponse, MovimentacaoRequest, MovimentacaoResponse,
+    ConfigurarAlertaRequest, AlertaResponse,
+)
 
 router = APIRouter(prefix="/api/v1/estoque", tags=["estoque"])
 
@@ -109,6 +112,53 @@ def registrar_saida(
         motivo=body.motivo,
     )
     session.add(mov)
+
+    # Alerta de estoque baixo
+    if item.estoque_minimo and item.saldo < item.estoque_minimo:
+        alerta = AlertaEstoque(
+            item_estoque_id=item_id,
+            tipo="ESTOQUE_BAIXO",
+            saldo_atual=item.saldo,
+            estoque_minimo=item.estoque_minimo,
+        )
+        session.add(alerta)
+
     session.commit()
     session.refresh(mov)
     return MovimentacaoResponse.model_validate(mov)
+
+
+@router.patch("/{item_id}/configurar-alerta", response_model=ItemEstoqueResponse)
+def configurar_alerta(
+    item_id: uuid.UUID,
+    body: ConfigurarAlertaRequest,
+    session: Session = Depends(get_session),
+):
+    item = session.execute(
+        select(ItemEstoque).where(ItemEstoque.id == item_id)
+    ).scalar_one_or_none()
+    if not item:
+        raise HTTPException(status_code=404, detail="Item de estoque nao encontrado")
+
+    item.estoque_minimo = body.estoque_minimo
+    item.atualizado_em = datetime.now(timezone.utc)
+    session.commit()
+    session.refresh(item)
+    return ItemEstoqueResponse.model_validate(item)
+
+
+@router.get("/{item_id}/alertas", response_model=list[AlertaResponse])
+def listar_alertas(
+    item_id: uuid.UUID,
+    session: Session = Depends(get_session),
+):
+    item = session.execute(
+        select(ItemEstoque).where(ItemEstoque.id == item_id)
+    ).scalar_one_or_none()
+    if not item:
+        raise HTTPException(status_code=404, detail="Item de estoque nao encontrado")
+
+    alertas = session.execute(
+        select(AlertaEstoque).where(AlertaEstoque.item_estoque_id == item_id)
+    ).scalars().all()
+    return [AlertaResponse.model_validate(a) for a in alertas]
