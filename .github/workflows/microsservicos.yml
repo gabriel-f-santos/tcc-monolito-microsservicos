@@ -11,81 +11,114 @@ on:
     paths:
       - 'microsservicos/**'
       - '.github/workflows/microsservicos.yml'
-
-env:
-  SAM_STACK_NAME: tcc-microsservicos
+  workflow_dispatch:
 
 jobs:
+  # --- CI: 6 servicos em paralelo ---
   test:
-    name: Test & Quality
+    name: Test ${{ matrix.service }}
     runs-on: ubuntu-latest
     strategy:
+      fail-fast: false
       matrix:
-        service: [auth-service, catalogo-service, estoque-service]
-
+        service:
+          - auth-service
+          - catalogo-service
+          - estoque-service
+          - auth-service-mvc
+          - catalogo-service-mvc
+          - estoque-service-mvc
+    defaults:
+      run:
+        working-directory: microsservicos/${{ matrix.service }}
     steps:
       - uses: actions/checkout@v4
-
-      - name: Setup Python
-        uses: actions/setup-python@v5
+      - uses: actions/setup-python@v5
         with:
           python-version: '3.13'
-
       - name: Install dependencies
-        working-directory: microsservicos/${{ matrix.service }}
-        run: pip install -e ".[dev]"
-
+        run: pip install -r requirements.txt -r requirements-dev.txt radon xenon
       - name: Run tests
-        working-directory: microsservicos/${{ matrix.service }}
         run: pytest tests/ -v --tb=short
-
       - name: Cyclomatic complexity
-        working-directory: microsservicos/${{ matrix.service }}
         run: radon cc src/ -s -a
-
       - name: Maintainability index
-        working-directory: microsservicos/${{ matrix.service }}
         run: radon mi src/ -s
+      - name: Quality gate (xenon)
+        run: xenon src/ -b C -m B -a A
+        continue-on-error: true
 
-  deploy:
-    name: SAM Build & Deploy
+  # --- CD: 3 DDD em sequencia (cross-stack refs) ---
+  # Cada job separado para medir tempo de deploy individualmente
+
+  deploy-auth:
+    name: Deploy auth-service
     needs: test
     if: github.ref == 'refs/heads/main' && github.event_name == 'push'
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: microsservicos
-
+        working-directory: microsservicos/auth-service
     steps:
       - uses: actions/checkout@v4
-
-      - name: Setup Python
-        uses: actions/setup-python@v5
+      - uses: actions/setup-python@v5
         with:
           python-version: '3.13'
-
-      - name: Setup SAM CLI
-        uses: aws-actions/setup-sam@v2
+      - uses: aws-actions/setup-sam@v2
         with:
           use-installer: true
-
-      - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v4
+      - uses: aws-actions/configure-aws-credentials@v4
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ secrets.AWS_REGION }}
+      - run: sam build
+      - run: sam deploy --no-confirm-changeset --no-fail-on-empty-changeset
 
-      - name: SAM build
-        run: sam build
+  deploy-catalogo:
+    name: Deploy catalogo-service
+    needs: deploy-auth
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: microsservicos/catalogo-service
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      - uses: aws-actions/setup-sam@v2
+        with:
+          use-installer: true
+      - uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+      - run: sam build
+      - run: sam deploy --no-confirm-changeset --no-fail-on-empty-changeset
 
-      - name: SAM deploy
-        env:
-          S3_BUCKET: ${{ secrets.SAM_S3_BUCKET }}
-        run: |
-          sam deploy \
-            --stack-name "$SAM_STACK_NAME" \
-            --no-confirm-changeset \
-            --no-fail-on-empty-changeset \
-            --s3-bucket "$S3_BUCKET" \
-            --capabilities CAPABILITY_IAM
+  deploy-estoque:
+    name: Deploy estoque-service
+    needs: deploy-catalogo
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: microsservicos/estoque-service
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      - uses: aws-actions/setup-sam@v2
+        with:
+          use-installer: true
+      - uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+      - run: sam build
+      - run: sam deploy --no-confirm-changeset --no-fail-on-empty-changeset
