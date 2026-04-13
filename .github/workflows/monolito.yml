@@ -11,6 +11,7 @@ on:
     paths:
       - 'monolito/**'
       - '.github/workflows/monolito.yml'
+  workflow_dispatch:
 
 env:
   WORKING_DIR: monolito
