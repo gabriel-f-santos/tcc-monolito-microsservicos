@@ -166,3 +166,44 @@ Testes pre-escritos (4 por variante). Spec: `docs/features/spec-alerta-estoque-b
 - MI com leve queda no DDD microsservico (-1.77) pela adicao de novos arquivos de infra (repo DynamoDB)
 - DDD microsservico precisou adicionar tabela `AlertasTable` no template.yaml + env var `ALERTAS_TABLE` — conftest.py auto-criou no moto sem intervencao
 - Todos os 4 convergiram na primeira tentativa, zero testes quebrados
+
+---
+
+## Teste de Carga — Latencia (k6)
+
+Teste com k6 v0.55.0. Ramp-up 1→5 VUs (15s), sustain 10 VUs (60s), ramp-down (10s).
+Fluxo: registrar → login → categoria → produto → estoque → entrada → saida.
+
+### Latencia por endpoint: Monolito DDD (EC2/ALB) vs Microsservicos DDD (Lambda)
+
+| Endpoint | Alvo | p50 | p90 | p95 | avg |
+|----------|------|-----|-----|-----|-----|
+| health | Monolito | 137ms | 250ms | 253ms | 174ms |
+| health | Micro | 373ms | 486ms | 501ms | 316ms |
+| registrar | Monolito | 887ms | 1323ms | 1445ms | 913ms |
+| registrar | Micro | 1530ms | 1648ms | 1734ms | 1532ms |
+| login | Monolito | 917ms | 1311ms | 1416ms | 896ms |
+| login | Micro | 1460ms | 1517ms | 1613ms | 1479ms |
+| criar_categoria | Monolito | 147ms | 250ms | 253ms | 177ms |
+| criar_categoria | Micro | 497ms | 562ms | 651ms | 530ms |
+| criar_produto | Monolito | 194ms | 252ms | 255ms | 207ms |
+| criar_produto | Micro | 635ms | 739ms | 752ms | 588ms |
+| buscar_estoque | Micro | 264ms | 505ms | 530ms | 369ms |
+| entrada | Micro | 426ms | 694ms | 723ms | 489ms |
+| saida | Micro | 445ms | 684ms | 746ms | 506ms |
+
+### Analise
+
+- **Monolito 2-3x mais rapido em p50** nos endpoints comparaveis (health, registrar, login, categoria, produto)
+- **Registrar/login** sao os mais lentos em ambos (~900ms monolito, ~1500ms micro) por causa do bcrypt hash
+- **CRUD simples** (categoria, produto): monolito ~150-200ms vs micro ~500-650ms — overhead do API Gateway + Lambda cold start
+- **Estoque** (entrada, saida): micro ~450-500ms p50 — operacoes DynamoDB com Scan
+- Microsservicos tem **p90/p95 mais previsivel** (menos dispersao) — Lambda escala horizontal automaticamente
+- Monolito tem **p95 mais alto relativo ao p50** (250ms→1445ms no registrar) — t3.micro saturando com bcrypt sincrono
+
+### Configuracao
+
+- Monolito: EC2 t3.micro, 1 instancia, ALB, RDS PostgreSQL
+- Microsservicos: Lambda 512MB, API Gateway, DynamoDB PAY_PER_REQUEST
+- Teste rodado de maquina local (latencia de rede incluida em ambos)
+- Ferramenta: k6 v0.55.0, 10 VUs max
