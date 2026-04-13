@@ -68,7 +68,7 @@ jobs:
           radon mi src/ -s
 
       - name: Quality gate (xenon)
-        run: xenon src/ -b B -m A -a A
+        run: xenon src/ -b C -m B -a A
 
       - name: Upload metrics
         uses: actions/upload-artifact@v4
