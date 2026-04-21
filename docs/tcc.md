@@ -344,7 +344,7 @@ Um resultado relevante foi o comportamento nos percentis superiores. Enquanto o 
 
 **Produtividade assistida por inteligencia artificial**
 
-Os tempos de implementacao por agente de IA foram registrados em tres fases: construcao do monolito (Fase A), migracao para microsservicos (Fase B) e implementacao de "feature" nova (Fase C). A Tabela 5 consolida os resultados de todas as fases.
+Os tempos de implementacao por agente de IA foram registrados em tres fases: construcao do monolito (Fase A), migracao para microsservicos (Fase B) e implementacao de "feature" nova (Fase C). A Tabela 5 consolida os resultados de todas as fases. Antes da leitura da tabela, cabe esclarecer a interpretacao das colunas: o tempo na Fase B apresenta-se em duas linhas, "somado" e "paralelo (max)"; a linha "somado" corresponde a soma dos tempos individuais dos tres microsservicos, representando o esforco equivalente caso a migracao fosse sequencial, enquanto "paralelo (max)" corresponde ao tempo real de parede ("wall clock") observado, uma vez que os tres agentes foram disparados simultaneamente e o tempo total equivale ao do servico mais lento. A coluna Testes, nas fases A e B, apresenta o numero absoluto de testes aprovados; na Fase C, adota-se a notacao "novos/total", em que o numerador e o numero de testes novos adicionados pela feature (quatro em todas as variantes) e o denominador e o numero total de testes aprovados apos a implementacao, incluindo os testes preexistentes — ambos passando, o que evidencia ausencia de regressao.
 
 <!-- Tabela 5. Tempos de implementacao por fase e arquitetura -->
 <!-- Fonte: Resultados originais da pesquisa -->
