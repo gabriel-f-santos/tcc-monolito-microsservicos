@@ -1,19 +1,41 @@
 @startuml c4-container-monolith
 !include <C4/C4_Container>
-LAYOUT_LEFT_RIGHT()
 
 title Arquitetura do sistema monolitico
 
 Person(operador, "Operador")
 
 System_Boundary(aws, "AWS us-east-1") {
+
     Container(alb, "Load Balancer", "AWS ALB", "HTTPS / health check")
-    Container(app, "FastAPI", "EC2 + Auto Scaling\nPython 3.13 / 512MB", "Monolito DDD\nAuth + Catalogo + Estoque")
-    ContainerDb(rds, "PostgreSQL 16", "RDS db.t4g.micro", "Todas as tabelas")
+
+    System_Boundary(app, "EC2 t3.micro + Auto Scaling — Docker 512MB — FastAPI") {
+
+        System_Boundary(auth_bc, "Auth BC") {
+            Container(auth, "Camadas", "Python 3.13", "Presentation\nApplication\nDomain (Usuario)\nInfrastructure")
+        }
+
+        System_Boundary(cat_bc, "Catalogo BC") {
+            Container(cat, "Camadas", "Python 3.13", "Presentation\nApplication\nDomain (Produto, Categoria)\nInfrastructure")
+        }
+
+        System_Boundary(est_bc, "Estoque BC") {
+            Container(est, "Camadas", "Python 3.13", "Presentation\nApplication\nDomain (Item, Movimentacao)\nInfrastructure")
+        }
+    }
+
+    ContainerDb(rds, "PostgreSQL 16", "RDS db.t4g.micro", "usuarios, produtos, categorias\nitens_estoque, movimentacoes")
 }
 
 Rel(operador, alb, "HTTPS")
-Rel(alb, app, "HTTP :8080")
-Rel(app, rds, "SQL")
+Rel(alb, auth, "HTTP")
+Rel(alb, cat, "HTTP")
+Rel(alb, est, "HTTP")
+Rel(auth, rds, "SQL")
+Rel(cat, rds, "SQL")
+Rel(est, rds, "SQL")
+
+Lay_R(auth_bc, cat_bc)
+Lay_R(cat_bc, est_bc)
 
 @enduml
