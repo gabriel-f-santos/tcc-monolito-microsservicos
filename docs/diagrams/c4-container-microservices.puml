@@ -1,52 +1,40 @@
 @startuml c4-container-microservices
 !include <C4/C4_Container>
 
-title Diagrama de Container - Microsservicos Serverless (Lambda + DynamoDB)
+title Arquitetura dos microsservicos serverless
 
 Person(operador, "Operador")
 
 System_Boundary(aws, "AWS us-east-1") {
 
-    Container(apigw, "API Gateway", "AWS", "Roteia HTTPS para Lambdas\nAuthorizer JWT por servico")
+    Container(apigw, "API Gateway", "AWS + JWT Authorizer", "Roteia para 3 servicos")
 
-    System_Boundary(auth_svc, "Auth Service (Bounded Context)") {
-        Container(lambda_auth, "Lambda Handlers", "Python 3.13 / 512MB", "registrar, login, authorizer")
-        ContainerDb(dynamo_auth, "DynamoDB", "PAY_PER_REQUEST", "tcc-ddd-auth-usuarios")
+    System_Boundary(auth_bc, "Auth Service") {
+        Container(auth, "Lambda", "Python 3.13 / 512MB", "Presentation\nApplication\nDomain (Usuario)\nInfrastructure")
+        ContainerDb(dynamo_auth, "DynamoDB", "PAY_PER_REQUEST", "usuarios")
     }
 
-    System_Boundary(catalogo_svc, "Catalogo Service (Bounded Context)") {
-        Container(lambda_cat, "Lambda Handler", "Python 3.13 / 512MB", "categorias, produtos\nRoteamento por method+path")
-        Container(domain_cat, "Domain + Application", "Python puro", "Produto, Categoria, SKU, Dinheiro\nCriarProduto, CriarCategoria")
-        Container(infra_cat, "Infrastructure", "boto3", "DynamoDBProdutoRepo\nDynamoDBCategoriaRepo\nSnsEventPublisher")
-        ContainerDb(dynamo_cat, "DynamoDB", "PAY_PER_REQUEST", "tcc-ddd-catalogo-produtos\ntcc-ddd-catalogo-categorias")
+    System_Boundary(cat_bc, "Catalogo Service") {
+        Container(cat, "Lambda", "Python 3.13 / 512MB", "Presentation\nApplication\nDomain (Produto, Categoria)\nInfrastructure")
+        ContainerDb(dynamo_cat, "DynamoDB", "PAY_PER_REQUEST", "produtos, categorias")
     }
 
-    System_Boundary(estoque_svc, "Estoque Service (Bounded Context)") {
-        Container(lambda_est, "Lambda Handler", "Python 3.13 / 512MB", "estoque, movimentacoes\nalertas")
-        Container(lambda_consumer, "Event Consumer", "Python 3.13 / 512MB", "Consome SQS\nCria/atualiza projecao")
-        Container(domain_est, "Domain + Application", "Python puro", "ItemEstoque, Movimentacao\nRegistrarEntrada, RegistrarSaida")
-        Container(infra_est, "Infrastructure", "boto3", "DynamoDBItemEstoqueRepo\nDynamoDBMovimentacaoRepo\nDynamoDBAlertaEstoqueRepo")
-        ContainerDb(dynamo_est, "DynamoDB", "PAY_PER_REQUEST", "tcc-ddd-estoque-itens\ntcc-ddd-estoque-movimentacoes\ntcc-ddd-estoque-alertas")
+    System_Boundary(est_bc, "Estoque Service") {
+        Container(est, "Lambda", "Python 3.13 / 512MB", "Presentation + Consumer\nApplication\nDomain (Item, Movimentacao)\nInfrastructure")
+        ContainerDb(dynamo_est, "DynamoDB", "PAY_PER_REQUEST", "itens_estoque\nmovimentacoes, alertas")
     }
-
-    ContainerQueue(sns, "SNS Topic", "tcc-ddd-catalogo-eventos", "Fan-out de eventos\nProdutoCriado, ProdutoAtualizado\nProdutoDesativado")
-    ContainerQueue(sqs, "SQS Queue", "tcc-ddd-estoque-eventos", "Buffer de consumo\nBatchSize=1, Visibility=180s")
 }
 
 Rel(operador, apigw, "HTTPS")
-Rel(apigw, lambda_auth, "Invoca (auth)")
-Rel(apigw, lambda_cat, "Invoca (catalogo)")
-Rel(apigw, lambda_est, "Invoca (estoque)")
-Rel(lambda_auth, dynamo_auth, "DynamoDB API")
-Rel(lambda_cat, domain_cat, "Delega")
-Rel(domain_cat, infra_cat, "Persiste")
-Rel(infra_cat, dynamo_cat, "DynamoDB API")
-Rel(infra_cat, sns, "Publica evento")
-Rel(sns, sqs, "Encaminha")
-Rel(sqs, lambda_consumer, "Dispara")
-Rel(lambda_consumer, domain_est, "Delega")
-Rel(lambda_est, domain_est, "Delega")
-Rel(domain_est, infra_est, "Persiste")
-Rel(infra_est, dynamo_est, "DynamoDB API")
+Rel(apigw, auth, "Invoca")
+Rel(apigw, cat, "Invoca")
+Rel(apigw, est, "Invoca")
+Rel(auth, dynamo_auth, "boto3")
+Rel(cat, dynamo_cat, "boto3")
+Rel(est, dynamo_est, "boto3")
+Rel_R(cat, est, "SNS → SQS", "Eventos de dominio (async)")
+
+Lay_R(auth_bc, cat_bc)
+Lay_R(cat_bc, est_bc)
 
 @enduml
