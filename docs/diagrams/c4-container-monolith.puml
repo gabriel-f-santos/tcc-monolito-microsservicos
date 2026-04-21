@@ -1,21 +1,19 @@
 @startuml c4-container-monolith
 !include <C4/C4_Container>
+LAYOUT_LEFT_RIGHT()
 
-title Diagrama de Container - Monolito (EC2 + ALB + RDS)
+title Arquitetura do sistema monolitico
 
-Person(operador, "Operador", "Utiliza o sistema via HTTPS")
+Person(operador, "Operador")
 
 System_Boundary(aws, "AWS us-east-1") {
-
-    Container(alb, "Application Load Balancer", "AWS ALB", "Distribui trafego HTTPS\nHealth check em /health")
-
-    Container(app, "Aplicacao FastAPI", "Python 3.13 / Docker 512MB\nEC2 t3.micro com Auto Scaling", "Monolito DDD com todos os\nbounded contexts: Auth, Catalogo, Estoque")
-
-    ContainerDb(rds, "PostgreSQL 16", "RDS db.t4g.micro", "Banco relacional com todas\nas tabelas do sistema")
+    Container(alb, "Load Balancer", "AWS ALB", "HTTPS / health check")
+    Container(app, "FastAPI", "EC2 + Auto Scaling\nPython 3.13 / 512MB", "Monolito DDD\nAuth + Catalogo + Estoque")
+    ContainerDb(rds, "PostgreSQL 16", "RDS db.t4g.micro", "Todas as tabelas")
 }
 
-Rel(operador, alb, "HTTPS", "porta 443")
-Rel(alb, app, "HTTP", "porta 8080")
-Rel(app, rds, "SQL / SQLAlchemy", "conexao persistente")
+Rel(operador, alb, "HTTPS")
+Rel(alb, app, "HTTP :8080")
+Rel(app, rds, "SQL")
 
 @enduml
