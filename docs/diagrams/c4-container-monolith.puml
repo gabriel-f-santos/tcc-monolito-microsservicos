@@ -1,34 +1,21 @@
 @startuml c4-container-monolith
 !include <C4/C4_Container>
 
-title Diagrama de Container - Monolito (EC2 + PostgreSQL)
+title Diagrama de Container - Monolito (EC2 + ALB + RDS)
 
-Person(operador, "Operador")
+Person(operador, "Operador", "Utiliza o sistema via HTTPS")
 
 System_Boundary(aws, "AWS us-east-1") {
 
-    Container(alb, "Application Load Balancer", "AWS ALB", "Porta 80 / Health check /health")
+    Container(alb, "Application Load Balancer", "AWS ALB", "Distribui trafego HTTPS\nHealth check em /health")
 
-    System_Boundary(asg, "Auto Scaling Group (1-2 t3.micro)") {
-        Container(docker, "Container Docker (512MB)", "Python 3.13 / FastAPI / Uvicorn :8080", "Toda a aplicacao em um unico processo")
-    }
+    Container(app, "Aplicacao FastAPI", "Python 3.13 / Docker 512MB\nEC2 t3.micro com Auto Scaling", "Monolito DDD com todos os\nbounded contexts: Auth, Catalogo, Estoque")
 
-    System_Boundary(app_layers, "Camadas da Aplicacao") {
-        Container(presentation, "Presentation", "FastAPI Routes", "Rotas HTTP, validacao de input\nMiddleware JWT auth")
-        Container(application, "Application", "Use Cases", "CriarProduto, RegistrarEntrada\nRegistrarSaida, etc.")
-        Container(domain, "Domain", "Entidades + VOs", "Produto, ItemEstoque, Movimentacao\nSKU, Dinheiro, Quantidade")
-        Container(infra_repo, "Infrastructure", "SQLAlchemy Repos", "ProdutoRepository\nItemEstoqueRepository\nUsuarioRepository")
-    }
-
-    ContainerDb(rds, "PostgreSQL 16", "RDS db.t4g.micro", "produtos, categorias, usuarios\nitens_estoque, movimentacoes\nTodas as tabelas no mesmo banco")
+    ContainerDb(rds, "PostgreSQL 16", "RDS db.t4g.micro", "Banco relacional com todas\nas tabelas do sistema")
 }
 
-Rel(operador, alb, "HTTPS")
-Rel(alb, docker, "HTTP :8080")
-Rel(docker, presentation, "Contem")
-Rel(presentation, application, "Delega")
-Rel(application, domain, "Usa")
-Rel(application, infra_repo, "Persiste via interface")
-Rel(infra_repo, rds, "SQL / SQLAlchemy")
+Rel(operador, alb, "HTTPS", "porta 443")
+Rel(alb, app, "HTTP", "porta 8080")
+Rel(app, rds, "SQL / SQLAlchemy", "conexao persistente")
 
 @enduml
