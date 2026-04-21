@@ -7,43 +7,46 @@ Person(operador, "Operador")
 
 System_Boundary(aws, "AWS us-east-1") {
 
-    Container(apigw, "API Gateway", "AWS", "Roteia HTTPS para Lambdas\n/catalogo/* e /estoque/*")
+    Container(apigw, "API Gateway", "AWS", "Roteia HTTPS para Lambdas\nAuthorizer JWT por servico")
+
+    System_Boundary(auth_svc, "Auth Service (Bounded Context)") {
+        Container(lambda_auth, "Lambda Handlers", "Python 3.13 / 512MB", "registrar, login, authorizer")
+        ContainerDb(dynamo_auth, "DynamoDB", "PAY_PER_REQUEST", "tcc-ddd-auth-usuarios")
+    }
 
     System_Boundary(catalogo_svc, "Catalogo Service (Bounded Context)") {
-        Container(lambda_cat, "Lambda Handlers", "Python 3.13 / 512MB", "health, auth, produtos, categorias")
-        Container(uc_cat, "Use Cases", "Python", "CriarProduto, CriarCategoria\nLogin, Registrar")
-        Container(domain_cat, "Domain", "Python", "Produto, Categoria, Usuario\nSKU, Dinheiro")
-        Container(repo_cat, "DynamoDB Repos", "boto3", "ProdutoRepository\nCategoriaRepository\nUsuarioRepository")
+        Container(lambda_cat, "Lambda Handler", "Python 3.13 / 512MB", "categorias, produtos\nRoteamento por method+path")
+        Container(domain_cat, "Domain + Application", "Python puro", "Produto, Categoria, SKU, Dinheiro\nCriarProduto, CriarCategoria")
+        Container(infra_cat, "Infrastructure", "boto3", "DynamoDBProdutoRepo\nDynamoDBCategoriaRepo\nSnsEventPublisher")
+        ContainerDb(dynamo_cat, "DynamoDB", "PAY_PER_REQUEST", "tcc-ddd-catalogo-produtos\ntcc-ddd-catalogo-categorias")
     }
 
     System_Boundary(estoque_svc, "Estoque Service (Bounded Context)") {
-        Container(lambda_est, "Lambda Handlers", "Python 3.13 / 512MB", "health, estoque, movimentacoes")
+        Container(lambda_est, "Lambda Handler", "Python 3.13 / 512MB", "estoque, movimentacoes\nalertas")
         Container(lambda_consumer, "Event Consumer", "Python 3.13 / 512MB", "Consome SQS\nCria/atualiza projecao")
-        Container(uc_est, "Use Cases", "Python", "RegistrarEntrada\nRegistrarSaida")
-        Container(domain_est, "Domain", "Python", "ItemEstoque, Movimentacao\nQuantidade, TipoMovimentacao")
-        Container(repo_est, "DynamoDB Repos", "boto3", "ItemEstoqueRepository\nMovimentacaoRepository")
+        Container(domain_est, "Domain + Application", "Python puro", "ItemEstoque, Movimentacao\nRegistrarEntrada, RegistrarSaida")
+        Container(infra_est, "Infrastructure", "boto3", "DynamoDBItemEstoqueRepo\nDynamoDBMovimentacaoRepo\nDynamoDBAlertaEstoqueRepo")
+        ContainerDb(dynamo_est, "DynamoDB", "PAY_PER_REQUEST", "tcc-ddd-estoque-itens\ntcc-ddd-estoque-movimentacoes\ntcc-ddd-estoque-alertas")
     }
 
-    ContainerDb(dynamo_cat, "DynamoDB", "PAY_PER_REQUEST", "prod-produtos\nprod-categorias\nprod-usuarios")
-    ContainerDb(dynamo_est, "DynamoDB", "PAY_PER_REQUEST", "prod-itens-estoque\nprod-movimentacoes")
-    ContainerQueue(sns, "SNS Topic", "prod-eventos-dominio", "Fan-out de eventos")
-    ContainerQueue(sqs, "SQS Queue", "prod-estoque-eventos", "Buffer de consumo")
+    ContainerQueue(sns, "SNS Topic", "tcc-ddd-catalogo-eventos", "Fan-out de eventos\nProdutoCriado, ProdutoAtualizado\nProdutoDesativado")
+    ContainerQueue(sqs, "SQS Queue", "tcc-ddd-estoque-eventos", "Buffer de consumo\nBatchSize=1, Visibility=180s")
 }
 
 Rel(operador, apigw, "HTTPS")
-Rel(apigw, lambda_cat, "Invoca")
-Rel(apigw, lambda_est, "Invoca")
-Rel(lambda_cat, uc_cat, "Chama")
-Rel(uc_cat, domain_cat, "Usa")
-Rel(uc_cat, repo_cat, "Persiste")
-Rel(repo_cat, dynamo_cat, "DynamoDB API")
-Rel(uc_cat, sns, "Publica evento")
+Rel(apigw, lambda_auth, "Invoca (auth)")
+Rel(apigw, lambda_cat, "Invoca (catalogo)")
+Rel(apigw, lambda_est, "Invoca (estoque)")
+Rel(lambda_auth, dynamo_auth, "DynamoDB API")
+Rel(lambda_cat, domain_cat, "Delega")
+Rel(domain_cat, infra_cat, "Persiste")
+Rel(infra_cat, dynamo_cat, "DynamoDB API")
+Rel(infra_cat, sns, "Publica evento")
 Rel(sns, sqs, "Encaminha")
 Rel(sqs, lambda_consumer, "Dispara")
-Rel(lambda_consumer, uc_est, "Chama")
-Rel(lambda_est, uc_est, "Chama")
-Rel(uc_est, domain_est, "Usa")
-Rel(uc_est, repo_est, "Persiste")
-Rel(repo_est, dynamo_est, "DynamoDB API")
+Rel(lambda_consumer, domain_est, "Delega")
+Rel(lambda_est, domain_est, "Delega")
+Rel(domain_est, infra_est, "Persiste")
+Rel(infra_est, dynamo_est, "DynamoDB API")
 
 @enduml

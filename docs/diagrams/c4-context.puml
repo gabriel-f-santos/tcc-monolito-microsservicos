@@ -15,15 +15,10 @@ System_Boundary(sistema_ms, "Sistema de Produtos e Estoque (Serverless)") {
 }
 
 System_Ext(mensageria, "SNS / SQS", "Transporta eventos de dominio\nentre bounded contexts")
-System_Ext(grafana, "Grafana Cloud", "Dashboards de observabilidade\nLatencia, throughput, cold starts")
-
 Rel(operador, monolito, "HTTPS", "ALB porta 80")
 Rel(operador, catalogo, "HTTPS", "API Gateway")
 Rel(operador, estoque, "HTTPS", "API Gateway")
 Rel(catalogo, mensageria, "Publica", "ProdutoCriado\nProdutoAtualizado\nProdutoDesativado")
 Rel(mensageria, estoque, "Consome", "Cria/atualiza projecao local")
-Rel(monolito, grafana, "OTLP", "Traces e metricas")
-Rel(catalogo, grafana, "X-Ray", "Traces")
-Rel(estoque, grafana, "X-Ray", "Traces")
 
 @enduml
