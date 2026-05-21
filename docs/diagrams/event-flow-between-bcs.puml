@@ -1,0 +1,53 @@
+@startuml event-flow-between-bcs
+title Fluxo de eventos entre Bounded Contexts
+
+skinparam backgroundColor white
+skinparam defaultFontName Arial
+skinparam defaultFontSize 11
+skinparam rectangleBorderColor #555555
+skinparam queueBorderColor #555555
+skinparam arrowColor #555555
+
+skinparam rectangle {
+    FontSize 12
+    FontStyle bold
+}
+
+rectangle "Catalogo" as cat #E3F2FD {
+    rectangle "Produto\n(Aggregate)" as prod #FEFECE
+}
+
+queue "SNS Topic\neventos-dominio" as sns #F5F5F5
+
+queue "SQS Queue\nestoque-eventos" as sqs #F5F5F5
+
+rectangle "Estoque" as est #FFF3E0 {
+    rectangle "ItemEstoque\n(Aggregate)" as item #FEFECE
+}
+
+rectangle "Autenticacao" as auth_box #E8F5E9 {
+    rectangle "Usuario\n(Aggregate)" as usr #FEFECE
+}
+
+prod -right-> sns : ProdutoCriado\nProdutoAtualizado\nProdutoDesativado
+sns -right-> sqs
+sqs -right-> item : Cria/atualiza\nprojecao local
+
+item -down-> sns : EstoqueMovimentado\nEstoqueInsuficiente
+
+note bottom of sqs
+  Consistencia eventual:
+  cada BC opera de forma
+  autonoma e processa
+  eventos no seu ritmo
+end note
+
+note right of item
+  Projecao local armazena
+  apenas: sku, nome_produto,
+  categoria_nome
+end note
+
+auth_box -[hidden]down- cat
+
+@enduml

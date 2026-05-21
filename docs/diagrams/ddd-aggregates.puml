@@ -1,0 +1,100 @@
+@startuml ddd-aggregates
+title Agregados e Value Objects por Bounded Context
+
+skinparam backgroundColor white
+skinparam defaultFontName Arial
+skinparam defaultFontSize 11
+skinparam packageBorderColor #555555
+skinparam packageFontSize 13
+skinparam packageFontStyle bold
+skinparam classFontSize 11
+skinparam classAttributeFontSize 10
+skinparam stereotypeFontSize 9
+
+skinparam class {
+    BackgroundColor #FEFECE
+    BorderColor #A08020
+    ArrowColor #555555
+}
+
+hide methods
+
+package "Autenticacao" as auth_bc #E8F5E9 {
+    class "Usuario" as usuario <<Aggregate Root>> {
+        nome: str
+        email: str
+        senha_hash: str
+    }
+}
+
+package "Catalogo" as cat_bc #E3F2FD {
+    class "Produto" as produto <<Aggregate Root>> {
+        nome: str
+        descricao: str
+        ativo: bool
+    }
+
+    class "SKU" as sku <<Value Object>> {
+        valor: str
+    }
+
+    class "Dinheiro" as dinheiro <<Value Object>> {
+        valor: Decimal
+    }
+
+    class "Categoria" as categoria <<Entity>> {
+        nome: str
+        descricao: str
+    }
+
+    produto *-- sku : composto por
+    produto *-- dinheiro : preco
+    produto --> categoria : categoria_id
+}
+
+package "Estoque" as est_bc #FFF3E0 {
+    class "ItemEstoque" as item <<Aggregate Root>> {
+        produto_id: UUID
+        sku: str
+        nome_produto: str
+        categoria_nome: str
+        saldo: int
+        estoque_minimo: int
+    }
+
+    class "Movimentacao" as mov <<Entity>> {
+        lote: str
+        motivo: str
+    }
+
+    class "TipoMovimentacao" as tipo <<Value Object>> {
+        ENTRADA
+        SAIDA
+    }
+
+    class "Quantidade" as qtd <<Value Object>> {
+        valor: int
+    }
+
+    class "AlertaEstoque" as alerta <<Entity>> {
+        tipo: ESTOQUE_BAIXO
+        saldo_atual: int
+        estoque_minimo: int
+    }
+
+    item *-- mov : registra
+    mov *-- tipo
+    mov *-- qtd
+    item ..> alerta : emite quando\nsaldo < minimo
+}
+
+note bottom of est_bc
+  Projecao local: ItemEstoque
+  mantem sku, nome_produto e
+  categoria_nome recebidos
+  via eventos do Catalogo
+end note
+
+cat_bc -[hidden]right- est_bc
+
+@enduml
